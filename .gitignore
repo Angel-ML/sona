@@ -1,7 +1,28 @@
+*#*#
+*.#*
+*.iml
+*.ipr
+*.iws
+*.swp
+*~
+.DS_Store
+.cache
+.classpath
+.idea/
+.idea_modules/
+.project
+.scala_dependencies
+.settings
+
+spark-warehouse
+target
+target/*
+src/test/models/
+src/test/pngs/
+src/test/results/
+
 # Compiled class file
 *.class
-.idea
-.idea/*
 # Log file
 *.log
 

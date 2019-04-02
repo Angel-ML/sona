@@ -5,13 +5,6 @@ import com.tencent.angel.ml.core.PSOptimizerProvider
 import com.tencent.angel.ml.core.conf.MLCoreConf
 import com.tencent.angel.ml.core.variable.VarState
 import com.tencent.angel.ml.math2.utils.LabeledData
-import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.internal.Logging
-import org.apache.spark.ml.classification.{Classifier, ClassifierParams}
-import org.apache.spark.ml.linalg.Vector
-import org.apache.spark.ml.param.ParamMap
-import org.apache.spark.ml.util._
-import org.apache.spark.rdd.RDD
 import com.tencent.angel.sona.common.measure.TrainingStat
 import com.tencent.angel.sona.common.measure.training.ClassificationTrainingStat
 import com.tencent.angel.sona.common.metaextract.{AngelFeatureMeta, AngelIntLabelMeta}
@@ -20,7 +13,14 @@ import com.tencent.angel.sona.common.{ManifoldBuilder, Trainer}
 import com.tencent.angel.sona.core._
 import com.tencent.angel.sona.utils.ConfUtils
 import com.tencent.angel.sona.utils.DataUtils.Example
+import org.apache.spark.broadcast.Broadcast
+import org.apache.spark.internal.Logging
+import org.apache.spark.ml.classification.Classifier
+import org.apache.spark.ml.linalg.Vector
+import org.apache.spark.ml.param.ParamMap
+import org.apache.spark.ml.util._
 import org.apache.spark.ml.{AClassifierParams, AInstrumentation, SPKMLUtils}
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions.{col, lit}
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 import org.apache.spark.storage.StorageLevel
