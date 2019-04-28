@@ -1,0 +1,3 @@
+org.apache.spark.angelml.util.DuplicateLinearRegressionWriter1
+org.apache.spark.angelml.util.DuplicateLinearRegressionWriter2
+org.apache.spark.angelml.util.FakeLinearRegressionWriterWithName
