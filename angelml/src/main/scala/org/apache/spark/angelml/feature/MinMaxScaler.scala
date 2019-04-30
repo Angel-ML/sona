@@ -19,7 +19,7 @@ package org.apache.spark.angelml.feature
 
 import org.apache.hadoop.fs.Path
 import org.apache.spark.annotation.Since
-import org.apache.spark.angelml.linalg.{Vector, VectorUDT, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param.shared.{HasInputCol, HasOutputCol}
 import org.apache.spark.angelml.param.{DoubleParam, ParamMap, Params}
 import org.apache.spark.angelml.stat.Statistics
@@ -176,24 +176,27 @@ class MinMaxScalerModel private[angelml](
     transformSchema(dataset.schema, logging = true)
     val originalRange = (originalMax.asBreeze - originalMin.asBreeze).toArray
     val minArray = originalMin.toArray
-
-    val reScale = udf { (vector: Vector) =>
-      val scale = $(max) - $(min)
-
+    val scale = $(max) - $(min)
+    val reScale = udf { data: Vector =>
       // 0 in sparse vector will probably be rescaled to non-zero
-      val values = vector.toArray
-      val size = values.length
-      var i = 0
-      while (i < size) {
-        if (!values(i).isNaN) {
-          val raw = if (originalRange(i) != 0) (values(i) - minArray(i)) / originalRange(i) else 0.5
-          values(i) = raw * scale + $(min)
-        }
-        i += 1
-      }
-      Vectors.dense(values)
-    }
+      data match {
+        case DenseVector(values) =>
+          val size = values.length
+          var i = 0
+          while (i < size) {
+            if (!values(i).isNaN) {
+              val raw = if (originalRange(i) != 0) (values(i) - minArray(i)) / originalRange(i) else 0.5
+              values(i) = raw * scale + $(min)
+            }
+            i += 1
+          }
+          Vectors.dense(values).compressed
+          case IntSparseVector(size, indices, values) =>
+//            val NewValues = new Array[Double](size)
 
+
+          }
+      }
     dataset.withColumn($(outputCol), reScale(col($(inputCol))))
   }
 

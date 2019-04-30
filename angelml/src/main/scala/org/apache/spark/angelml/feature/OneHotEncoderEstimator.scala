@@ -262,9 +262,9 @@ class OneHotEncoderModel private[angelml](
 
       val size = configedSizes(colIdx)
       if (idx < size) {
-        Vectors.sparse(size, Array(idx.toInt), Array(1.0))
+        Vectors.sparse(size, Array(idx.toInt), Array(1.0)).compressed
       } else {
-        Vectors.sparse(size, Array.empty[Int], Array.empty[Double])
+        Vectors.sparse(size, Array.empty[Int], Array.empty[Double]).compressed
       }
     }
   }

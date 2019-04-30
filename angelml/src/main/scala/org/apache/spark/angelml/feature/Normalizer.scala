@@ -19,7 +19,7 @@ package org.apache.spark.angelml.feature
 
 import org.apache.spark.annotation.Since
 import org.apache.spark.angelml.UnaryTransformer
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector,LongSparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param.{DoubleParam, ParamValidators}
 import org.apache.spark.angelml.util._
 import org.apache.spark.sql.types.DataType
@@ -69,7 +69,7 @@ class Normalizer @Since("1.4.0") (@Since("1.4.0") override val uid: String)
               values(i) /= norm
               i += 1
             }
-            Vectors.dense(values)
+            Vectors.dense(values).compressed
           case IntSparseVector(size, ids, vs) =>
             val values = vs.clone()
             val nnz = values.length
@@ -78,14 +78,23 @@ class Normalizer @Since("1.4.0") (@Since("1.4.0") override val uid: String)
               values(i) /= norm
               i += 1
             }
-            Vectors.sparse(size, ids, values)
+            Vectors.sparse(size, ids, values).compressed
+          case LongSparseVector(size, ids, vs) =>
+            val values = vs.clone()
+            val nnz = values.length
+            var i = 0
+            while (i < nnz) {
+              values(i) /= norm
+              i += 1
+            }
+            Vectors.sparse(size, ids, values).compressed
           case v => throw new IllegalArgumentException("Do not support vector type " + v.getClass)
         }
       } else {
         // Since the norm is zero, return the input vector object itself.
         // Note that it's safe since we always assume that the data in RDD
         // should be immutable.
-        vector
+        vector.compressed
       }
     }
   }

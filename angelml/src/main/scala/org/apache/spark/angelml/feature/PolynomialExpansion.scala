@@ -125,7 +125,7 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
     curPolyIdx + getPolySize(lastIdx + 1, degree)
   }
 
-  private def expandSparse(
+  private def expandIntSparse(
       indices: Array[Int],
       values: Array[Double],
       lastIdx: Int,
@@ -151,7 +151,42 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
       var curStart = curPolyIdx
       var i = 0
       while (i <= degree && alpha != 0.0) {
-        curStart = expandSparse(indices, values, lastIdx1, lastFeatureIdx1, degree - i, alpha,
+        curStart = expandIntSparse(indices, values, lastIdx1, lastFeatureIdx1, degree - i, alpha,
+          polyIndices, polyValues, curStart)
+        i += 1
+        alpha *= v
+      }
+    }
+    curPolyIdx + getPolySize(lastFeatureIdx + 1, degree)
+  }
+
+  private def expandLongSparse(
+                               indices: Array[Long],
+                               values: Array[Double],
+                               lastIdx: Int,
+                               lastFeatureIdx: Int,
+                               degree: Int,
+                               multiplier: Double,
+                               polyIndices: mutable.ArrayBuilder[Long],
+                               polyValues: mutable.ArrayBuilder[Double],
+                               curPolyIdx: Long): Long = {
+    if (multiplier == 0.0) {
+      // do nothing
+    } else if (degree == 0 || lastIdx < 0) {
+      if (curPolyIdx >= 0) { // skip the very first 1
+        polyIndices += curPolyIdx
+        polyValues += multiplier
+      }
+    } else {
+      // Skip all zeros at the tail.
+      val v = values(lastIdx)
+      val lastIdx1 = lastIdx - 1
+      val lastFeatureIdx1 = indices(lastIdx) - 1
+      var alpha = multiplier
+      var curStart = curPolyIdx
+      var i = 0
+      while (i <= degree && alpha != 0.0) {
+        curStart = expandLongSparse(indices, values, lastIdx1, lastFeatureIdx1.toInt, degree - i, alpha,
           polyIndices, polyValues, curStart)
         i += 1
         alpha *= v
@@ -176,15 +211,30 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
     polyIndices.sizeHint(nnzPolySize - 1)
     val polyValues = mutable.ArrayBuilder.make[Double]
     polyValues.sizeHint(nnzPolySize - 1)
-    expandSparse(
+    expandIntSparse(
       sv.indices, sv.values, nnz - 1, sv.size.toInt - 1, degree, 1.0, polyIndices, polyValues, -1)
     new IntSparseVector(polySize - 1, polyIndices.result(), polyValues.result())
   }
+
+  private def expand(sv: LongSparseVector, degree: Int): LongSparseVector = {
+    val polySize = getPolySize(sv.size.toInt, degree)
+    val nnz = sv.values.length
+    val nnzPolySize = getPolySize(nnz, degree)
+    val polyIndices = mutable.ArrayBuilder.make[Long]
+    polyIndices.sizeHint(nnzPolySize - 1)
+    val polyValues = mutable.ArrayBuilder.make[Double]
+    polyValues.sizeHint(nnzPolySize - 1)
+    expandLongSparse(
+      sv.indices, sv.values, nnz - 1, sv.size.toInt - 1, degree, 1.0, polyIndices, polyValues, -1)
+    new LongSparseVector(polySize - 1, polyIndices.result(), polyValues.result())
+  }
+
 
   private[feature] def expand(v: Vector, degree: Int): Vector = {
     v match {
       case dv: DenseVector => expand(dv, degree)
       case sv: IntSparseVector => expand(sv, degree)
+      case sv: LongSparseVector => expand(sv, degree)
       case _ => throw new IllegalArgumentException
     }
   }

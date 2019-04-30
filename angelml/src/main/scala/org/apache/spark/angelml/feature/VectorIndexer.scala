@@ -28,7 +28,7 @@ import org.apache.spark.SparkException
 import org.apache.spark.annotation.Since
 import org.apache.spark.angelml.{Estimator, Model}
 import org.apache.spark.angelml.attribute._
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, VectorUDT}
 import org.apache.spark.angelml.param._
 import org.apache.spark.angelml.param.shared._
 import org.apache.spark.angelml.util._
@@ -384,6 +384,39 @@ class VectorIndexerModel private[angelml](
           val tmpv = sv.copy
           var catFeatureIdx = 0 // index into sortedCatFeatureIndices
           var k = 0 // index into non-zero elements of sparse vector
+          while (catFeatureIdx < sortedCatFeatureIndices.length && k < tmpv.indices.length) {
+            val featureIndex = sortedCatFeatureIndices(catFeatureIdx)
+            if (featureIndex < tmpv.indices(k)) {
+              catFeatureIdx += 1
+            } else if (featureIndex > tmpv.indices(k)) {
+              k += 1
+            } else {
+              try {
+                tmpv.values(k) = localVectorMap(featureIndex)(tmpv.values(k))
+              } catch {
+                case _: NoSuchElementException =>
+                  localHandleInvalid match {
+                    case VectorIndexer.ERROR_INVALID =>
+                      throw new SparkException(s"VectorIndexer encountered invalid value " +
+                        s"${tmpv.values(k)} on feature index ${featureIndex}. To handle " +
+                        s"or skip invalid value, try setting VectorIndexer.handleInvalid.")
+                    case VectorIndexer.KEEP_INVALID =>
+                      tmpv.values(k) = localVectorMap(featureIndex).size
+                    case VectorIndexer.SKIP_INVALID =>
+                      hasInvalid = true
+                  }
+              }
+              catFeatureIdx += 1
+              k += 1
+            }
+          }
+          if (hasInvalid) null else tmpv
+        case sv: LongSparseVector =>
+          // We use the fact that categorical value 0 is always mapped to index 0.
+          var hasInvalid = false
+          val tmpv = sv.copy
+          var catFeatureIdx = 0 // index into sortedCatFeatureIndices
+        var k = 0 // index into non-zero elements of sparse vector
           while (catFeatureIdx < sortedCatFeatureIndices.length && k < tmpv.indices.length) {
             val featureIndex = sortedCatFeatureIndices(catFeatureIdx)
             if (featureIndex < tmpv.indices(k)) {

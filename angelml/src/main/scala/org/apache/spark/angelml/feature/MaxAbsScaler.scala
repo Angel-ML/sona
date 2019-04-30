@@ -19,7 +19,7 @@ package org.apache.spark.angelml.feature
 
 import org.apache.hadoop.fs.Path
 import org.apache.spark.annotation.Since
-import org.apache.spark.angelml.linalg.{Vector, VectorUDT, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param.shared.{HasInputCol, HasOutputCol}
 import org.apache.spark.angelml.param.{ParamMap, Params}
 import org.apache.spark.angelml.stat.Statistics
@@ -120,10 +120,19 @@ class MaxAbsScalerModel private[angelml](
   override def transform(dataset: Dataset[_]): DataFrame = {
     transformSchema(dataset.schema, logging = true)
     // TODO: this looks hack, we may have to handle sparse and dense vectors separately.
-    val maxAbsUnzero = Vectors.dense(maxAbs.toArray.map(x => if (x == 0) 1 else x))
-    val reScale = udf { (vector: Vector) =>
-      val brz = vector.asBreeze / maxAbsUnzero.asBreeze
-      Vectors.fromBreeze(brz)
+    val reScale = udf { data: Vector =>
+      data match {
+        case DenseVector(values) =>
+          val maxAbsUnzero = Vectors.dense(maxAbs.toArray.map(x => if (x == 0) 1.0 else x))
+          val brz = Vectors.dense(values).asBreeze/ maxAbsUnzero.asBreeze
+          Vectors.fromBreeze(brz).compressed
+        case IntSparseVector(size, indices, values) =>
+          val newValues = values.map(_ => 1.0)
+          Vectors.sparse(size, indices, newValues).compressed
+        case LongSparseVector(size, indices, values) =>
+          val newValues = values.map(_ => 1.0)
+          Vectors.sparse(size, indices, newValues).compressed
+      }
     }
     dataset.withColumn($(outputCol), reScale(col($(inputCol))))
   }

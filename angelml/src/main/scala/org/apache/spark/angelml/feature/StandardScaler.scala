@@ -20,7 +20,7 @@ package org.apache.spark.angelml.feature
 import org.apache.hadoop.fs.Path
 import org.apache.spark.annotation.Since
 import org.apache.spark.angelml._
-import org.apache.spark.angelml.linalg.{Vector, DenseVector, IntSparseVector, VectorUDT, Vectors}
+import org.apache.spark.angelml.linalg.{Vector, DenseVector, IntSparseVector, LongSparseVector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param._
 import org.apache.spark.angelml.param.shared._
 import org.apache.spark.angelml.stat.MultivariateOnlineSummarizer
@@ -120,6 +120,8 @@ class StandardScaler @Since("1.4.0") (
         Vectors.dense(values.map(v => Math.sqrt(v)))
       case IntSparseVector(size, index, values) =>
         Vectors.sparse(size, index, values.map(v => Math.sqrt(v)))
+      case LongSparseVector(size, index, values) =>
+        Vectors.sparse(size, index, values.map(v => Math.sqrt(v)))
       case _ => throw new Exception("Vector type is not support!")
     }
 
@@ -183,6 +185,7 @@ class StandardScalerModel private[angelml](
         val values = vector match {
           // specially handle DenseVector because its toArray does not clone already
           case d: DenseVector => d.values.clone()
+            //TODO LongSparseVector.toArray may cause problem!
           case v: Vector => v.toArray
         }
         val size = values.length
@@ -199,7 +202,7 @@ class StandardScalerModel private[angelml](
             i += 1
           }
         }
-        Vectors.dense(values)
+        Vectors.dense(values).compressed
       } else if ($(withStd)) {
         vector match {
           case DenseVector(vs) =>
@@ -210,7 +213,7 @@ class StandardScalerModel private[angelml](
               values(i) *= (if (std(i) != 0.0) 1.0 / std(i) else 0.0)
               i += 1
             }
-            Vectors.dense(values)
+            Vectors.dense(values).compressed
           case IntSparseVector(size, indices, vs) =>
             // For sparse vector, the `index` array inside sparse vector object will not be changed,
             // so we can re-use it to save memory.
@@ -221,7 +224,18 @@ class StandardScalerModel private[angelml](
               values(i) *= (if (std(indices(i)) != 0.0) 1.0 / std(indices(i)) else 0.0)
               i += 1
             }
-            Vectors.sparse(size, indices, values)
+            Vectors.sparse(size, indices, values).compressed
+          case LongSparseVector(size, indices, vs) =>
+            // For sparse vector, the `index` array inside sparse vector object will not be changed,
+            // so we can re-use it to save memory.
+            val values = vs.clone()
+            val nnz = values.length
+            var i = 0
+            while (i < nnz) {
+              values(i) *= (if (std(indices(i)) != 0.0) 1.0 / std(indices(i)) else 0.0)
+              i += 1
+            }
+            Vectors.sparse(size, indices, values).compressed
           case v => throw new IllegalArgumentException("Do not support vector type " + v.getClass)
         }
       } else {
