@@ -17,6 +17,7 @@
 
 package org.apache.spark.angelml.evaluation
 
+import org.apache.spark.angelml.evaluation.evaluating.MultiClassificationSummaryImpl
 import org.apache.spark.annotation.{Experimental, Since}
 import org.apache.spark.angelml.param.{Param, ParamMap, ParamValidators}
 import org.apache.spark.angelml.param.shared.{HasLabelCol, HasPredictionCol}
@@ -74,17 +75,16 @@ class MulticlassClassificationEvaluator @Since("1.5.0") (@Since("1.5.0") overrid
     SchemaUtils.checkColumnType(schema, $(predictionCol), DoubleType)
     SchemaUtils.checkNumericType(schema, $(labelCol))
 
-    val predictionAndLabels =
-      dataset.select(col($(predictionCol)), col($(labelCol)).cast(DoubleType)).rdd.map {
-        case Row(prediction: Double, label: Double) => (prediction, label)
-      }
-    val metrics = new MulticlassMetrics(predictionAndLabels)
+    val summary = new MultiClassificationSummaryImpl(dataset.toDF(), $(predictionCol), $(labelCol))
+
+    val metrics = summary.multiMetrics
     val metric = $(metricName) match {
-      case "f1" => metrics.weightedFMeasure
-      case "weightedPrecision" => metrics.weightedPrecision
-      case "weightedRecall" => metrics.weightedRecall
-      case "accuracy" => metrics.accuracy
+      case "f1" => summary.fMeasure(1.0)(0)
+      case "weightedPrecision" => summary.precision(0)
+      case "weightedRecall" => summary.recall(0)
+      case "accuracy" => summary.accuracy
     }
+
     metric
   }
 

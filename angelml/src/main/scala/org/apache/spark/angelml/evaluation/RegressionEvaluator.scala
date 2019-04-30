@@ -17,6 +17,7 @@
 
 package org.apache.spark.angelml.evaluation
 
+import org.apache.spark.angelml.evaluation.evaluating.RegressionSummaryImpl
 import org.apache.spark.annotation.{Experimental, Since}
 import org.apache.spark.angelml.param.{Param, ParamMap, ParamValidators}
 import org.apache.spark.angelml.param.shared.{HasLabelCol, HasPredictionCol}
@@ -76,17 +77,16 @@ final class RegressionEvaluator @Since("1.4.0") (@Since("1.4.0") override val ui
     SchemaUtils.checkColumnTypes(schema, $(predictionCol), Seq(DoubleType, FloatType))
     SchemaUtils.checkNumericType(schema, $(labelCol))
 
-    val predictionAndLabels = dataset
-      .select(col($(predictionCol)).cast(DoubleType), col($(labelCol)).cast(DoubleType))
-      .rdd
-      .map { case Row(prediction: Double, label: Double) => (prediction, label) }
-    val metrics = new RegressionMetrics(predictionAndLabels)
+    val summary = new RegressionSummaryImpl(dataset.toDF(), $(predictionCol), $(labelCol))
+    val metrics = summary.regMetrics
+
     val metric = $(metricName) match {
-      case "rmse" => metrics.rootMeanSquaredError
-      case "mse" => metrics.meanSquaredError
-      case "r2" => metrics.r2
-      case "mae" => metrics.meanAbsoluteError
+      case "rmse" => summary.rmse
+      case "mse" => summary.mse
+      case "r2" => summary.r2
+      case "mae" => summary.absDiff
     }
+
     metric
   }
 
