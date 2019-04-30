@@ -1,11 +1,14 @@
 package org.apache.spark.angelml.util
 
+import com.tencent.angel.sona.core.DriverContext
+import org.apache.hadoop.mapred.JobConf
 import org.apache.spark.SparkContext
 import org.apache.spark.angelml.feature.LabeledPoint
 import org.apache.spark.angelml.linalg.BLAS.dot
 import org.apache.spark.angelml.linalg.{Matrix, MatrixUDT, _}
 import org.apache.spark.annotation.Since
 import org.apache.spark.internal.Logging
+import org.apache.spark.internal.io.SparkHadoopWriterUtils
 import org.apache.spark.rdd.{PartitionwiseSampledRDD, RDD}
 import org.apache.spark.sql.execution.datasources.DataSource
 import org.apache.spark.sql.execution.datasources.text.TextFileFormat
@@ -110,7 +113,7 @@ object MLUtils extends Logging {
   }
 
   private[spark] def parseLongKeyLibSVMFile(sparkSession: SparkSession, paths: Seq[String]
-                                    ): RDD[(Double, Array[Long], Array[Double])] = {
+                                           ): RDD[(Double, Array[Long], Array[Double])] = {
     val lines = sparkSession.baseRelationToDataFrame(
       DataSource.apply(
         sparkSession,
@@ -160,6 +163,85 @@ object MLUtils extends Logging {
       val indexAndValue = item.split(':')
       (indexAndValue(0).toLong - 1, indexAndValue(1).toDouble)
     }.unzip
+
+    // check if indices are one-based and in ascending order
+    var previous = -1L
+    var i = 0
+    val indicesLength = indices.length
+    while (i < indicesLength) {
+      val current = indices(i)
+      require(current > previous, s"indices should be one-based and in ascending order;"
+        +
+        s""" found current=$current, previous=$previous; line="$line"""")
+      previous = current
+      i += 1
+    }
+    (label, indices, values)
+  }
+
+
+  private[spark] def parseLongKeyDummyFile(sparkSession: SparkSession, paths: Seq[String]
+                                          ): RDD[(Double, Array[Long], Array[Double])] = {
+    val lines = sparkSession.baseRelationToDataFrame(
+      DataSource.apply(
+        sparkSession,
+        paths = paths,
+        className = classOf[TextFileFormat].getName
+      ).resolveRelation(checkFilesExist = false))
+      .select("value")
+
+    import lines.sqlContext.implicits._
+
+    lines.select(trim($"value").as("line"))
+      .filter(not((length($"line") === 0).or($"line".startsWith("#"))))
+      .as[String]
+      .rdd
+      .map(MLUtils.parseLongKeyDummyRecord)
+  }
+
+  private[spark] def parseDummyFile(sparkSession: SparkSession, paths: Seq[String]
+                                   ): RDD[(Double, Array[Int], Array[Double])] = {
+    val lines = sparkSession.baseRelationToDataFrame(
+      DataSource.apply(
+        sparkSession,
+        paths = paths,
+        className = classOf[TextFileFormat].getName
+      ).resolveRelation(checkFilesExist = false))
+      .select("value")
+
+    import lines.sqlContext.implicits._
+
+    lines.select(trim($"value").as("line"))
+      .filter(not((length($"line") === 0).or($"line".startsWith("#"))))
+      .as[String]
+      .rdd
+      .map(MLUtils.parseDummyRecord)
+  }
+
+  private[spark] def parseDummyRecord(line: String): (Double, Array[Int], Array[Double]) = {
+    val items = line.split(' ')
+    val label = items.head.toDouble
+    val (indices, values) = items.tail.filter(_.nonEmpty).map { item => (item.toInt, 1.0) }.unzip
+
+    // check if indices are one-based and in ascending order
+    var previous = -1
+    var i = 0
+    val indicesLength = indices.length
+    while (i < indicesLength) {
+      val current = indices(i)
+      require(current > previous, s"indices should be one-based and in ascending order;"
+        +
+        s""" found current=$current, previous=$previous; line="$line"""")
+      previous = current
+      i += 1
+    }
+    (label, indices, values)
+  }
+
+  private[spark] def parseLongKeyDummyRecord(line: String): (Double, Array[Long], Array[Double]) = {
+    val items = line.split(' ')
+    val label = items.head.toDouble
+    val (indices, values) = items.tail.filter(_.nonEmpty).map { item => (item.toLong, 1.0) }.unzip
 
     // check if indices are one-based and in ascending order
     var previous = -1L
@@ -551,5 +633,11 @@ object MLUtils extends Logging {
     } else {
       math.log1p(math.exp(x))
     }
+  }
+
+  def getHDFSPath(path: String): String = {
+    val conf = DriverContext.get().getAngelClient.getConf
+    SparkHadoopWriterUtils.createPathFromString(
+      path, new JobConf(conf)).toString
   }
 }
