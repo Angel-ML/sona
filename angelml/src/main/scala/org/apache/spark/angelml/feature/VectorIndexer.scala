@@ -216,7 +216,8 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
         s" found vector of size ${v.size}.")
       v match {
         case dv: DenseVector => addDenseVector(dv)
-        case sv: IntSparseVector => addSparseVector(sv)
+        case sv: IntSparseVector => addIntSparseVector(sv)
+        case sv: LongSparseVector => addLongSparseVector(sv)
       }
     }
 
@@ -255,7 +256,26 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
       }
     }
 
-    private def addSparseVector(sv: IntSparseVector): Unit = {
+    private def addIntSparseVector(sv: IntSparseVector): Unit = {
+      // TODO: This might be able to handle 0's more efficiently.
+      var vecIndex = 0 // index into vector
+      var k = 0 // index into non-zero elements
+      val size = sv.size
+      while (vecIndex < size) {
+        val featureValue = if (k < sv.indices.length && vecIndex == sv.indices(k)) {
+          k += 1
+          sv.values(k - 1)
+        } else {
+          0.0
+        }
+        if (featureValueSets(vecIndex).size <= maxCategories) {
+          featureValueSets(vecIndex).add(featureValue)
+        }
+        vecIndex += 1
+      }
+    }
+
+    private def addLongSparseVector(sv: LongSparseVector): Unit = {
       // TODO: This might be able to handle 0's more efficiently.
       var vecIndex = 0 // index into vector
       var k = 0 // index into non-zero elements
