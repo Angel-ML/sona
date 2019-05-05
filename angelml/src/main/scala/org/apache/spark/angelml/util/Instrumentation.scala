@@ -189,6 +189,10 @@ private[spark] object Instrumentation {
         result
     }
   }
+
+  def create(params: Params, rdd: RDD[_]): Instrumentation = {
+    new Instrumentation()
+  }
 }
 
 /**

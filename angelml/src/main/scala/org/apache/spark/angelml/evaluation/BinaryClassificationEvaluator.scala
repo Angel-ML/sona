@@ -17,6 +17,7 @@
 
 package org.apache.spark.angelml.evaluation
 
+import org.apache.spark.angelml.evaluation.evaluating.BinaryClassificationSummaryImpl
 import org.apache.spark.annotation.{Experimental, Since}
 import org.apache.spark.angelml.linalg.{Vector, VectorUDT}
 import org.apache.spark.angelml.param._
@@ -75,18 +76,14 @@ class BinaryClassificationEvaluator @Since("1.4.0") (@Since("1.4.0") override va
     SchemaUtils.checkColumnTypes(schema, $(rawPredictionCol), Seq(DoubleType, new VectorUDT))
     SchemaUtils.checkNumericType(schema, $(labelCol))
 
-    // TODO: When dataset metadata has been implemented, check rawPredictionCol vector length = 2.
-    val scoreAndLabels =
-      dataset.select(col($(rawPredictionCol)), col($(labelCol)).cast(DoubleType)).rdd.map {
-        case Row(rawPrediction: Vector, label: Double) => (rawPrediction(1), label)
-        case Row(rawPrediction: Double, label: Double) => (rawPrediction, label)
-      }
-    val metrics = new BinaryClassificationMetrics(scoreAndLabels)
+    val summary = new BinaryClassificationSummaryImpl(dataset.toDF(), $(rawPredictionCol), $(labelCol))
+    val metrics = summary.binaryMetrics
+
     val metric = $(metricName) match {
-      case "areaUnderROC" => metrics.areaUnderROC()
-      case "areaUnderPR" => metrics.areaUnderPR()
+      case "areaUnderROC" => summary.areaUnderROC
+      case "areaUnderPR" => summary.areaUnderPR
     }
-    metrics.unpersist()
+
     metric
   }
 
