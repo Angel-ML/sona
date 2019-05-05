@@ -100,7 +100,7 @@ class ParamsSuite extends SparkFunSuite {
       val values = Seq(
         Vectors.dense(Array.empty[Double]),
         Vectors.dense(0.0, 2.0),
-        Vectors.sparse(0, Array.empty, Array.empty),
+        Vectors.sparse(0, Array.empty[Int], Array.empty[Double]),
         Vectors.sparse(2, Array(1), Array(2.0)))
       for (value <- values) {
         val json = param.jsonEncode(value)

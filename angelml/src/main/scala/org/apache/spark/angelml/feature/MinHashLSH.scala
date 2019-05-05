@@ -60,14 +60,21 @@ class MinHashLSHModel private[angelml](
   @Since("2.1.0")
   override protected[angelml] def hashFunction(elems: Vector): Array[Vector] = {
     require(elems.numNonzeros > 0, "Must have at least 1 non zero entry.")
-    val elemsList = elems.toSparse match {
-      case sv: IntSparseVector => sv.indices.toList
-      case sv: LongSparseVector => sv.indices.toList
-    }
-    val hashValues = randCoefficients.map { case (a, b) =>
-      elemsList.map {
-        case elem: Long => ((1L + elem) * a + b) % MinHashLSH.HASH_PRIME
-      }.min.toDouble
+    val hashValues = elems.toSparse match {
+      case sv: IntSparseVector =>
+        val elemsList = sv.indices.toList
+        randCoefficients.map { case (a, b) =>
+          elemsList.map {
+            case elem: Int => ((1 + elem) * a + b) % MinHashLSH.HASH_PRIME
+          }.min.toDouble
+        }
+      case sv: LongSparseVector =>
+        val elemsList = sv.indices.toList
+        randCoefficients.map { case (a, b) =>
+          elemsList.map {
+            case elem: Long => ((1L + elem) * a + b) % MinHashLSH.HASH_PRIME
+          }.min.toDouble
+        }
     }
     // TODO: Output vectors of dimension numHashFunctions in SPARK-18450
     hashValues.map(value => Vectors.dense(value))

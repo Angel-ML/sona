@@ -27,11 +27,15 @@ class BinarizerSuite extends MLTest with DefaultReadWriteTest {
   import testImplicits._
 
   @transient var data: Array[Double] = _
+  @transient var intIndices: Array[Int] = _
+  @transient var longIndices: Array[Long] = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()
 
     data = Array(0.1, -0.5, 0.2, -0.3, 0.8, 0.7, -0.1, -0.4)
+    intIndices = Array(0, 1, 2, 3, 4, 5, 6, 7)
+    longIndices = Array(0, 1, 2, 3, 4, 5, 6, 7)
   }
 
   test("params") {
@@ -109,5 +113,37 @@ class BinarizerSuite extends MLTest with DefaultReadWriteTest {
       .setOutputCol("myOutputCol")
       .setThreshold(0.1)
     testDefaultReadWrite(t)
+  }
+
+  test("Binarize int sparse vector of continuous features with default parameter") {
+    val defaultBinarized: Array[Double] = data.map(x => if (x > 0.0) 1.0 else 0.0)
+    val dataFrame: DataFrame = Seq(
+      (Vectors.sparse(10, intIndices, data), Vectors.sparse(10, intIndices, defaultBinarized))
+    ).toDF("feature", "expected")
+
+    val binarizer: Binarizer = new Binarizer()
+      .setInputCol("feature")
+      .setOutputCol("binarized_feature")
+
+    binarizer.transform(dataFrame).select("binarized_feature", "expected").collect().foreach {
+      case Row(x: Vector, y: Vector) =>
+        assert(x == y, "The feature value is not correct after binarization.")
+    }
+  }
+
+  test("Binarize long sparse vector of continuous features with default parameter") {
+    val defaultBinarized: Array[Double] = data.map(x => if (x > 0.0) 1.0 else 0.0)
+    val dataFrame: DataFrame = Seq(
+      (Vectors.sparse(10, longIndices, data), Vectors.sparse(10, longIndices, defaultBinarized))
+    ).toDF("feature", "expected")
+
+    val binarizer: Binarizer = new Binarizer()
+      .setInputCol("feature")
+      .setOutputCol("binarized_feature")
+
+    binarizer.transform(dataFrame).select("binarized_feature", "expected").collect().foreach {
+      case Row(x: Vector, y: Vector) =>
+        assert(x == y, "The feature value is not correct after binarization.")
+    }
   }
 }

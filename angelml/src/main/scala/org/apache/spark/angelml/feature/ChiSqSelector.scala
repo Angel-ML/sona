@@ -20,7 +20,7 @@ package org.apache.spark.angelml.feature
 import org.apache.hadoop.fs.Path
 import org.apache.spark.angelml._
 import org.apache.spark.angelml.attribute.{AttributeGroup, _}
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param._
 import org.apache.spark.angelml.param.shared._
 import org.apache.spark.angelml.util._
@@ -370,6 +370,32 @@ final class ChiSqSelectorModel private[angelml](
         var i = 0
         var j = 0
         var indicesIdx = 0
+        var filterIndicesIdx = 0
+        while (i < indices.length && j < filterIndices.length) {
+          indicesIdx = indices(i)
+          filterIndicesIdx = filterIndices(j)
+          if (indicesIdx == filterIndicesIdx) {
+            newIndices += j
+            newValues += values(i)
+            j += 1
+            i += 1
+          } else {
+            if (indicesIdx > filterIndicesIdx) {
+              j += 1
+            } else {
+              i += 1
+            }
+          }
+        }
+        // TODO: Sparse representation might be ineffective if (newSize ~= newValues.size)
+        Vectors.sparse(newSize, newIndices.result(), newValues.result())
+      case LongSparseVector(_, indices, values) =>
+        val newSize = filterIndices.length
+        val newValues = new mutable.ArrayBuilder.ofDouble
+        val newIndices = new mutable.ArrayBuilder.ofLong
+        var i = 0
+        var j = 0
+        var indicesIdx = 0L
         var filterIndicesIdx = 0
         while (i < indices.length && j < filterIndices.length) {
           indicesIdx = indices(i)

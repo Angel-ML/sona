@@ -74,7 +74,7 @@ class Interaction @Since("1.6.0") (@Since("1.6.0") override val uid: String) ext
     val featureAttrs = getFeatureAttrs(inputFeatures)
 
     def interactFunc = udf { row: Row =>
-      var indices = ArrayBuilder.make[Int]
+      var indices = ArrayBuilder.make[Long]
       var values = ArrayBuilder.make[Double]
       var size = 1
       indices += 0
@@ -85,7 +85,7 @@ class Interaction @Since("1.6.0") (@Since("1.6.0") override val uid: String) ext
         val prevValues = values.result()
         val prevSize = size
         val currentEncoder = featureEncoders(featureIndex)
-        indices = ArrayBuilder.make[Int]
+        indices = ArrayBuilder.make[Long]
         values = ArrayBuilder.make[Double]
         size *= currentEncoder.outputSize
         currentEncoder.foreachNonzeroOutput(row(featureIndex), (i, a) => {

@@ -20,7 +20,7 @@ package org.apache.spark.angelml.feature
 import breeze.linalg.{DenseVector => BDV}
 import org.apache.hadoop.fs.Path
 import org.apache.spark.angelml._
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param._
 import org.apache.spark.angelml.param.shared._
 import org.apache.spark.angelml.util.{MLUtils, _}
@@ -135,6 +135,18 @@ object IDF extends DefaultParamsReadable[IDF] {
           while (k < nnz) {
             if (values(k) > 0) {
               df(indices(k)) += 1L
+            }
+            k += 1
+          }
+        case LongSparseVector(_, indices, values) =>
+          val nnz = indices.length
+          var k = 0
+          if (indices.last > Int.MaxValue.toLong) {
+            throw new IndexOutOfBoundsException(s"the Indices of ${doc.getClass} is out of Int range.")
+          }
+          while (k < nnz) {
+            if (values(k) > 0) {
+              df(indices(k).toInt) += 1L
             }
             k += 1
           }
@@ -291,6 +303,15 @@ object IDFModel extends MLReadable[IDFModel] {
     val n = v.size.toInt
     v match {
       case IntSparseVector(size, indices, values) =>
+        val nnz = indices.length
+        val newValues = new Array[Double](nnz)
+        var k = 0
+        while (k < nnz) {
+          newValues(k) = values(k) * idf(indices(k))
+          k += 1
+        }
+        Vectors.sparse(n, indices, newValues)
+      case LongSparseVector(size, indices, values) =>
         val nnz = indices.length
         val newValues = new Array[Double](nnz)
         var k = 0
