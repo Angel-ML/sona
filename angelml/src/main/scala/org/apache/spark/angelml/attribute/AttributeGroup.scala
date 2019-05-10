@@ -36,7 +36,7 @@ import org.apache.spark.sql.types.{Metadata, MetadataBuilder, StructField}
 @DeveloperApi
 class AttributeGroup private (
     val name: String,
-    val numAttributes: Option[Int],
+    val numAttributes: Option[Long],
     attrs: Option[Array[Attribute]]) extends Serializable {
 
   require(name.nonEmpty, "Cannot have an empty string for name.")
@@ -54,7 +54,7 @@ class AttributeGroup private (
    * @param name name of the attribute group
    * @param numAttributes number of attributes
    */
-  def this(name: String, numAttributes: Int) = this(name, Some(numAttributes), None)
+  def this(name: String, numAttributes: Long) = this(name, Some(numAttributes), None)
 
   /**
    * Creates an attribute group with attributes.
@@ -73,12 +73,12 @@ class AttributeGroup private (
 
   private lazy val nameToIndex: Map[String, Int] = {
     attributes.map(_.view.flatMap { attr =>
-      attr.name.map(_ -> attr.index.get)
+      attr.name.map(_ -> attr.index.get.toInt)
     }.toMap).getOrElse(Map.empty)
   }
 
   /** Size of the attribute group. Returns -1 if the size is unknown. */
-  def size: Int = {
+  def size: Long = {
     if (numAttributes.isDefined) {
       numAttributes.get
     } else if (attributes.isDefined) {
@@ -207,21 +207,21 @@ object AttributeGroup {
         attrMetadata.getMetadataArray(Numeric.name)
           .map(NumericAttribute.fromMetadata)
           .foreach { attr =>
-          attributes(attr.index.get) = attr
+          attributes(attr.index.get.toInt) = attr
         }
       }
       if (attrMetadata.contains(Nominal.name)) {
         attrMetadata.getMetadataArray(Nominal.name)
           .map(NominalAttribute.fromMetadata)
           .foreach { attr =>
-          attributes(attr.index.get) = attr
+          attributes(attr.index.get.toInt) = attr
         }
       }
       if (attrMetadata.contains(Binary.name)) {
         attrMetadata.getMetadataArray(Binary.name)
           .map(BinaryAttribute.fromMetadata)
           .foreach { attr =>
-          attributes(attr.index.get) = attr
+          attributes(attr.index.get.toInt) = attr
         }
       }
       var i = 0
@@ -233,7 +233,7 @@ object AttributeGroup {
       }
       new AttributeGroup(name, attributes)
     } else if (metadata.contains(NUM_ATTRIBUTES)) {
-      new AttributeGroup(name, metadata.getLong(NUM_ATTRIBUTES).toInt)
+      new AttributeGroup(name, metadata.getLong(NUM_ATTRIBUTES))
     } else {
       new AttributeGroup(name)
     }

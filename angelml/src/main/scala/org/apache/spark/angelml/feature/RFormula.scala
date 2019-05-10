@@ -224,7 +224,7 @@ class RFormula @Since("1.5.0") (@Since("1.5.0") override val uid: String)
         case _: VectorUDT =>
           val group = AttributeGroup.fromStructField(dataset.schema(term))
           val size = if (group.size < 0) {
-            dataset.select(term).first().getAs[Vector](0).size.toInt
+            dataset.select(term).first().getAs[Vector](0).size
           } else {
             group.size
           }

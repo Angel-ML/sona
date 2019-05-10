@@ -49,10 +49,10 @@ sealed abstract class Attribute extends Serializable {
   def withoutName: Attribute
 
   /** Index of the attribute. None if it is not set. */
-  def index: Option[Int]
+  def index: Option[Long]
 
   /** Copy with a new index. */
-  def withIndex(index: Int): Attribute
+  def withIndex(index: Long): Attribute
 
   /** Copy without the index. */
   def withoutIndex: Attribute
@@ -194,7 +194,7 @@ object Attribute extends AttributeFactory {
 @DeveloperApi
 class NumericAttribute private[angelml](
     override val name: Option[String] = None,
-    override val index: Option[Int] = None,
+    override val index: Option[Long] = None,
     val min: Option[Double] = None,
     val max: Option[Double] = None,
     val std: Option[Double] = None,
@@ -212,7 +212,7 @@ class NumericAttribute private[angelml](
   override def withName(name: String): NumericAttribute = copy(name = Some(name))
   override def withoutName: NumericAttribute = copy(name = None)
 
-  override def withIndex(index: Int): NumericAttribute = copy(index = Some(index))
+  override def withIndex(index: Long): NumericAttribute = copy(index = Some(index))
   override def withoutIndex: NumericAttribute = copy(index = None)
 
   /** Copy with a new min value. */
@@ -220,7 +220,6 @@ class NumericAttribute private[angelml](
 
   /** Copy without the min value. */
   def withoutMin: NumericAttribute = copy(min = None)
-
 
   /** Copy with a new max value. */
   def withMax(max: Double): NumericAttribute = copy(max = Some(max))
@@ -264,7 +263,7 @@ class NumericAttribute private[angelml](
   /** Creates a copy of this attribute with optional changes. */
   private def copy(
       name: Option[String] = name,
-      index: Option[Int] = index,
+      index: Option[Long] = index,
       min: Option[Double] = min,
       max: Option[Double] = max,
       std: Option[Double] = std,
@@ -311,7 +310,7 @@ object NumericAttribute extends AttributeFactory {
   private[attribute] override def fromMetadata(metadata: Metadata): NumericAttribute = {
     import org.apache.spark.angelml.attribute.AttributeKeys._
     val name = if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
-    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt) else None
+    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX)) else None
     val min = if (metadata.contains(MIN)) Some(metadata.getDouble(MIN)) else None
     val max = if (metadata.contains(MAX)) Some(metadata.getDouble(MAX)) else None
     val std = if (metadata.contains(STD)) Some(metadata.getDouble(STD)) else None
@@ -333,7 +332,7 @@ object NumericAttribute extends AttributeFactory {
 @DeveloperApi
 class NominalAttribute private[angelml](
     override val name: Option[String] = None,
-    override val index: Option[Int] = None,
+    override val index: Option[Long] = None,
     val isOrdinal: Option[Boolean] = None,
     val numValues: Option[Int] = None,
     val values: Option[Array[String]] = None) extends Attribute {
@@ -368,7 +367,7 @@ class NominalAttribute private[angelml](
   override def withName(name: String): NominalAttribute = copy(name = Some(name))
   override def withoutName: NominalAttribute = copy(name = None)
 
-  override def withIndex(index: Int): NominalAttribute = copy(index = Some(index))
+  override def withIndex(index: Long): NominalAttribute = copy(index = Some(index))
   override def withoutIndex: NominalAttribute = copy(index = None)
 
   /**
@@ -420,7 +419,7 @@ class NominalAttribute private[angelml](
   /** Creates a copy of this attribute with optional changes. */
   private def copy(
       name: Option[String] = name,
-      index: Option[Int] = index,
+      index: Option[Long] = index,
       isOrdinal: Option[Boolean] = isOrdinal,
       numValues: Option[Int] = numValues,
       values: Option[Array[String]] = values): NominalAttribute = {
@@ -476,7 +475,7 @@ object NominalAttribute extends AttributeFactory {
   private[attribute] override def fromMetadata(metadata: Metadata): NominalAttribute = {
     import org.apache.spark.angelml.attribute.AttributeKeys._
     val name = if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
-    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt) else None
+    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX)) else None
     val isOrdinal = if (metadata.contains(ORDINAL)) Some(metadata.getBoolean(ORDINAL)) else None
     val numValues =
       if (metadata.contains(NUM_VALUES)) Some(metadata.getLong(NUM_VALUES).toInt) else None
@@ -496,7 +495,7 @@ object NominalAttribute extends AttributeFactory {
 @DeveloperApi
 class BinaryAttribute private[angelml](
     override val name: Option[String] = None,
-    override val index: Option[Int] = None,
+    override val index: Option[Long] = None,
     val values: Option[Array[String]] = None)
   extends Attribute {
 
@@ -513,7 +512,7 @@ class BinaryAttribute private[angelml](
   override def withName(name: String): BinaryAttribute = copy(name = Some(name))
   override def withoutName: BinaryAttribute = copy(name = None)
 
-  override def withIndex(index: Int): BinaryAttribute = copy(index = Some(index))
+  override def withIndex(index: Long): BinaryAttribute = copy(index = Some(index))
   override def withoutIndex: BinaryAttribute = copy(index = None)
 
   /**
@@ -530,7 +529,7 @@ class BinaryAttribute private[angelml](
   /** Creates a copy of this attribute with optional changes. */
   private def copy(
       name: Option[String] = name,
-      index: Option[Int] = index,
+      index: Option[Long] = index,
       values: Option[Array[String]] = values): BinaryAttribute = {
     new BinaryAttribute(name, index, values)
   }
@@ -578,7 +577,7 @@ object BinaryAttribute extends AttributeFactory {
   private[attribute] override def fromMetadata(metadata: Metadata): BinaryAttribute = {
     import org.apache.spark.angelml.attribute.AttributeKeys._
     val name = if (metadata.contains(NAME)) Some(metadata.getString(NAME)) else None
-    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX).toInt) else None
+    val index = if (metadata.contains(INDEX)) Some(metadata.getLong(INDEX)) else None
     val values =
       if (metadata.contains(VALUES)) Some(metadata.getStringArray(VALUES)) else None
     new BinaryAttribute(name, index, values)
@@ -594,7 +593,7 @@ object UnresolvedAttribute extends Attribute {
 
   override def attrType: AttributeType = AttributeType.Unresolved
 
-  override def withIndex(index: Int): Attribute = this
+  override def withIndex(index: Long): Attribute = this
 
   override def isNumeric: Boolean = false
 
@@ -610,7 +609,7 @@ object UnresolvedAttribute extends Attribute {
 
   override def withoutName: Attribute = this
 
-  override def index: Option[Int] = None
+  override def index: Option[Long] = None
 
   override def withName(name: String): Attribute = this
 
