@@ -87,7 +87,7 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     // Schema transformation.
     val schema = dataset.schema
 
-    val vectorCols = $(inputCols).filter { c =>
+    val (scalerCols, vectorCols) = $(inputCols).partition { c =>
       schema(c).dataType match {
         case _: VectorUDT => true
         case _ => false
@@ -109,7 +109,7 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
         case _: NumericType | BooleanType =>
           // If the input column type is a compatible scalar type, assume numeric.
           Seq(NumericAttribute.defaultAttr.withName(c))
-        case _: VectorUDT =>
+        case _: VectorUDT if vectorColsLengths(c) < Int.MaxValue =>
           val attributeGroup = AttributeGroup.fromStructField(field)
           if (attributeGroup.attributes.isDefined) {
             attributeGroup.attributes.get.zipWithIndex.toSeq.map { case (attr, i) =>
@@ -127,12 +127,14 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
               NumericAttribute.defaultAttr.withName(c + "_" + i)
             }
           }
+        case _ : VectorUDT if vectorColsLengths(c) > Int.MaxValue =>
+          Seq.empty[Attribute]
         case otherType =>
           throw new SparkException(s"VectorAssembler does not support the $otherType type")
       }
     }
-    val featureAttributes = featureAttributesMap.flatten[Attribute].toArray
-    val lengths = featureAttributesMap.map(a => a.length).toArray
+    val featureAttributes = featureAttributesMap.flatten[Attribute]
+    val lengths = featureAttributesMap.map(a => a.length)
     val metadata = new AttributeGroup($(outputCol), featureAttributes).toMetadata()
     val (filteredDataset, keepInvalid) = $(handleInvalid) match {
       case VectorAssembler.SKIP_INVALID => (dataset.na.drop($(inputCols)), false)
@@ -195,11 +197,11 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
    */
   private[feature] def getVectorLengthsFromFirstRow(
       dataset: Dataset[_],
-      columns: Seq[String]): Map[String, Int] = {
+      columns: Seq[String]): Map[String, Long] = {
     try {
       val first_row = dataset.toDF().select(columns.map(col): _*).first()
       columns.zip(first_row.toSeq).map {
-        case (c, x) => c -> x.asInstanceOf[Vector].size.toInt
+        case (c, x) => c -> x.asInstanceOf[Vector].size
       }.toMap
     } catch {
       case e: NullPointerException => throw new NullPointerException(
@@ -216,9 +218,9 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
   private[feature] def getLengths(
       dataset: Dataset[_],
       columns: Seq[String],
-      handleInvalid: String): Map[String, Int] = {
+      handleInvalid: String): Map[String, Long] = {
     val groupSizes = columns.map { c =>
-      c -> AttributeGroup.fromStructField(dataset.schema(c)).size
+      c -> AttributeGroup.fromStructField(dataset.schema(c)).size.toLong
     }.toMap
     val missingColumns = groupSizes.filter(_._2 == -1).keys.toSeq
     val firstSizes = (missingColumns.nonEmpty, handleInvalid) match {
