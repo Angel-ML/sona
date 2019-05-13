@@ -51,29 +51,29 @@ class VectorAssemblerSuite
   }
 
   test("assemble") {
-    import org.apache.spark.angelml.feature.VectorAssembler.assemble
-    assert(assemble(Array(1), keepInvalid = true)(0.0)
+    import org.apache.spark.angelml.feature.VectorAssembler.assembleInt
+    assert(assembleInt(Array(1), keepInvalid = true)(0.0)
       === Vectors.sparse(1, Array.empty[Int], Array.empty[Double]))
-    assert(assemble(Array(1, 1), keepInvalid = true)(0.0, 1.0)
+    assert(assembleInt(Array(1, 1), keepInvalid = true)(0.0, 1.0)
       === Vectors.sparse(2, Array(1), Array(1.0)))
     val dv = Vectors.dense(2.0, 0.0)
-    assert(assemble(Array(1, 2, 1), keepInvalid = true)(0.0, dv, 1.0) ===
+    assert(assembleInt(Array(1, 2, 1), keepInvalid = true)(0.0, dv, 1.0) ===
       Vectors.sparse(4, Array(1, 3), Array(2.0, 1.0)))
     val sv = Vectors.sparse(2, Array(0, 1), Array(3.0, 4.0))
-    assert(assemble(Array(1, 2, 1, 2), keepInvalid = true)(0.0, dv, 1.0, sv) ===
+    assert(assembleInt(Array(1, 2, 1, 2), keepInvalid = true)(0.0, dv, 1.0, sv) ===
       Vectors.sparse(6, Array(1, 3, 4, 5), Array(2.0, 1.0, 3.0, 4.0)))
     for (v <- Seq(1, "a")) {
-      intercept[SparkException](assemble(Array(1), keepInvalid = true)(v))
-      intercept[SparkException](assemble(Array(1, 1), keepInvalid = true)(1.0, v))
+      intercept[SparkException](assembleInt(Array(1), keepInvalid = true)(v))
+      intercept[SparkException](assembleInt(Array(1, 1), keepInvalid = true)(1.0, v))
     }
   }
 
   test("assemble should compress vectors") {
-    import org.apache.spark.angelml.feature.VectorAssembler.assemble
-    val v1 = assemble(Array(1, 1, 1, 1), keepInvalid = true)(0.0, 0.0, 0.0, Vectors.dense(4.0))
+    import org.apache.spark.angelml.feature.VectorAssembler.assembleInt
+    val v1 = assembleInt(Array(1, 1, 1, 1), keepInvalid = true)(0.0, 0.0, 0.0, Vectors.dense(4.0))
     assert(v1.isInstanceOf[IntSparseVector])
     val sv = Vectors.sparse(1, Array(0), Array(4.0))
-    val v2 = assemble(Array(1, 1, 1, 1), keepInvalid = true)(1.0, 2.0, 3.0, sv)
+    val v2 = assembleInt(Array(1, 1, 1, 1), keepInvalid = true)(1.0, 2.0, 3.0, sv)
     assert(v2.isInstanceOf[DenseVector])
   }
 
@@ -168,20 +168,20 @@ class VectorAssemblerSuite
   }
 
   test("assemble should keep nulls when keepInvalid is true") {
-    import org.apache.spark.angelml.feature.VectorAssembler.assemble
-    assert(assemble(Array(1, 1), keepInvalid = true)(1.0, null) === Vectors.dense(1.0, Double.NaN))
-    assert(assemble(Array(1, 2), keepInvalid = true)(1.0, null)
+    import org.apache.spark.angelml.feature.VectorAssembler.assembleInt
+    assert(assembleInt(Array(1, 1), keepInvalid = true)(1.0, null) === Vectors.dense(1.0, Double.NaN))
+    assert(assembleInt(Array(1, 2), keepInvalid = true)(1.0, null)
       === Vectors.dense(1.0, Double.NaN, Double.NaN))
-    assert(assemble(Array(1), keepInvalid = true)(null) === Vectors.dense(Double.NaN))
-    assert(assemble(Array(2), keepInvalid = true)(null) === Vectors.dense(Double.NaN, Double.NaN))
+    assert(assembleInt(Array(1), keepInvalid = true)(null) === Vectors.dense(Double.NaN))
+    assert(assembleInt(Array(2), keepInvalid = true)(null) === Vectors.dense(Double.NaN, Double.NaN))
   }
 
   test("assemble should throw errors when keepInvalid is false") {
-    import org.apache.spark.angelml.feature.VectorAssembler.assemble
-    intercept[SparkException](assemble(Array(1, 1), keepInvalid = false)(1.0, null))
-    intercept[SparkException](assemble(Array(1, 2), keepInvalid = false)(1.0, null))
-    intercept[SparkException](assemble(Array(1), keepInvalid = false)(null))
-    intercept[SparkException](assemble(Array(2), keepInvalid = false)(null))
+    import org.apache.spark.angelml.feature.VectorAssembler.assembleInt
+    intercept[SparkException](assembleInt(Array(1, 1), keepInvalid = false)(1.0, null))
+    intercept[SparkException](assembleInt(Array(1, 2), keepInvalid = false)(1.0, null))
+    intercept[SparkException](assembleInt(Array(1), keepInvalid = false)(null))
+    intercept[SparkException](assembleInt(Array(2), keepInvalid = false)(null))
   }
 
   test("get lengths functions") {

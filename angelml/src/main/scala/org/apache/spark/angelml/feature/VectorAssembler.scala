@@ -21,8 +21,8 @@ import java.util.NoSuchElementException
 
 import org.apache.spark.SparkException
 import org.apache.spark.angelml.Transformer
-import org.apache.spark.angelml.attribute.{Attribute, AttributeGroup, NumericAttribute, UnresolvedAttribute}
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.angelml.attribute.AttributeGroup
+import org.apache.spark.angelml.linalg.{Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param.shared._
 import org.apache.spark.angelml.param.{Param, ParamMap, ParamValidators}
 import org.apache.spark.angelml.util._
@@ -33,7 +33,6 @@ import org.apache.spark.sql.{DataFrame, Dataset, Row}
 
 import scala.collection.mutable
 import scala.language.existentials
-import scala.reflect.ClassTag
 
 /**
  * A feature transformer that merges multiple columns into a vector column.
