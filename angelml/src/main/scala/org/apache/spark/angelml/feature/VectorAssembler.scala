@@ -19,20 +19,21 @@ package org.apache.spark.angelml.feature
 
 import java.util.NoSuchElementException
 
-import scala.collection.mutable
-import scala.language.existentials
-
 import org.apache.spark.SparkException
-import org.apache.spark.annotation.Since
 import org.apache.spark.angelml.Transformer
 import org.apache.spark.angelml.attribute.{Attribute, AttributeGroup, NumericAttribute, UnresolvedAttribute}
-import org.apache.spark.angelml.linalg.{Vector, Vectors, VectorUDT}
-import org.apache.spark.angelml.param.{Param, ParamMap, ParamValidators}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param.shared._
+import org.apache.spark.angelml.param.{Param, ParamMap, ParamValidators}
 import org.apache.spark.angelml.util._
-import org.apache.spark.sql.{DataFrame, Dataset, Row}
+import org.apache.spark.annotation.Since
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{DataFrame, Dataset, Row}
+
+import scala.collection.mutable
+import scala.language.existentials
+import scala.reflect.ClassTag
 
 /**
  * A feature transformer that merges multiple columns into a vector column.
@@ -87,65 +88,37 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     // Schema transformation.
     val schema = dataset.schema
 
-    val (scalerCols, vectorCols) = $(inputCols).partition { c =>
+    val vectorCols= $(inputCols).filter { c =>
       schema(c).dataType match {
         case _: VectorUDT => true
         case _ => false
       }
     }
+
     val vectorColsLengths = VectorAssembler.getLengths(dataset, vectorCols, $(handleInvalid))
 
-    val featureAttributesMap = $(inputCols).map { c =>
-      val field = schema(c)
-      field.dataType match {
-        case DoubleType =>
-          val attribute = Attribute.fromStructField(field)
-          attribute match {
-            case UnresolvedAttribute =>
-              Seq(NumericAttribute.defaultAttr.withName(c))
-            case _ =>
-              Seq(attribute.withName(c))
-          }
-        case _: NumericType | BooleanType =>
-          // If the input column type is a compatible scalar type, assume numeric.
-          Seq(NumericAttribute.defaultAttr.withName(c))
-        case _: VectorUDT if vectorColsLengths(c) < Int.MaxValue =>
-          val attributeGroup = AttributeGroup.fromStructField(field)
-          if (attributeGroup.attributes.isDefined) {
-            attributeGroup.attributes.get.zipWithIndex.toSeq.map { case (attr, i) =>
-              if (attr.name.isDefined) {
-                // TODO: Define a rigorous naming scheme.
-                attr.withName(c + "_" + attr.name.get)
-              } else {
-                attr.withName(c + "_" + i)
-              }
-            }
-          } else {
-            // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes
-            // from metadata, check the first row.
-            // TODO: need to handle long key vector
-            (0 until vectorColsLengths(c).toInt).map { i =>
-              NumericAttribute.defaultAttr.withName(c + "_" + i)
-            }
-          }
-        case _ : VectorUDT if vectorColsLengths(c) > Int.MaxValue =>
-          Seq.empty[Attribute]
-        case otherType =>
-          throw new SparkException(s"VectorAssembler does not support the $otherType type")
-      }
+    val lengths = $(inputCols).map{
+      case name if vectorColsLengths.contains(name) => vectorColsLengths(name)
+      case _ => 1L
     }
-    val featureAttributes = featureAttributesMap.flatten[Attribute]
-    val lengths = featureAttributesMap.map(a => a.length)
-    val metadata = new AttributeGroup($(outputCol), featureAttributes).toMetadata()
+
+    val metadata = new AttributeGroup($(outputCol), numAttributes=lengths.sum).toMetadata()
     val (filteredDataset, keepInvalid) = $(handleInvalid) match {
       case VectorAssembler.SKIP_INVALID => (dataset.na.drop($(inputCols)), false)
       case VectorAssembler.KEEP_INVALID => (dataset, true)
       case VectorAssembler.ERROR_INVALID => (dataset, false)
     }
     // Data transformation.
-    val assembleFunc = udf { r: Row =>
-      VectorAssembler.assemble(lengths, keepInvalid)(r.toSeq: _*)
-    }.asNondeterministic()
+    val assembleFunc = if (lengths.sum < Int.MaxValue) {
+      udf { r: Row =>
+        VectorAssembler.assembleInt(lengths.map(_.toInt), keepInvalid)(r.toSeq: _*)
+      }.asNondeterministic()
+    } else {
+      udf { r: Row =>
+        VectorAssembler.assembleLong(lengths, keepInvalid)(r.toSeq: _*)
+      }.asNondeterministic()
+    }
+
     val args = $(inputCols).map { c =>
       schema(c).dataType match {
         case DoubleType => dataset(c)
@@ -221,7 +194,7 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
       columns: Seq[String],
       handleInvalid: String): Map[String, Long] = {
     val groupSizes = columns.map { c =>
-      c -> AttributeGroup.fromStructField(dataset.schema(c)).size.toLong
+      c -> AttributeGroup.fromStructField(dataset.schema(c)).size
     }.toMap
     val missingColumns = groupSizes.filter(_._2 == -1).keys.toSeq
     val firstSizes = (missingColumns.nonEmpty, handleInvalid) match {
@@ -249,7 +222,9 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
    * @param keepInvalid indicate whether to throw an error or not on seeing a null in the rows
    * @return  a udf that can be applied on each row
    */
-  private[feature] def assemble(lengths: Array[Int], keepInvalid: Boolean)(vv: Any*): Vector = {
+  private[feature] def assembleInt(lengths: Array[Int], keepInvalid: Boolean)(vv: Any*): Vector = {
+    assert(lengths.sum <= Int.MaxValue, s"The Vector is too long, the max index is ${Int.MaxValue}")
+
     val indices = mutable.ArrayBuilder.make[Int]
     val values = mutable.ArrayBuilder.make[Double]
     var featureIndex = 0
@@ -280,10 +255,6 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
       case null =>
         if (keepInvalid) {
           val length: Int = lengths(inputColumnIndex)
-          Array.range(0, length).foreach { i =>
-            indices += featureIndex + i
-            values += Double.NaN
-          }
           inputColumnIndex += 1
           featureIndex += length
         } else {
@@ -295,6 +266,54 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
       case o =>
         throw new SparkException(s"$o of type ${o.getClass.getName} is not supported.")
     }
+    Vectors.sparse(featureIndex, indices.result(), values.result()).compressed
+  }
+
+  private[feature] def assembleLong(lengths: Array[Long], keepInvalid: Boolean)(vv: Any*): Vector = {
+    assert(lengths.sum <= Long.MaxValue, s"The Vector is too long, the max index is ${Long.MaxValue}")
+
+    val indices = mutable.ArrayBuilder.make[Long]
+    val values = mutable.ArrayBuilder.make[Double]
+    var featureIndex = 0L
+
+    var inputColumnIndex = 0
+    vv.foreach {
+      case v: Double =>
+        if (v.isNaN && !keepInvalid) {
+          throw new SparkException(
+            s"""Encountered NaN while assembling a row with handleInvalid = "error". Consider
+               |removing NaNs from dataset or using handleInvalid = "keep" or "skip"."""
+              .stripMargin)
+        } else if (v != 0.0) {
+          indices += featureIndex
+          values += v
+        }
+        inputColumnIndex += 1
+        featureIndex += 1
+      case vec: Vector  =>
+        vec.foreachActive { case (i, v) =>
+          if (v != 0.0) {
+            indices += featureIndex + i
+            values += v
+          }
+        }
+        inputColumnIndex += 1
+        featureIndex += vec.size
+      case null =>
+        if (keepInvalid) {
+          val length: Long = lengths(inputColumnIndex)
+          inputColumnIndex += 1
+          featureIndex += length
+        } else {
+          throw new SparkException(
+            s"""Encountered null while assembling a row with handleInvalid = "keep". Consider
+               |removing nulls from dataset or using handleInvalid = "keep" or "skip"."""
+              .stripMargin)
+        }
+      case o =>
+        throw new SparkException(s"$o of type ${o.getClass.getName} is not supported.")
+    }
+
     Vectors.sparse(featureIndex, indices.result(), values.result()).compressed
   }
 }
