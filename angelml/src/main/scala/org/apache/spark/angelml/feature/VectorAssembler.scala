@@ -123,7 +123,8 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
           } else {
             // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes
             // from metadata, check the first row.
-            (0 until vectorColsLengths(c)).map { i =>
+            // TODO: need to handle long key vector
+            (0 until vectorColsLengths(c).toInt).map { i =>
               NumericAttribute.defaultAttr.withName(c + "_" + i)
             }
           }
@@ -195,11 +196,11 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
    */
   private[feature] def getVectorLengthsFromFirstRow(
       dataset: Dataset[_],
-      columns: Seq[String]): Map[String, Int] = {
+      columns: Seq[String]): Map[String, Long] = {
     try {
       val first_row = dataset.toDF().select(columns.map(col): _*).first()
       columns.zip(first_row.toSeq).map {
-        case (c, x) => c -> x.asInstanceOf[Vector].size.toInt
+        case (c, x) => c -> x.asInstanceOf[Vector].size
       }.toMap
     } catch {
       case e: NullPointerException => throw new NullPointerException(
@@ -216,7 +217,7 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
   private[feature] def getLengths(
       dataset: Dataset[_],
       columns: Seq[String],
-      handleInvalid: String): Map[String, Int] = {
+      handleInvalid: String): Map[String, Long] = {
     val groupSizes = columns.map { c =>
       c -> AttributeGroup.fromStructField(dataset.schema(c)).size
     }.toMap

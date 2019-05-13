@@ -158,7 +158,7 @@ class OneHotEncoderEstimator @Since("2.3.0") (@Since("2.3.0") override val uid: 
 
     val columnToScanIndices = $(outputCols).zipWithIndex.flatMap { case (outputColName, idx) =>
       val numOfAttrs = AttributeGroup.fromStructField(
-        transformedSchema(outputColName)).size
+        transformedSchema(outputColName)).size.toInt
       if (numOfAttrs < 0) {
         Some(idx)
       } else {
@@ -178,7 +178,7 @@ class OneHotEncoderEstimator @Since("2.3.0") (@Since("2.3.0") override val uid: 
       val attrGroups = OneHotEncoderCommon.getOutputAttrGroupFromData(
         dataset, inputColNames, outputColNames, dropLast = false)
       attrGroups.zip(columnToScanIndices).foreach { case (attrGroup, idx) =>
-        categorySizes(idx) = attrGroup.size
+        categorySizes(idx) = attrGroup.size.toInt
       }
     }
 

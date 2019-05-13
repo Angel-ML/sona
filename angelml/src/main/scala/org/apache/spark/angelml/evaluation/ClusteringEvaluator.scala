@@ -182,7 +182,7 @@ private[evaluation] abstract class Silhouette {
     if (group.size < 0) {
       dataFrame.select(col(columnName)).first().getAs[Vector](0).size.toInt
     } else {
-      group.size
+      group.size.toInt
     }
   }
 }

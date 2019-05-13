@@ -22,7 +22,7 @@ import org.apache.spark.annotation.{Experimental, Since}
 import org.apache.spark.angelml.Transformer
 import org.apache.spark.angelml.attribute.AttributeGroup
 import org.apache.spark.angelml.linalg.{Vector, VectorUDT}
-import org.apache.spark.angelml.param.{IntParam, Param, ParamMap, ParamValidators}
+import org.apache.spark.angelml.param._
 import org.apache.spark.angelml.param.shared.{HasHandleInvalid, HasInputCol}
 import org.apache.spark.angelml.util.{DefaultParamsReadable, DefaultParamsWritable, Identifiable}
 import org.apache.spark.sql.{Column, DataFrame, Dataset}
@@ -45,24 +45,35 @@ class VectorSizeHint @Since("2.3.0") (@Since("2.3.0") override val uid: String)
   @Since("2.3.0")
   def this() = this(Identifiable.randomUID("vectSizeHint"))
 
+//  /**
+//   * The size of Vectors in `inputCol`.
+//   * @group param
+//   */
+//  @Since("2.3.0")
+//  val size: IntParam = new IntParam(
+//    this,
+//    "size",
+//    "Size of vectors in column.",
+//    {s: Int => s >= 0})
+
   /**
-   * The size of Vectors in `inputCol`.
-   * @group param
-   */
+    * The size of Vectors in `inputCol`.
+    * @group param
+    */
   @Since("2.3.0")
-  val size: IntParam = new IntParam(
+  val size: LongParam = new LongParam(
     this,
     "size",
     "Size of vectors in column.",
-    {s: Int => s >= 0})
+    {s: Long => s >= 0})
 
   /** group getParam */
   @Since("2.3.0")
-  def getSize: Int = getOrDefault(size)
+  def getSize: Long = getOrDefault(size)
 
   /** @group setParam */
   @Since("2.3.0")
-  def setSize(value: Int): this.type = set(size, value)
+  def setSize(value: Long): this.type = set(size, value)
 
   /** @group setParam */
   @Since("2.3.0")

@@ -645,6 +645,32 @@ class IntArrayParam(parent: Params, name: String, doc: String, isValid: Array[In
 }
 
 /**
+  * :: DeveloperApi ::
+  * Specialized version of `Param[Array[Int]]` for Java.
+  */
+@DeveloperApi
+class LongArrayParam(parent: Params, name: String, doc: String, isValid: Array[Long] => Boolean)
+  extends Param[Array[Long]](parent, name, doc, isValid) {
+
+  def this(parent: Params, name: String, doc: String) =
+    this(parent, name, doc, ParamValidators.alwaysTrue)
+
+  /** Creates a param pair with a `java.util.List` of values (for Java and Python). */
+  def w(value: java.util.List[java.lang.Long]): ParamPair[Array[Long]] =
+    w(value.asScala.map(_.asInstanceOf[Long]).toArray)
+
+  override def jsonEncode(value: Array[Long]): String = {
+    import org.json4s.JsonDSL._
+    compact(render(value.toSeq))
+  }
+
+  override def jsonDecode(json: String): Array[Long] = {
+    implicit val formats = DefaultFormats
+    parse(json).extract[Seq[Long]].toArray
+  }
+}
+
+/**
  * A param and its value.
  */
 @Since("1.2.0")
