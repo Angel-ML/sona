@@ -24,8 +24,8 @@ import org.apache.spark.SparkFunSuite
 class JsonVectorConverterSuite extends SparkFunSuite {
 
   test("toJson/fromJson") {
-    val sv0 = Vectors.sparse(0, Array.empty, Array.empty)
-    val sv1 = Vectors.sparse(1, Array.empty, Array.empty)
+    val sv0 = Vectors.sparse(0, Array.empty[Int], Array.empty[Double])
+    val sv1 = Vectors.sparse(1, Array.empty[Int], Array.empty[Double])
     val sv2 = Vectors.sparse(2, Array(1), Array(2.0))
     val dv0 = Vectors.dense(Array.empty[Double])
     val dv1 = Vectors.dense(1.0)

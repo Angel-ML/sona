@@ -23,6 +23,7 @@ import org.apache.spark.angelml.linalg.{Vector, Vectors}
 import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
 import org.apache.spark.sql.execution.streaming.MemoryStream
 import org.apache.spark.sql.streaming.StreamTest
+import org.apache.spark.sql.types.UDTRegistration
 
 class VectorSizeHintSuite
   extends MLTest with DefaultReadWriteTest {
@@ -58,7 +59,7 @@ class VectorSizeHintSuite
     val size = 3
     val vectorColName = "vector"
     val denseVector = Vectors.dense(1, 2, 3)
-    val sparseVector = Vectors.sparse(size, Array(), Array())
+    val sparseVector = Vectors.sparse(size, Array[Int](), Array[Double]())
 
     val data = Seq(denseVector, denseVector, sparseVector).map(Tuple1.apply)
     val dataFrame = data.toDF(vectorColName)
@@ -196,8 +197,9 @@ class VectorSizeHintStreamingSuite extends StreamTest {
   test("Test assemble vectors with size hint in streaming.") {
     val a = Vectors.dense(0, 1, 2)
     val b = Vectors.sparse(4, Array(0, 3), Array(3, 6))
+    UDTRegistration.register("org.apache.spark.angelml.linalg.Vector", "org.apache.spark.angelml.linalg.VectorUDT")
 
-    val stream = MemoryStream[(Vector, Vector)]
+    val stream = MemoryStream[(Vector, Vector)]//todo
     val streamingDF = stream.toDS.toDF("a", "b")
     val sizeHintA = new VectorSizeHint()
       .setSize(3)

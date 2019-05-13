@@ -46,6 +46,8 @@ private[spark] object BLAS extends Serializable {
         x match {
           case sx: IntSparseVector =>
             axpy(a, sx, dy)
+          case sx: LongSparseVector =>
+            axpy(a, sx, dy)
           case dx: DenseVector =>
             axpy(a, dx, dy)
           case _ =>
@@ -90,6 +92,33 @@ private[spark] object BLAS extends Serializable {
     }
   }
 
+  /**
+    * y += a * x
+    */
+  private def axpy(a: Double, x: LongSparseVector, y: DenseVector): Unit = {
+    val xValues = x.values
+    val xIndices = x.indices
+    val yValues = y.values
+    val nnz = xIndices.length
+    if (xIndices.last > Int.MaxValue.toLong) {
+      throw new IndexOutOfBoundsException(s"the Indices of ${x.getClass} is out of Int range.")
+    }
+
+    if (a == 1.0) {
+      var k = 0
+      while (k < nnz) {
+          yValues(xIndices(k).toInt) += xValues(k)
+          k += 1
+        }
+    } else {
+      var k = 0
+      while (k < nnz) {
+        yValues(xIndices(k).toInt) += a * xValues(k)
+        k += 1
+      }
+    }
+  }
+
   /** Y += a * x */
   private[spark] def axpy(a: Double, X: DenseMatrix, Y: DenseMatrix): Unit = {
     require(X.numRows == Y.numRows && X.numCols == Y.numCols, "Dimension mismatch: " +
@@ -112,6 +141,16 @@ private[spark] object BLAS extends Serializable {
       case (dx: DenseVector, sy: IntSparseVector) =>
         dot(sy, dx)
       case (sx: IntSparseVector, sy: IntSparseVector) =>
+        dot(sx, sy)
+      case (dx: DenseVector, sy: LongSparseVector) =>
+        dot(sy, dx)
+      case (sx: LongSparseVector, dy: DenseVector) =>
+        dot(sx, dy)
+      case (sx: IntSparseVector, sy: LongSparseVector) =>
+        dot(sy, sx)
+      case (sx: LongSparseVector, sy: IntSparseVector) =>
+        dot(sx, sy)
+      case (sx: LongSparseVector, sy: LongSparseVector) =>
         dot(sx, sy)
       case _ =>
         throw new IllegalArgumentException(s"dot doesn't support (${x.getClass}, ${y.getClass}).")
@@ -174,6 +213,85 @@ private[spark] object BLAS extends Serializable {
   }
 
   /**
+    * dot(x, y)
+    */
+  private def dot(x: LongSparseVector, y: DenseVector): Double = {
+    val xValues = x.values
+    val xIndices = x.indices
+    val yValues = y.values
+    val nnz = xIndices.length
+    if (xIndices.last > Int.MaxValue.toLong) {
+      throw new IndexOutOfBoundsException(s"the Indices of ${x.getClass} is out of Int range.")
+    }
+
+    var sum = 0.0
+    var k = 0
+    while (k < nnz) {
+      sum += xValues(k) * yValues(xIndices(k))
+      k += 1
+    }
+    sum
+  }
+
+  /**
+    * dot(x, y)
+    */
+  private def dot(x: LongSparseVector, y: IntSparseVector): Double = {
+    val xValues = x.values
+    val xIndices = x.indices
+    val yValues = y.values
+    val yIndices = y.indices
+    val nnzx = xIndices.length
+    val nnzy = yIndices.length
+
+    var kx = 0
+    var ky = 0
+    var sum = 0.0
+    // y catching x
+    while (kx < nnzx && ky < nnzy) {
+      val ix = xIndices(kx)
+      while (ky < nnzy && yIndices(ky) < ix) {
+        ky += 1
+      }
+      if (ky < nnzy && yIndices(ky) == ix) {
+        sum += xValues(kx) * yValues(ky)
+        ky += 1
+      }
+      kx += 1
+    }
+    sum
+  }
+
+  /**
+    * dot(x, y)
+    */
+  private def dot(x: LongSparseVector, y: LongSparseVector): Double = {
+    val xValues = x.values
+    val xIndices = x.indices
+    val yValues = y.values
+    val yIndices = y.indices
+    val nnzx = xIndices.length
+    val nnzy = yIndices.length
+
+    var kx = 0
+    var ky = 0
+    var sum = 0.0
+    // y catching x
+    while (kx < nnzx && ky < nnzy) {
+      val ix = xIndices(kx)
+      while (ky < nnzy && yIndices(ky) < ix) {
+        ky += 1
+      }
+      if (ky < nnzy && yIndices(ky) == ix) {
+        sum += xValues(kx) * yValues(ky)
+        ky += 1
+      }
+      kx += 1
+    }
+    sum
+  }
+
+  /**
     * y = x
     */
   def copy(x: Vector, y: Vector): Unit = {
@@ -183,6 +301,28 @@ private[spark] object BLAS extends Serializable {
       case dy: DenseVector =>
         x match {
           case sx: IntSparseVector =>
+            val sxIndices = sx.indices
+            val sxValues = sx.values
+            val dyValues = dy.values
+            val nnz = sxIndices.length
+
+            var i = 0
+            var k = 0
+            while (k < nnz) {
+              val j = sxIndices(k)
+              while (i < j) {
+                dyValues(i) = 0.0
+                i += 1
+              }
+              dyValues(i) = sxValues(k)
+              i += 1
+              k += 1
+            }
+            while (i < n) {
+              dyValues(i) = 0.0
+              i += 1
+            }
+          case sx: LongSparseVector =>
             val sxIndices = sx.indices
             val sxValues = sx.values
             val dyValues = dy.values
@@ -218,6 +358,11 @@ private[spark] object BLAS extends Serializable {
   def scal(a: Double, x: Vector): Unit = {
     x match {
       case sx: IntSparseVector =>
+        f2jBLAS.dscal(sx.values.length, a, sx.values, 1)
+      case sx: LongSparseVector =>
+        if (sx.indices.last > Int.MaxValue.toLong) {
+          throw new IndexOutOfBoundsException(s"the Indices of ${x.getClass} is out of Int range.")
+        }
         f2jBLAS.dscal(sx.values.length, a, sx.values, 1)
       case dx: DenseVector =>
         f2jBLAS.dscal(dx.values.length, a, dx.values, 1)
@@ -288,6 +433,31 @@ private[spark] object BLAS extends Serializable {
           j += 1
           prevCol = col
         }
+      case LongSparseVector(size, indices, values) =>
+        if (indices.last > Int.MaxValue.toLong) {
+          throw new IndexOutOfBoundsException(s"the Indices of ${v.getClass} is out of Int range.")
+        }
+        val nnz = indices.length
+        var colStartIdx = 0
+        var prevCol = 0L
+        var col = 0L
+        var j = 0
+        var i = 0
+        var av = 0.0
+        while (j < nnz) {
+          col = indices(j)
+          // Skip empty columns.
+          colStartIdx += (col - prevCol) * (col + prevCol + 1) / 2
+          col = indices(j)
+          av = alpha * values(j)
+          i = 0
+          while (i <= j) {
+            U(colStartIdx + indices(i).toInt) += av * values(i)
+            i += 1
+          }
+          j += 1
+          prevCol = col
+        }
     }
   }
 
@@ -307,6 +477,7 @@ private[spark] object BLAS extends Serializable {
     x match {
       case dv: DenseVector => syr(alpha, dv, A)
       case sv: IntSparseVector => syr(alpha, sv, A)
+      case sv: LongSparseVector => syr(alpha, sv, A)
       case _ =>
         throw new IllegalArgumentException(s"syr doesn't support vector type ${x.getClass}.")
     }
@@ -344,6 +515,30 @@ private[spark] object BLAS extends Serializable {
       var j = 0
       while (j < nnz) {
         Avalues(xIndices(j) + offset) += multiplier * xValues(j)
+        j += 1
+      }
+      i += 1
+    }
+  }
+
+  private def syr(alpha: Double, x: LongSparseVector, A: DenseMatrix) {
+    val mA = A.numCols
+    val xIndices = x.indices
+    val xValues = x.values
+    val nnz = xValues.length
+    val Avalues = A.values
+
+    if (xIndices.last > Int.MaxValue.toLong) {
+      throw new IndexOutOfBoundsException(s"the Indices of ${x.getClass} is out of Int range.")
+    }
+
+    var i = 0
+    while (i < nnz) {
+      val multiplier = alpha * xValues(i)
+      val offset = xIndices(i).toInt * mA
+      var j = 0
+      while (j < nnz) {
+        Avalues(xIndices(j).toInt + offset) += multiplier * xValues(j)
         j += 1
       }
       i += 1
@@ -549,9 +744,13 @@ private[spark] object BLAS extends Serializable {
           gemv(alpha, smA, dvx, beta, y)
         case (smA: SparseMatrix, svx: IntSparseVector) =>
           gemv(alpha, smA, svx, beta, y)
+        case (smA: SparseMatrix, svx: LongSparseVector) =>
+          gemv(alpha, smA, svx, beta, y)
         case (dmA: DenseMatrix, dvx: DenseVector) =>
           gemv(alpha, dmA, dvx, beta, y)
         case (dmA: DenseMatrix, svx: IntSparseVector) =>
+          gemv(alpha, dmA, svx, beta, y)
+        case (dmA: DenseMatrix, svx: LongSparseVector) =>
           gemv(alpha, dmA, svx, beta, y)
         case _ =>
           throw new IllegalArgumentException(s"gemv doesn't support running on matrix type " +
@@ -626,12 +825,130 @@ private[spark] object BLAS extends Serializable {
 
   /**
     * y := alpha * A * x + beta * y
+    * For `DenseMatrix` A and `SparseVector` x.
+    */
+  private def gemv(
+                    alpha: Double,
+                    A: DenseMatrix,
+                    x: LongSparseVector,
+                    beta: Double,
+                    y: DenseVector): Unit = {
+    val mA: Int = A.numRows
+    val nA: Int = A.numCols
+
+    val Avals = A.values
+
+    val xIndices = x.indices
+    val xNnz = xIndices.length
+    val xValues = x.values
+    val yValues = y.values
+
+    if (xIndices.last > Int.MaxValue.toLong) {
+      throw new IndexOutOfBoundsException(s"the Indices of ${x.getClass} is out of Int range.")
+    }
+
+    if (A.isTransposed) {
+      var rowCounterForA = 0
+      while (rowCounterForA < mA) {
+        var sum = 0.0
+        var k = 0
+        while (k < xNnz) {
+          sum += xValues(k) * Avals(xIndices(k).toInt + rowCounterForA * nA)
+          k += 1
+        }
+        yValues(rowCounterForA) = sum * alpha + beta * yValues(rowCounterForA)
+        rowCounterForA += 1
+      }
+    } else {
+      var rowCounterForA = 0
+      while (rowCounterForA < mA) {
+        var sum = 0.0
+        var k = 0
+        while (k < xNnz) {
+          sum += xValues(k) * Avals(xIndices(k).toInt * mA + rowCounterForA)
+          k += 1
+        }
+        yValues(rowCounterForA) = sum * alpha + beta * yValues(rowCounterForA)
+        rowCounterForA += 1
+      }
+    }
+  }
+
+  /**
+    * y := alpha * A * x + beta * y
     * For `SparseMatrix` A and `SparseVector` x.
     */
   private def gemv(
                     alpha: Double,
                     A: SparseMatrix,
                     x: IntSparseVector,
+                    beta: Double,
+                    y: DenseVector): Unit = {
+    val xValues = x.values
+    val xIndices = x.indices
+    val xNnz = xIndices.length
+
+    val yValues = y.values
+
+    val mA: Int = A.numRows
+    val nA: Int = A.numCols
+
+    val Avals = A.values
+    val Arows = if (!A.isTransposed) A.rowIndices else A.colPtrs
+    val Acols = if (!A.isTransposed) A.colPtrs else A.rowIndices
+
+    if (A.isTransposed) {
+      var rowCounter = 0
+      while (rowCounter < mA) {
+        var i = Arows(rowCounter)
+        val indEnd = Arows(rowCounter + 1)
+        var sum = 0.0
+        var k = 0
+        while (i < indEnd && k < xNnz) {
+          if (xIndices(k) == Acols(i)) {
+            sum += Avals(i) * xValues(k)
+            k += 1
+            i += 1
+          } else if (xIndices(k) < Acols(i)) {
+            k += 1
+          } else {
+            i += 1
+          }
+        }
+        yValues(rowCounter) = sum * alpha + beta * yValues(rowCounter)
+        rowCounter += 1
+      }
+    } else {
+      if (beta != 1.0) scal(beta, y)
+
+      var colCounterForA = 0
+      var k = 0
+      while (colCounterForA < nA && k < xNnz) {
+        if (xIndices(k) == colCounterForA) {
+          var i = Acols(colCounterForA)
+          val indEnd = Acols(colCounterForA + 1)
+
+          val xTemp = xValues(k) * alpha
+          while (i < indEnd) {
+            val rowIndex = Arows(i)
+            yValues(Arows(i)) += Avals(i) * xTemp
+            i += 1
+          }
+          k += 1
+        }
+        colCounterForA += 1
+      }
+    }
+  }
+
+  /**
+    * y := alpha * A * x + beta * y
+    * For `SparseMatrix` A and `SparseVector` x.
+    */
+  private def gemv(
+                    alpha: Double,
+                    A: SparseMatrix,
+                    x: LongSparseVector,
                     beta: Double,
                     y: DenseVector): Unit = {
     val xValues = x.values

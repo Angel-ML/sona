@@ -750,12 +750,12 @@ class IntSparseVector(
   override def toDense: DenseVector = {
     assert(size < Int.MaxValue)
 
-    val denseValues = Array[Double](size.toInt)
+    val denseValues = new Array[Double](size.toInt)
     indices.zip(values).foreach { case (idx, value) =>
       denseValues(idx) = value
     }
 
-    new DenseVector(values)
+    new DenseVector(denseValues)
   }
 }
 

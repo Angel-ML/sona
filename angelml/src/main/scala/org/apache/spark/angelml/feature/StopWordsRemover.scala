@@ -161,7 +161,7 @@ object StopWordsRemover extends DefaultParamsReadable[StopWordsRemover] {
   def loadDefaultStopWords(language: String): Array[String] = {
     require(supportedLanguages.contains(language),
       s"$language is not in the supported language list: ${supportedLanguages.mkString(", ")}.")
-    val is = getClass.getResourceAsStream(s"/org/apache/spark/ml/feature/stopwords/$language.txt")
+    val is = getClass.getResourceAsStream(s"/org/apache/spark/angelml/feature/stopwords/$language.txt")
     scala.io.Source.fromInputStream(is)(scala.io.Codec.UTF8).getLines().toArray
   }
 }

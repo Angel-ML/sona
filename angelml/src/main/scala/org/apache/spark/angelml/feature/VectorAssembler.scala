@@ -123,7 +123,8 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
           } else {
             // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes
             // from metadata, check the first row.
-            (0 until vectorColsLengths(c)).map { i =>
+            // TODO: need to handle long key vector
+            (0 until vectorColsLengths(c).toInt).map { i =>
               NumericAttribute.defaultAttr.withName(c + "_" + i)
             }
           }

@@ -53,7 +53,7 @@ class VectorAssemblerSuite
   test("assemble") {
     import org.apache.spark.angelml.feature.VectorAssembler.assemble
     assert(assemble(Array(1), keepInvalid = true)(0.0)
-      === Vectors.sparse(1, Array.empty, Array.empty))
+      === Vectors.sparse(1, Array.empty[Int], Array.empty[Double]))
     assert(assemble(Array(1, 1), keepInvalid = true)(0.0, 1.0)
       === Vectors.sparse(2, Array(1), Array(1.0)))
     val dv = Vectors.dense(2.0, 0.0)
@@ -259,6 +259,6 @@ class VectorAssemblerSuite
   test("SPARK-25371: VectorAssembler with empty inputCols") {
     val vectorAssembler = new VectorAssembler().setInputCols(Array()).setOutputCol("a")
     val output = vectorAssembler.transform(dfWithNullsAndNaNs)
-    assert(output.select("a").limit(1).collect().head == Row(Vectors.sparse(0, Seq.empty)))
+    assert(output.select("a").limit(1).collect().head == Row(Vectors.sparse(0, Seq.empty[(Int, Double)])))
   }
 }

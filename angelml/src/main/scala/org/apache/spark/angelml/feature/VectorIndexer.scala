@@ -452,7 +452,7 @@ class VectorIndexerModel private[angelml](
     val origNumFeatures: Option[Int] = if (origAttrGroup.attributes.nonEmpty) {
       Some(origAttrGroup.attributes.get.length)
     } else {
-      origAttrGroup.numAttributes
+      origAttrGroup.numAttributes.map(_.toInt)
     }
     require(origNumFeatures.forall(_ == numFeatures), "VectorIndexerModel expected" +
       s" $numFeatures features, but input column ${$(inputCol)} had metadata specifying" +

@@ -19,7 +19,7 @@ package org.apache.spark.angelml.feature
 
 import org.apache.spark.annotation.Since
 import org.apache.spark.angelml.UnaryTransformer
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param.Param
 import org.apache.spark.angelml.util.{DefaultParamsReadable, DefaultParamsWritable, Identifiable}
 import org.apache.spark.sql.types.DataType
@@ -68,6 +68,15 @@ class ElementwiseProduct @Since("1.4.0") (@Since("1.4.0") override val uid: Stri
           }
           Vectors.dense(values)
         case IntSparseVector(size, indices, vs) =>
+          val values = vs.clone()
+          val dim = values.length
+          var i = 0
+          while (i < dim) {
+            values(i) *= $(scalingVec)(indices(i))
+            i += 1
+          }
+          Vectors.sparse(size, indices, values)
+        case LongSparseVector(size, indices, vs) =>
           val values = vs.clone()
           val dim = values.length
           var i = 0

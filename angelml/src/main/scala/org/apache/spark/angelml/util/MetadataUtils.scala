@@ -81,7 +81,7 @@ private[spark] object MetadataUtils {
    * @param col  Vector column which must have feature names specified via attributes
    * @param names  List of feature names
    */
-  def getFeatureIndicesFromNames(col: StructField, names: Array[String]): Array[Int] = {
+  def getFeatureIndicesFromNames(col: StructField, names: Array[String]): Array[Long] = {
     require(col.dataType.isInstanceOf[VectorUDT], s"getFeatureIndicesFromNames expected column $col"
       + s" to be Vector type, but it was type ${col.dataType} instead.")
     val inputAttr = AttributeGroup.fromStructField(col)
