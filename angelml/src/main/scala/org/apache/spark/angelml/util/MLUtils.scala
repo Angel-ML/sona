@@ -6,6 +6,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.angelml.feature.LabeledPoint
 import org.apache.spark.angelml.linalg.BLAS.dot
 import org.apache.spark.angelml.linalg.{Matrix, MatrixUDT, _}
+import org.apache.spark.angelml.source.libffm.MetaSummary
 import org.apache.spark.annotation.Since
 import org.apache.spark.internal.Logging
 import org.apache.spark.internal.io.SparkHadoopWriterUtils
@@ -18,6 +19,7 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.util.random.BernoulliCellSampler
 
 import scala.annotation.varargs
+import scala.collection.mutable
 import scala.reflect.ClassTag
 
 /**
@@ -85,6 +87,14 @@ object MLUtils extends Logging {
     }.reduce(math.max) + 1L
   }
 
+  private[spark] def computeFFMMeta(rdd: RDD[(Double, Array[Int], Array[Int], Array[Double])]): MetaSummary = {
+    rdd.mapPartitions(MetaSummary.addInt).reduce((m1:MetaSummary, m2:MetaSummary) => m1.merge(m2))
+  }
+
+  private[spark] def computeLongKeyFFMMeta(rdd: RDD[(Double, Array[Int], Array[Long], Array[Double])]): MetaSummary = {
+    rdd.mapPartitions(MetaSummary.addLong).reduce((m1:MetaSummary, m2:MetaSummary) => m1.merge(m2))
+  }
+
   private[spark] def parseLibSVMFile(sc: SparkContext, path: String, minPartitions: Int
                                     ): RDD[(Double, Array[Int], Array[Double])] = {
     sc.textFile(path, minPartitions)
@@ -129,6 +139,52 @@ object MLUtils extends Logging {
       .as[String]
       .rdd
       .map(MLUtils.parseLongKeyLibSVMRecord)
+  }
+
+  private[spark] def parseLibFFMFile(sc: SparkContext, path: String, minPartitions: Int
+                                    ): RDD[(Double, Array[Int], Array[Int], Array[Double])] = {
+    sc.textFile(path, minPartitions)
+      .map(_.trim)
+      .filter(line => !(line.isEmpty || line.startsWith("#")))
+      .map(parseLibFFMRecord)
+  }
+
+  private[spark] def parseLibFFMFile(sparkSession: SparkSession, paths: Seq[String]
+                                    ): RDD[(Double, Array[Int], Array[Int], Array[Double])] = {
+    val lines = sparkSession.baseRelationToDataFrame(
+      DataSource.apply(
+        sparkSession,
+        paths = paths,
+        className = classOf[TextFileFormat].getName
+      ).resolveRelation(checkFilesExist = false))
+      .select("value")
+
+    import lines.sqlContext.implicits._
+
+    lines.select(trim($"value").as("line"))
+      .filter(not((length($"line") === 0).or($"line".startsWith("#"))))
+      .as[String]
+      .rdd
+      .map(MLUtils.parseLibFFMRecord)
+  }
+
+  private[spark] def parseLongKeyLibFFMFile(sparkSession: SparkSession, paths: Seq[String]
+                                           ): RDD[(Double, Array[Int], Array[Long], Array[Double])] = {
+    val lines = sparkSession.baseRelationToDataFrame(
+      DataSource.apply(
+        sparkSession,
+        paths = paths,
+        className = classOf[TextFileFormat].getName
+      ).resolveRelation(checkFilesExist = false))
+      .select("value")
+
+    import lines.sqlContext.implicits._
+
+    lines.select(trim($"value").as("line"))
+      .filter(not((length($"line") === 0).or($"line".startsWith("#"))))
+      .as[String]
+      .rdd
+      .map(MLUtils.parseLongKeyLibFFMRecord)
   }
 
   private[spark] def parseLibSVMRecord(line: String): (Double, Array[Int], Array[Double]) = {
@@ -179,6 +235,73 @@ object MLUtils extends Logging {
     (label, indices, values)
   }
 
+  private[spark] def parseLibFFMRecord(line: String): (Double, Array[Int], Array[Int], Array[Double]) = {
+    val items = line.split(' ')
+    val label = items.head.toDouble
+
+    val fieldsBuilder = mutable.ArrayBuilder.make[Int]
+    val indicesBuilder = mutable.ArrayBuilder.make[Int]
+    val valuesBuilder = mutable.ArrayBuilder.make[Double]
+    items.tail.filter(_.nonEmpty).foreach { item =>
+      val Array(field: String, key: String, value: String) = item.split(':')
+      fieldsBuilder += field.toInt
+      indicesBuilder += key.toInt
+      valuesBuilder += value.toDouble
+    }
+
+    val fields = fieldsBuilder.result()
+    val indices = indicesBuilder.result()
+    val values = valuesBuilder.result()
+
+//    // check if indices are one-based and in ascending order
+//    var previous = -1
+//    var i = 0
+//    val indicesLength: Int = indices.length
+//    while (i < indicesLength) {
+//      val current = indices(i)
+//      require(current > previous, s"indices should be one-based and in ascending order;"
+//        +
+//        s""" found current=$current, previous=$previous; line="$line"""")
+//      previous = current
+//      i += 1
+//    }
+
+    (label, fields, indices, values)
+  }
+
+  private[spark] def parseLongKeyLibFFMRecord(line: String): (Double, Array[Int], Array[Long], Array[Double]) = {
+    val items = line.split(' ')
+    val label = items.head.toDouble
+
+    val fieldsBuilder = mutable.ArrayBuilder.make[Int]
+    val indicesBuilder = mutable.ArrayBuilder.make[Long]
+    val valuesBuilder = mutable.ArrayBuilder.make[Double]
+    items.tail.filter(_.nonEmpty).foreach { item =>
+      val Array(field: String, key: String, value: String) = item.split(':')
+      fieldsBuilder += field.toInt
+      indicesBuilder += key.toLong
+      valuesBuilder += value.toDouble
+    }
+
+    val fields = fieldsBuilder.result()
+    val indices = indicesBuilder.result()
+    val values = valuesBuilder.result()
+
+    // check if indices are one-based and in ascending order
+    var previous = -1L
+    var i = 0
+    val indicesLength: Int = indices.length
+    while (i < indicesLength) {
+      val current = indices(i)
+      require(current > previous, s"indices should be one-based and in ascending order;"
+        +
+        s""" found current=$current, previous=$previous; line="$line"""")
+      previous = current
+      i += 1
+    }
+
+    (label, fields, indices, values)
+  }
 
   private[spark] def parseLongKeyDummyFile(sparkSession: SparkSession, paths: Seq[String]
                                           ): RDD[(Double, Array[Long], Array[Double])] = {
