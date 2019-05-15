@@ -542,4 +542,20 @@ trait HasValidationIndicatorCol extends Params {
   /** @group getParam */
   final def getValidationIndicatorCol: String = $(validationIndicatorCol)
 }
+
+
+
+trait HasLongKey extends Params {
+  final val longKey: Param[Boolean] = new Param[Boolean](this, "longKey", "is long key support")
+
+  /** @group getParam */
+  final def getLongKey: Boolean = $(longKey)
+}
+
+trait HasNumFeatures extends Params {
+  val numFeatures = new LongParam(this, "numFeature",
+    "the largest index of features (> 0)", (value: Long) => value == -1 || value > 0)
+
+  def getNumFeatures: Long = $(numFeatures)
+}
 // scalastyle:on

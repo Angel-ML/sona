@@ -1,15 +1,15 @@
 package org.apache.spark.angelml.param
 
 import com.tencent.angel.ml.core.conf.MLCoreConf
-import org.apache.spark.angelml.param.shared.HasWeightCol
+import org.apache.spark.angelml.param.shared.{HasNumFeatures, HasWeightCol}
 
 
 trait AngelDataParams extends Params with HasNumFeatures with HasNumField
   with HasSparseData with HasWeightCol with ParamsHelper {
 
-  def setNumFeature(value: Long): this.type = setInternal(numFeature, value)
+  def setNumFeature(value: Long): this.type = setInternal(numFeatures, value)
 
-  setDefault(numFeature -> MLCoreConf.DEFAULT_ML_FEATURE_INDEX_RANGE)
+  setDefault(numFeatures -> MLCoreConf.DEFAULT_ML_FEATURE_INDEX_RANGE)
 
   def setNumField(value: Int): this.type = setInternal(numField, value)
 
@@ -19,14 +19,6 @@ trait AngelDataParams extends Params with HasNumFeatures with HasNumField
 
   setDefault(isSparse -> true)
 }
-
-trait HasNumFeatures extends Params {
-  final val numFeature: LongParam = new LongParam(this, "numFeature",
-    "the largest index of features (> 0)", (value: Long) => value == -1 || value > 0)
-
-  final def getNumFeature: Long = $(numFeature)
-}
-
 
 trait HasNumField extends Params {
   final val numField: IntParam = new IntParam(this, "numField",

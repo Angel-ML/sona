@@ -97,6 +97,21 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
     n.toInt
   }
 
+  private def getPolySizeLong(numFeatures: Long, degree: Int): Long = {
+    var numerator = 1L
+    var denominator = 1
+
+    (1 to degree).foreach{ d =>
+      numerator *= (numFeatures - d + 1)
+      denominator *= d
+    }
+
+    val binomialCoefficient = numerator / denominator
+    require(binomialCoefficient <= Long.MaxValue)
+
+    binomialCoefficient
+  }
+
   private def expandDense(
       values: Array[Double],
       lastIdx: Int,

@@ -227,7 +227,7 @@ private[spark] object BLAS extends Serializable {
     var sum = 0.0
     var k = 0
     while (k < nnz) {
-      sum += xValues(k) * yValues(xIndices(k))
+      sum = sum + xValues(k) * yValues(xIndices(k).toInt)
       k += 1
     }
     sum
@@ -438,7 +438,7 @@ private[spark] object BLAS extends Serializable {
           throw new IndexOutOfBoundsException(s"the Indices of ${v.getClass} is out of Int range.")
         }
         val nnz = indices.length
-        var colStartIdx = 0
+        var colStartIdx = 0L
         var prevCol = 0L
         var col = 0L
         var j = 0
@@ -447,12 +447,12 @@ private[spark] object BLAS extends Serializable {
         while (j < nnz) {
           col = indices(j)
           // Skip empty columns.
-          colStartIdx += (col - prevCol) * (col + prevCol + 1) / 2
+          colStartIdx = colStartIdx + (col - prevCol) * (col + prevCol + 1) / 2
           col = indices(j)
           av = alpha * values(j)
           i = 0
           while (i <= j) {
-            U(colStartIdx + indices(i).toInt) += av * values(i)
+            U(colStartIdx.toInt + indices(i).toInt) += av * values(i)
             i += 1
           }
           j += 1
