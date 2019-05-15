@@ -44,6 +44,7 @@ class VectorSlicerSuite extends MLTest with DefaultReadWriteTest {
     import VectorSlicer._
     assert(validIndices(Array(0, 1, 8, 2)))
     assert(validIndices(Array.empty[Int]))
+    assert(validIndices(Array.empty[Long]))
     assert(!validIndices(Array(-1)))
     assert(!validIndices(Array(1, 2, 1)))
 
@@ -59,7 +60,8 @@ class VectorSlicerSuite extends MLTest with DefaultReadWriteTest {
       Vectors.dense(-2.0, 2.3, 0.0, 0.0, 1.0),
       Vectors.dense(0.0, 0.0, 0.0, 0.0, 0.0),
       Vectors.dense(0.6, -1.1, -3.0, 4.5, 3.3),
-      Vectors.sparse(5, Seq[(Int, Double)]())
+      Vectors.sparse(5, Seq[(Int, Double)]()),
+      Vectors.sparse(5L, Seq[(Long, Double)]())
     )
 
     // Expected after selecting indices 1, 4
@@ -68,7 +70,8 @@ class VectorSlicerSuite extends MLTest with DefaultReadWriteTest {
       Vectors.dense(2.3, 1.0),
       Vectors.dense(0.0, 0.0),
       Vectors.dense(-1.1, 3.3),
-      Vectors.sparse(2, Seq[(Int, Double)]())
+      Vectors.sparse(2, Seq[(Int, Double)]()),
+      Vectors.sparse(2L, Seq[(Long, Double)]())
     )
 
     val defaultAttr = NumericAttribute.defaultAttr
@@ -104,7 +107,19 @@ class VectorSlicerSuite extends MLTest with DefaultReadWriteTest {
     testTransformerByGlobalCheckFunc[(Vector, Vector)](df, vectorSlicer, "result", "expected")(
       validateResults)
 
-    vectorSlicer.setIndices(Array.empty).setNames(Array("f1", "f4"))
+    vectorSlicer.setIndices(Array(1L, 4L)).setNames(Array.empty)
+    testTransformerByGlobalCheckFunc[(Vector, Vector)](df, vectorSlicer, "result", "expected")(
+      validateResults)
+
+    vectorSlicer.setIndices(Array(1L)).setNames(Array("f4"))
+    testTransformerByGlobalCheckFunc[(Vector, Vector)](df, vectorSlicer, "result", "expected")(
+      validateResults)
+
+    vectorSlicer.setIndices(Array.empty[Int]).setNames(Array("f1", "f4"))
+    testTransformerByGlobalCheckFunc[(Vector, Vector)](df, vectorSlicer, "result", "expected")(
+      validateResults)
+
+    vectorSlicer.setIndices(Array.empty[Long]).setNames(Array("f1", "f4"))
     testTransformerByGlobalCheckFunc[(Vector, Vector)](df, vectorSlicer, "result", "expected")(
       validateResults)
   }

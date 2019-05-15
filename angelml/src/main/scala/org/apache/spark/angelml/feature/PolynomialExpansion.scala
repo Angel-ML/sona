@@ -181,10 +181,25 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
     new IntSparseVector(polySize - 1, polyIndices.result(), polyValues.result())
   }
 
+  private def expand(sv: LongSparseVector, degree: Int): LongSparseVector = {
+    require(sv.size <= Int.MaxValue, "LongSparseVector size exceeds Int.MaxValue")
+    val polySize = getPolySize(sv.size.toInt, degree)
+    val nnz = sv.values.length
+    val nnzPolySize = getPolySize(nnz, degree)
+    val polyIndices = mutable.ArrayBuilder.make[Int]
+    polyIndices.sizeHint(nnzPolySize - 1)
+    val polyValues = mutable.ArrayBuilder.make[Double]
+    polyValues.sizeHint(nnzPolySize - 1)
+    expandSparse(
+      sv.indices.map(_.toInt), sv.values, nnz - 1, sv.size.toInt - 1, degree, 1.0, polyIndices, polyValues, -1)
+    new LongSparseVector((polySize - 1).toLong, polyIndices.result().map(_.toLong), polyValues.result())
+  }
+
   private[feature] def expand(v: Vector, degree: Int): Vector = {
     v match {
       case dv: DenseVector => expand(dv, degree)
       case sv: IntSparseVector => expand(sv, degree)
+      case sv: LongSparseVector => expand(sv, degree)
       case _ => throw new IllegalArgumentException
     }
   }

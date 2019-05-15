@@ -22,7 +22,7 @@ import org.apache.spark.annotation.{Experimental, Since}
 import org.apache.spark.angelml.Transformer
 import org.apache.spark.angelml.attribute.AttributeGroup
 import org.apache.spark.angelml.linalg.Vectors
-import org.apache.spark.angelml.param.{IntParam, ParamMap, ParamValidators, StringArrayParam}
+import org.apache.spark.angelml.param.{IntParam, LongParam, ParamMap, ParamValidators, StringArrayParam}
 import org.apache.spark.angelml.param.shared.{HasInputCols, HasOutputCol}
 import org.apache.spark.angelml.util.{DefaultParamsReadable, DefaultParamsWritable, Identifiable, SchemaUtils}
 import org.apache.spark.sql.{DataFrame, Dataset, Row}
@@ -104,18 +104,24 @@ class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transforme
    * @group param
    */
   @Since("2.3.0")
-  val numFeatures = new IntParam(this, "numFeatures", "number of features (> 0)",
+  val numFeatures = new LongParam(this, "numFeatures", "number of features (> 0)",
     ParamValidators.gt(0))
 
   setDefault(numFeatures -> (1 << 18))
 
   /** @group getParam */
   @Since("2.3.0")
-  def getNumFeatures: Int = $(numFeatures)
+  def getNumFeatures: Long = $(numFeatures)
 
   /** @group setParam */
   @Since("2.3.0")
-  def setNumFeatures(value: Int): this.type = set(numFeatures, value)
+  def setNumFeatures(value: Int): this.type = {
+    set(numFeatures, value.toLong)
+  }
+
+  /** @group setParam */
+  @Since("2.3.0")
+  def setNumFeatures(value: Long): this.type = set(numFeatures, value)
 
   /** @group setParam */
   @Since("2.3.0")
@@ -163,8 +169,13 @@ class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transforme
       }
     }
 
+    def nonNegativeMod(x: Long, mod: Long): Long = {
+      val rawMod = x % mod
+      rawMod + (if (rawMod < 0) mod else 0)
+    }
+
     val hashFeatures = udf { row: Row =>
-      val map = new OpenHashMap[Int, Double]()
+      val map = new OpenHashMap[Long, Double]()
       localInputCols.foreach { colName =>
         val fieldIndex = row.fieldIndex(colName)
         if (!row.isNullAt(fieldIndex)) {
@@ -181,7 +192,7 @@ class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transforme
             val hash = hashFunc(fieldName)
             (hash, 1.0)
           }
-          val idx = Utils.nonNegativeMod(rawIdx, n)
+          val idx = nonNegativeMod(rawIdx.toLong, n)
           map.changeValue(idx, value, v => v + value)
         }
       }
