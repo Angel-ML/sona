@@ -17,7 +17,7 @@
 
 package org.apache.spark.angelml.feature
 
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, Vectors}
 import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
 import org.apache.spark.angelml.util.TestingUtils._
 import org.apache.spark.sql.{DataFrame, Row}
@@ -40,7 +40,8 @@ class NormalizerSuite extends MLTest with DefaultReadWriteTest {
       Vectors.dense(0.6, -1.1, -3.0),
       Vectors.sparse(3, Seq((1, 0.91), (2, 3.2))),
       Vectors.sparse(3, Seq((0, 5.7), (1, 0.72), (2, 2.7))),
-      Vectors.sparse(3, Seq[(Int, Double)]())
+      Vectors.sparse(3, Seq[(Int, Double)]()),
+      Vectors.sparse( size= 3L, Seq[(Long, Double)]())
     )
     l1Normalized = Array(
       Vectors.sparse(3, Seq((0, -0.465116279), (1, 0.53488372))),
@@ -48,7 +49,8 @@ class NormalizerSuite extends MLTest with DefaultReadWriteTest {
       Vectors.dense(0.12765957, -0.23404255, -0.63829787),
       Vectors.sparse(3, Seq((1, 0.22141119), (2, 0.7785888))),
       Vectors.dense(0.625, 0.07894737, 0.29605263),
-      Vectors.sparse(3, Seq[(Int, Double)]())
+      Vectors.sparse(3, Seq[(Int, Double)]()),
+      Vectors.sparse(3L, Seq[(Long, Double)]())
     )
     l2Normalized = Array(
       Vectors.sparse(3, Seq((0, -0.65617871), (1, 0.75460552))),
@@ -56,7 +58,8 @@ class NormalizerSuite extends MLTest with DefaultReadWriteTest {
       Vectors.dense(0.184549876, -0.3383414, -0.922749378),
       Vectors.sparse(3, Seq((1, 0.27352993), (2, 0.96186349))),
       Vectors.dense(0.897906166, 0.113419726, 0.42532397),
-      Vectors.sparse(3, Seq[(Int, Double)]())
+      Vectors.sparse(3, Seq[(Int, Double)]()),
+      Vectors.sparse(3L, Seq[(Long, Double)]())
     )
   }
 
@@ -64,6 +67,7 @@ class NormalizerSuite extends MLTest with DefaultReadWriteTest {
     assert((lhs, rhs) match {
       case (v1: DenseVector, v2: DenseVector) => true
       case (v1: IntSparseVector, v2: IntSparseVector) => true
+      case (v1: LongSparseVector, v2: LongSparseVector) => true
       case _ => false
     }, "The vector type should be preserved after normalization.")
   }

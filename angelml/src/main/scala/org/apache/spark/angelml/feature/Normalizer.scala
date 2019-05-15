@@ -19,7 +19,7 @@ package org.apache.spark.angelml.feature
 
 import org.apache.spark.annotation.Since
 import org.apache.spark.angelml.UnaryTransformer
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param.{DoubleParam, ParamValidators}
 import org.apache.spark.angelml.util._
 import org.apache.spark.sql.types.DataType
@@ -71,6 +71,15 @@ class Normalizer @Since("1.4.0") (@Since("1.4.0") override val uid: String)
             }
             Vectors.dense(values)
           case IntSparseVector(size, ids, vs) =>
+            val values = vs.clone()
+            val nnz = values.length
+            var i = 0
+            while (i < nnz) {
+              values(i) /= norm
+              i += 1
+            }
+            Vectors.sparse(size, ids, values)
+          case LongSparseVector(size, ids, vs) =>
             val values = vs.clone()
             val nnz = values.length
             var i = 0

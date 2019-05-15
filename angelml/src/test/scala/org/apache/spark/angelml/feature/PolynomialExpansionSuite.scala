@@ -17,7 +17,7 @@
 
 package org.apache.spark.angelml.feature
 
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, Vectors}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, Vectors}
 import org.apache.spark.angelml.param.ParamsSuite
 import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
 import org.apache.spark.angelml.util.TestingUtils._
@@ -36,7 +36,8 @@ class PolynomialExpansionSuite extends MLTest with DefaultReadWriteTest {
     Vectors.dense(-2.0, 2.3),
     Vectors.dense(0.0, 0.0, 0.0),
     Vectors.dense(0.6, -1.1, -3.0),
-    Vectors.sparse(3, Seq[(Int, Double)]())
+    Vectors.sparse(3, Seq[(Int, Double)]()),
+    Vectors.sparse(3L, Seq[(Long, Double)]())
   )
 
   private val twoDegreeExpansion: Array[Vector] = Array(
@@ -44,7 +45,8 @@ class PolynomialExpansionSuite extends MLTest with DefaultReadWriteTest {
     Vectors.dense(-2.0, 4.0, 2.3, -4.6, 5.29),
     Vectors.dense(new Array[Double](9)),
     Vectors.dense(0.6, 0.36, -1.1, -0.66, 1.21, -3.0, -1.8, 3.3, 9.0),
-    Vectors.sparse(9, Array.empty[Int], Array.empty[Double]))
+    Vectors.sparse(9, Array.empty[Int], Array.empty[Double]),
+    Vectors.sparse(9L, Array.empty[Long], Array.empty[Double]))
 
   private val threeDegreeExpansion: Array[Vector] = Array(
     Vectors.sparse(19, Array(0, 1, 2, 3, 4, 5, 6, 7, 8),
@@ -53,12 +55,14 @@ class PolynomialExpansionSuite extends MLTest with DefaultReadWriteTest {
     Vectors.dense(new Array[Double](19)),
     Vectors.dense(0.6, 0.36, 0.216, -1.1, -0.66, -0.396, 1.21, 0.726, -1.331, -3.0, -1.8,
       -1.08, 3.3, 1.98, -3.63, 9.0, 5.4, -9.9, -27.0),
-    Vectors.sparse(19, Array.empty[Int], Array.empty[Double]))
+    Vectors.sparse(19, Array.empty[Int], Array.empty[Double]),
+    Vectors.sparse(19L, Array.empty[Long], Array.empty[Double]))
 
   def assertTypeOfVector(lhs: Vector, rhs: Vector): Unit = {
     assert((lhs, rhs) match {
       case (v1: DenseVector, v2: DenseVector) => true
       case (v1: IntSparseVector, v2: IntSparseVector) => true
+      case (v1: LongSparseVector, v2: LongSparseVector) => true
       case _ => false
     }, "The vector type should be preserved after polynomial expansion.")
   }
