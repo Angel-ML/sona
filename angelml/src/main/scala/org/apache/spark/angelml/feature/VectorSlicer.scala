@@ -21,7 +21,7 @@ import org.apache.spark.annotation.Since
 import org.apache.spark.angelml.Transformer
 import org.apache.spark.angelml.attribute.{Attribute, AttributeGroup}
 import org.apache.spark.angelml.linalg._
-import org.apache.spark.angelml.param.{IntArrayParam, ParamMap, StringArrayParam}
+import org.apache.spark.angelml.param.{IntArrayParam, LongArrayParam, ParamMap, StringArrayParam}
 import org.apache.spark.angelml.param.shared.{HasInputCol, HasOutputCol}
 import org.apache.spark.angelml.util._
 import org.apache.spark.sql.{DataFrame, Dataset}
@@ -53,19 +53,23 @@ final class VectorSlicer @Since("1.5.0") (@Since("1.5.0") override val uid: Stri
    * @group param
    */
   @Since("1.5.0")
-  val indices = new IntArrayParam(this, "indices",
+  val indices = new LongArrayParam(this, "indices",
     "An array of indices to select features from a vector column." +
       " There can be no overlap with names.", VectorSlicer.validIndices)
 
-  setDefault(indices -> Array.empty[Int])
+  setDefault(indices -> Array.empty[Long])
 
   /** @group getParam */
   @Since("1.5.0")
-  def getIndices: Array[Int] = $(indices)
+  def getIndices: Array[Long] = $(indices)
 
   /** @group setParam */
   @Since("1.5.0")
-  def setIndices(value: Array[Int]): this.type = set(indices, value)
+  def setIndices(value: Array[Int]): this.type = {
+    set(indices, value.map(_.toLong))
+  }
+
+  def setIndices(value: Array[Long]): this.type =set(indices, value)
 
   /**
    * An array of feature names to select features from a vector column.
@@ -112,7 +116,7 @@ final class VectorSlicer @Since("1.5.0") (@Since("1.5.0") override val uid: Stri
     // Prepare output attributes
     val inds = getSelectedFeatureIndices(dataset.schema)
     val selectedAttrs: Option[Array[Attribute]] = inputAttr.attributes.map { attrs =>
-      inds.map(index => attrs(index))
+      inds.map(index => attrs(index.toInt))
     }
     val outputAttr = selectedAttrs match {
       case Some(attrs) => new AttributeGroup($(outputCol), attrs)
@@ -122,16 +126,17 @@ final class VectorSlicer @Since("1.5.0") (@Since("1.5.0") override val uid: Stri
     // Select features
     val slicer = udf { vec: Vector =>
       vec match {
-        case features: DenseVector => Vectors.dense(inds.map(i => features.apply(i.toLong)))
-        case features: IntSparseVector => features.slice(inds)
+        case features: DenseVector => Vectors.dense(inds.map(i => features.apply(i)))
+        case features: IntSparseVector => features.slice(inds.map(i => i.toInt))
+        case features: LongSparseVector => features.slice(inds)
       }
     }
     dataset.withColumn($(outputCol), slicer(dataset($(inputCol))), outputAttr.toMetadata())
   }
 
   /** Get the feature indices in order: indices, names */
-  private def getSelectedFeatureIndices(schema: StructType): Array[Int] = {
-    val nameFeatures = MetadataUtils.getFeatureIndicesFromNames(schema($(inputCol)), $(names)).map(_.toInt)
+  private def getSelectedFeatureIndices(schema: StructType): Array[Long] = {
+    val nameFeatures = MetadataUtils.getFeatureIndicesFromNames(schema($(inputCol)), $(names))
     val indFeatures = $(indices)
     val numDistinctFeatures = (nameFeatures ++ indFeatures).distinct.length
     lazy val errMsg = "VectorSlicer requires indices and names to be disjoint" +
@@ -167,6 +172,14 @@ object VectorSlicer extends DefaultParamsReadable[VectorSlicer] {
 
   /** Return true if given feature indices are valid */
   private[feature] def validIndices(indices: Array[Int]): Boolean = {
+    if (indices.isEmpty) {
+      true
+    } else {
+      indices.length == indices.distinct.length && indices.forall(_ >= 0)
+    }
+  }
+
+  private[feature] def validIndices(indices: Array[Long]): Boolean = {
     if (indices.isEmpty) {
       true
     } else {
