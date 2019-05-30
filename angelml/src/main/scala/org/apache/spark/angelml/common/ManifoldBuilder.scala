@@ -2,6 +2,7 @@ package org.apache.spark.angelml.common
 
 import com.tencent.angel.ml.math2.utils.LabeledData
 import com.tencent.angel.sona.core.ExecutorContext
+import org.apache.spark.TaskContext
 import org.apache.spark.angelml.common.MathImplicits._
 import org.apache.spark.angelml.util.DataUtils.Example
 import org.apache.spark.broadcast.Broadcast
@@ -17,9 +18,9 @@ import scala.reflect.ClassTag
   * Then, we hold the manifold RDD into cache.
   */
 
-class ManifoldSplitter[T, U: ClassTag](iter: Iterator[T], numBatch: Int, trans: T => U)(implicit bcValue: Broadcast[ExecutorContext])
+class ManifoldSplitter[T, U: ClassTag](iter: Iterator[T], numBatch: Int, trans: T => U, partitionStat: Map[Int, Long])
   extends Iterator[Array[U]] with Serializable {
-  val numSamples: Int = bcValue.value.getSamplesInPartition
+  val numSamples: Int = partitionStat(TaskContext.getPartitionId()).toInt
   val sizeBase: Int = numSamples / numBatch
 
   var index = 0
@@ -46,19 +47,19 @@ class ManifoldSplitter[T, U: ClassTag](iter: Iterator[T], numBatch: Int, trans: 
 
 class ManifoldBuilder(data: RDD[Example],
                       numSplit: Int,
+                      partitionStat: Map[Int, Long],
                       persist: StorageLevel = StorageLevel.MEMORY_AND_DISK,
-                      preservesPartitioning: Boolean = true)(
-                       implicit dim: Long, bcValue: Broadcast[ExecutorContext]) extends Serializable {
+                      preservesPartitioning: Boolean = true)(implicit dim: Long) extends Serializable {
   protected def trans(item: Example): LabeledData = {
     new LabeledData(item.features, item.label)
   }
 
   private def split(iterator: Iterator[Example]): Iterator[Array[LabeledData]] = {
-    new ManifoldSplitter(iterator, numSplit, trans)
+    new ManifoldSplitter(iterator, numSplit, trans, partitionStat)
   }
 
   lazy val foldedRDD: RDD[Array[LabeledData]] = data.mapPartitions(
-    itr => split(itr), preservesPartitioning).persist(persist)
+    itr => split(itr), preservesPartitioning)
 
   def manifoldRDD(): Seq[RDD[Array[LabeledData]]] = {
     Vector.tabulate(numSplit) { i =>

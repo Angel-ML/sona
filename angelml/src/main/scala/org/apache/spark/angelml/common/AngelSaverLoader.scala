@@ -45,8 +45,6 @@ object AngelSaverLoader {
     private val clz = implicitly[ClassTag[Model]].runtimeClass
 
     override def load(path: String): Model = {
-      DriverContext.get().createAndInitPSAgent
-
       // 1. load metadata
       val metadata = DefaultParamsReader.loadMetadata(path, sc, clz.getName)
 
@@ -58,7 +56,6 @@ object AngelSaverLoader {
 
       val cstr = clz.getConstructor(classOf[String], classOf[String])
       val model = cstr.newInstance(metadata.uid, modelName).asInstanceOf[Model]
-
 
       val angelModelPath = new Path(path, "angel").toString
       val sparkEnvContext = model.sparkEnvContext

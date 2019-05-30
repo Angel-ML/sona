@@ -10,7 +10,7 @@ import org.json4s.JsonAST.JObject
 
 
 trait AngelGraphParams extends Params with AngelDataParams with HasModelType
-  with HasModelName with HasModelJson with HasAggregationDepth with ParamsHelper {
+  with HasModelName with HasModelJson with ParamsHelper {
 
   def setModelType(value: String): this.type = setInternal(modelType, value)
 
@@ -23,10 +23,6 @@ trait AngelGraphParams extends Params with AngelDataParams with HasModelType
   def setModelJsonFile(value: String): this.type = setInternal(modelJsonFile, value)
 
   def setModelJson(value: JObject): this.type = setInternal(modelJson, value)
-
-  def setAggregationDepth(value: Int): this.type = setInternal(aggregationDepth, value)
-
-  setDefault(aggregationDepth -> 2)
 
   override def updateFromJson(): this.type = {
     val jsonFile: String = getModelJsonFile

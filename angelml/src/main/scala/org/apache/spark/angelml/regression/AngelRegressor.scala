@@ -2,17 +2,22 @@ package org.apache.spark.angelml.regression
 
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.ml.core.PSOptimizerProvider
-import com.tencent.angel.ml.core.conf.MLCoreConf
+import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.core.variable.VarState
 import com.tencent.angel.ml.math2.utils.LabeledData
+import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.sona.core._
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.spark.angelml.PredictorParams
 import org.apache.spark.angelml.common._
 import org.apache.spark.angelml.evaluation.evaluating.RegressionSummaryImpl
-import org.apache.spark.angelml.evaluation.{RegressionSummary, TrainingStat}
 import org.apache.spark.angelml.evaluation.training.RegressionTrainingStat
+import org.apache.spark.angelml.evaluation.{RegressionSummary, TrainingStat}
+import org.apache.spark.angelml.linalg.{DenseVector, Vector}
+import org.apache.spark.angelml.metaextract.FeatureStats
 import org.apache.spark.angelml.param.{AngelGraphParams, AngelOptParams, ParamMap}
+import org.apache.spark.angelml.util.DataUtils.Example
+import org.apache.spark.angelml.util._
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.internal.Logging
 import org.apache.spark.rdd.RDD
@@ -20,17 +25,17 @@ import org.apache.spark.sql.functions.{col, lit}
 import org.apache.spark.sql.types.{DoubleType, StructType}
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.storage.StorageLevel
-import org.apache.spark.angelml.linalg.Vector
-import org.apache.spark.angelml.metaextract.{AngelFeatureMeta, AngelFloatLabelMeta}
-import org.apache.spark.angelml.util.DataUtils.Example
-import org.apache.spark.angelml.util._
+
+import scala.collection.JavaConverters._
 
 class AngelRegressor(override val uid: String)
   extends Regressor[Vector, AngelRegressor, AngelRegressorModel]
     with AngelGraphParams with AngelOptParams with PredictorParams
     with DefaultParamsWritable with Logging {
   private var sparkSession: SparkSession = _
-  private implicit val psClient: AngelPSClient = DriverContext.get().getAngelClient
+  private val driverCtx = DriverContext.get()
+  private implicit val psClient: AngelPSClient = driverCtx.getAngelClient
+  private implicit var psAgent: PSAgent = driverCtx.getPSAgent
   private val sparkEnvCtx: SparkEnvContext = DriverContext.get().sparkEnvContext
   implicit var bcValue: Broadcast[ExecutorContext] = _
 
@@ -72,6 +77,9 @@ class AngelRegressor(override val uid: String)
     val numTask = instances.getNumPartitions
     psClient.setTaskNum(numTask)
 
+    bcValue = instances.context.broadcast(ExecutorContext(sharedConf, numTask))
+    DriverContext.get().registerBroadcastVariables(bcValue)
+
     // persist RDD if StorageLevel is NONE
     val handlePersistence = dataset.storageLevel == StorageLevel.NONE
     if (handlePersistence) instances.persist(StorageLevel.MEMORY_AND_DISK)
@@ -81,58 +89,52 @@ class AngelRegressor(override val uid: String)
     instr.logParams(this, maxIter)
 
     // 3. calculate statistics for data set
-    val (featSummarizer, labelSummarizer) = {
-      val seqOp = (c: (AngelFeatureMeta, AngelFloatLabelMeta), instance: Example) =>
-        (c._1.add(instance), c._2.add(instance))
+    val featureStats = new FeatureStats(uid, getModelType, bcValue)
+    val example = instances.take(1).head.features
+    val (partitionStat, numValidateFeatures) = example match {
+      case v: DenseVector =>
+        setIsSparse(false)
+        val partitionStat_ = instances.mapPartitions(featureStats.denseStats, preservesPartitioning = true)
+          .reduce(featureStats.mergeMap).asScala.toMap
+        val numValidateFeatures_ = v.size
+        partitionStat_ -> numValidateFeatures_
+      case _ =>
+        setIsSparse(true)
+        featureStats.createPSMat(psClient)
+        val partitionStat_ = instances.mapPartitions(featureStats.sparseStats, preservesPartitioning = true)
+          .reduce(featureStats.mergeMap).asScala.toMap
 
-      val combOp = (c1: (AngelFeatureMeta, AngelFloatLabelMeta),
-                    c2: (AngelFeatureMeta, AngelFloatLabelMeta)) =>
-        (c1._1.merge(c2._1), c1._2.merge(c2._2))
+        val numValidateFeatures_ = featureStats.getNumValidateFeatures(psAgent)
 
-      instances.treeAggregate(
-        (new AngelFeatureMeta, new AngelFloatLabelMeta)
-      )(seqOp, combOp, $(aggregationDepth))
+        partitionStat_ -> numValidateFeatures_
     }
 
-    val maxIndex = featSummarizer.maxIndex
-    instr.logNamedValue("maxIndex", maxIndex)
-    if (getNumFeature < maxIndex + 1) {
-      if (getNumFeature != -1) {
-        log.warn(s"MaxFeatureIndex specified is smaller the the actual ${maxIndex + 1} !")
-      } else {
-        log.info(s"MaxFeatureIndex is set to ${maxIndex + 1} !")
-      }
-
-      setNumFeature(maxIndex + 1)
-    } else {
-      log.info(s"MaxFeatureIndex is ${maxIndex + 1} !")
+    if (example.size != getNumFeature) {
+      setNumFeatures(example.size)
+      log.info("number of feature form data and algorithm setting does not match")
     }
-    implicit val dim: Long = getNumFeature
-
-    val minIndex = featSummarizer.minIndex
-    instr.logNamedValue("minIndex", minIndex)
-    require(minIndex >= 0, "the min index must be >= 0")
+    instr.logNamedValue("NumFeatures", getNumFeature)
 
     // update numFeatures, that is mode size
-    // update numFeatures, that is mode size
-    sharedConf.set(MLCoreConf.ML_MODEL_SIZE, featSummarizer.validateIndexCount.toString)
-
-    // instr.logNamedValue("validateIndexCount", numFeatures)
-
-    if (getIsSparse != featSummarizer.isSparse) {
-      setIsSparse(featSummarizer.isSparse)
-    }
+    sharedConf.set(MLCoreConf.ML_MODEL_SIZE, numValidateFeatures.toString)
 
     // update sharedConf
     finalizeConf(psClient)
+    val updateConf = instances.mapPartitions { _ =>
+      val exeConf = SharedConf.get()
+      sharedConf.allKeys.foreach { key =>
+        exeConf.set(key, sharedConf.get(key))
+      }
 
-    bcValue = instances.context.broadcast(
-      ExecutorContext(sharedConf, numTask, featSummarizer.partitionStat))
-    DriverContext.get().registerBroadcastVariables(bcValue)
+      Iterator.single[Boolean](true)
+    }.reduce((first: Boolean, second: Boolean) => first && second)
+
+    assert(updateConf, "updateConf success!")
+    implicit val dim: Long = getNumFeature
 
     /** *******************************************************************************************/
 
-    val manifoldBuilder = new ManifoldBuilder(instances, getNumBatch)
+    val manifoldBuilder = new ManifoldBuilder(instances, getNumBatch, partitionStat)
     val manifoldRDD = manifoldBuilder.manifoldRDD()
 
     if (handlePersistence) instances.unpersist()
@@ -152,8 +154,6 @@ class AngelRegressor(override val uid: String)
     angelModel.createMatrices(sparkEnvCtx)
     val finishedCreate = System.currentTimeMillis()
     globalRunStat.setCreateTime(finishedCreate - startCreate)
-
-    DriverContext.get().createAndInitPSAgent
 
     if (getIncTrain) {
       val path = getInitModelPath
@@ -219,7 +219,7 @@ class AngelRegressorModel(override val uid: String, override val angelModelName:
   extends RegressionModel[Vector, AngelRegressorModel] with AngelSparkModel
     with PredictorParams with MLWritable with Logging {
   @transient implicit override val psClient: AngelPSClient = DriverContext.get().getAngelClient
-  override val numFeatures: Int = sharedConf.getInt(MLCoreConf.ML_FEATURE_INDEX_RANGE, -1)
+  override val numFeatures: Long = getNumFeature
 
   def findSummaryModel(): (AngelRegressorModel, String) = {
     val model = if ($(predictionCol).isEmpty) {
@@ -269,7 +269,7 @@ class AngelRegressorModel(override val uid: String, override val angelModelName:
 
     if (bcValue == null) {
       finalizeConf(psClient)
-      bcValue = dataset.rdd.context.broadcast(ExecutorContext(sharedConf, taskNum, null))
+      bcValue = dataset.rdd.context.broadcast(ExecutorContext(sharedConf, taskNum))
       DriverContext.get().registerBroadcastVariables(bcValue)
     }
 

@@ -10,14 +10,22 @@ import org.apache.spark.TaskContext
 import org.apache.spark.internal.Logging
 
 abstract class PSAgentContext(conf: SharedConf) extends Logging{
-  @transient private var psAgent: PSAgent = _
-  @transient private var stopAgentHookTask: Runnable = _
+  @transient protected var psAgent: PSAgent = _
+  @transient protected var stopAgentHookTask: Runnable = _
 
   val sparkEnvContext: SparkEnvContext
 
   private def getLocalConf(taskContext: TaskContext): Configuration = {
     val taskConf = new Configuration()
-    conf.allKeys().filter(key => key.startsWith("ml.") || key.startsWith("angel."))
+
+    val sharedConf = SharedConf.get()
+    if (sharedConf != conf) {
+      conf.allKeys.foreach{ key =>
+        sharedConf.set(key, conf.get(key))
+      }
+    }
+
+    sharedConf.allKeys().filter(key => key.startsWith("ml.") || key.startsWith("angel."))
       .foreach { key => taskConf.set(key, conf.get(key)) }
 
     try {
@@ -36,7 +44,7 @@ abstract class PSAgentContext(conf: SharedConf) extends Logging{
     taskConf
   }
 
-  def createAndInitPSAgent: PSAgent = {
+  protected def createAndInitPSAgent: PSAgent = {
     if (psAgent == null) {
       val taskContext = TaskContext.get()
       val taskConf = getLocalConf(taskContext)
@@ -79,4 +87,6 @@ abstract class PSAgentContext(conf: SharedConf) extends Logging{
       psAgent = null
     }
   }
+
+  def getPSAgent: PSAgent = psAgent
 }

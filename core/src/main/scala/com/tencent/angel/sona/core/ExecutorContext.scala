@@ -6,36 +6,36 @@ import org.apache.spark.TaskContext
 import org.apache.spark.internal.Logging
 
 
-case class ExecutorContext(conf: SharedConf, numTask: Int,
-                           partitionStat: Map[Int, Int],
-                           sharedParams: Boolean = false)
+case class ExecutorContext(conf: SharedConf, numTask: Int)
   extends PSAgentContext(conf) with Serializable with Logging {
 
-  @transient lazy val lower: Double = 1.0 / Math.log(Double.MaxValue)
-  @transient lazy val upper: Double = Math.log(Double.MaxValue)
-
   @transient override lazy val sparkEnvContext: SparkEnvContext = SparkEnvContext(null)
-
-  def getSamplesInPartition: Int = {
-    partitionStat(TaskContext.getPartitionId())
-  }
 }
 
 object ExecutorContext {
-  @transient private var graphModelPoll: GraphModelPool = _
+  @transient private var graphModelPool: GraphModelPool = _
   @transient private var psAgent: PSAgent = _
 
-  private def checkPSAgent(exeCtx: ExecutorContext): Unit = {
-    if (psAgent == null) {
+  def getPSAgent(exeCtx: ExecutorContext): PSAgent = synchronized {
+    while (psAgent == null) {
       psAgent = exeCtx.createAndInitPSAgent
+    }
+
+    psAgent
+  }
+
+  def stopPSAgent(): Unit = synchronized {
+    while (psAgent != null) {
+      psAgent.stop()
+      psAgent = null
     }
   }
 
   private def checkGraphModelPool(exeCtx: ExecutorContext): Unit = {
-    checkPSAgent(exeCtx)
+    getPSAgent(exeCtx)
 
-    if (graphModelPoll == null) {
-      graphModelPoll = new GraphModelPool(exeCtx.sparkEnvContext, exeCtx.conf, exeCtx.numTask)
+    if (graphModelPool == null) {
+      graphModelPool = new GraphModelPool(exeCtx.sparkEnvContext, exeCtx.numTask)
     }
   }
 
@@ -49,6 +49,6 @@ object ExecutorContext {
 
   implicit def toGraphModelPool(exeCtx: ExecutorContext): GraphModelPool = synchronized {
     checkGraphModelPool(exeCtx)
-    graphModelPoll
+    graphModelPool
   }
 }

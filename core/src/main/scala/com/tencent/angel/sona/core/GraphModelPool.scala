@@ -7,7 +7,7 @@ import org.apache.spark.TaskContext
 
 import scala.collection.mutable
 
-class GraphModelPool(sparkEnvContext: SparkEnvContext, conf: SharedConf, numTask: Int) {
+class GraphModelPool(sparkEnvContext: SparkEnvContext, numTask: Int) {
   @transient private lazy val modelQueue = new mutable.Queue[AngeGraphModel]()
   @transient private lazy val usedMap = new mutable.HashMap[Long, AngeGraphModel]()
 
@@ -17,7 +17,7 @@ class GraphModelPool(sparkEnvContext: SparkEnvContext, conf: SharedConf, numTask
     if (usedMap.contains(partitionId)) {
       usedMap(partitionId)
     } else if (modelQueue.isEmpty) {
-      val model = new AngeGraphModel(conf, numTask)
+      val model = new AngeGraphModel(SharedConf.get(), numTask)
       model.buildNetwork()
       model.createMatrices(sparkEnvContext)
       model.setState(VarState.Initialized)

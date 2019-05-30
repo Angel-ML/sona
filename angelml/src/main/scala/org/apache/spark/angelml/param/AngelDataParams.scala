@@ -7,9 +7,9 @@ import org.apache.spark.angelml.param.shared.{HasNumFeatures, HasWeightCol}
 trait AngelDataParams extends Params with HasNumFeatures with HasNumField
   with HasSparseData with HasWeightCol with ParamsHelper {
 
-  def setNumFeature(value: Long): this.type = setInternal(numFeatures, value)
+  def setNumFeatures(value: Long): this.type = setInternal(numFeature, value)
 
-  setDefault(numFeatures -> MLCoreConf.DEFAULT_ML_FEATURE_INDEX_RANGE)
+  setDefault(numFeature -> MLCoreConf.DEFAULT_ML_FEATURE_INDEX_RANGE)
 
   def setNumField(value: Int): this.type = setInternal(numField, value)
 
@@ -29,10 +29,10 @@ trait HasNumField extends Params {
 
 
 trait HasNumClasses extends Params {
-  final val numClasses: IntParam = new IntParam(this, "numClasses",
+  final val numClass: IntParam = new IntParam(this, "numClasses",
     "the number of classes (> 0)", ParamValidators.gt(0))
 
-  final def getNumClasses: Int = $(numClasses)
+  final def getNumClass: Int = $(numClass)
 }
 
 

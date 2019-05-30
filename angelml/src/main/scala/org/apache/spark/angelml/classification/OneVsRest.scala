@@ -145,7 +145,7 @@ final class OneVsRestModel private[angelml](
   val numClasses: Int = models.length
 
   @Since("2.4.0")
-  val numFeatures: Int = models.head.numFeatures
+  val numFeatures: Long = models.head.numFeatures
 
   /** @group setParam */
   @Since("2.1.0")

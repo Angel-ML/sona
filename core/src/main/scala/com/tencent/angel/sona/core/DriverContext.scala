@@ -2,6 +2,7 @@ package com.tencent.angel.sona.core
 
 import com.tencent.angel.client.{AngelContext, AngelPSClient}
 import com.tencent.angel.ml.core.conf.SharedConf
+import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
@@ -47,7 +48,7 @@ class DriverContext private(hadoopConf: Configuration) extends PSAgentContext(Sh
     angelClient
   }
 
-  def startAngel(): AngelPSClient = synchronized {
+  def startAngelAndPSAgent(): AngelPSClient = synchronized {
     SPKSQLUtils.registerUDT()
 
     if (angelClient == null) {
@@ -68,6 +69,8 @@ class DriverContext private(hadoopConf: Configuration) extends PSAgentContext(Sh
         ConfUtils.MASTER_IP, ConfUtils.MASTER_PORT, "angel", "ml", "spark.ps", "spark.hadoop")
     }
 
+    createAndInitPSAgent
+
     angelClient
   }
 
@@ -75,12 +78,13 @@ class DriverContext private(hadoopConf: Configuration) extends PSAgentContext(Sh
     if (angelClient != null) true else false
   }
 
-  def stopAngel(): Unit = synchronized {
+  def stopAngelAndPSAgent(): Unit = synchronized {
     if (stopAngelHookTask != null) {
       ShutdownHookManager.get().removeShutdownHook(stopAngelHookTask)
       stopAngelHookTask = null
     }
 
+    stopAgent()
     doStopAngel()
   }
 
