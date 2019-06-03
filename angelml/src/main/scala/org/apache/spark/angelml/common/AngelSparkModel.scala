@@ -1,12 +1,12 @@
 package org.apache.spark.angelml.common
 
 import com.tencent.angel.client.AngelPSClient
+import com.tencent.angel.ml.core.conf.SharedConf
 import com.tencent.angel.sona.core.{DriverContext, ExecutorContext, SparkEnvContext}
 import com.tencent.angel.sona.ml.AngeGraphModel
 import org.apache.spark.angelml.evaluation.TrainingStat
-import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.angelml.param.{AngelGraphParams, Params}
-import org.apache.spark.angelml.param.Params
+import org.apache.spark.broadcast.Broadcast
 
 trait AngelSparkModel extends Params with AngelGraphParams {
   val angelModelName: String
@@ -14,6 +14,7 @@ trait AngelSparkModel extends Params with AngelGraphParams {
   var numTask: Int = -1
 
   @transient var bcValue: Broadcast[ExecutorContext] = _
+  @transient var bcConf: Broadcast[SharedConf] = _
 
   @transient implicit val psClient: AngelPSClient = synchronized {
     DriverContext.get().getAngelClient

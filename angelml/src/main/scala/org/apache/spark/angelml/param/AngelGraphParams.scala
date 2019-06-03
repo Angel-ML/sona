@@ -3,9 +3,8 @@ package org.apache.spark.angelml.param
 import java.io.File
 
 import com.tencent.angel.ml.core.conf.MLCoreConf
-import com.tencent.angel.ml.core.utils.JsonUtils
+import com.tencent.angel.ml.core.utils.{JsonUtils, MLException}
 import org.apache.hadoop.conf.Configuration
-import org.apache.spark.angelml.param.shared.HasAggregationDepth
 import org.json4s.JsonAST.JObject
 
 
@@ -32,6 +31,8 @@ trait AngelGraphParams extends Params with AngelDataParams with HasModelType
       val json: JObject = JsonUtils.parseAndUpdateJson(getModelJsonFile, sharedConf, hadoopConf)
       setModelJson(json)
       sharedConf.setJson(json)
+    } else {
+      throw MLException("json file not exists!")
     }
 
     this

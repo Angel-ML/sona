@@ -1,6 +1,6 @@
 package org.apache.spark.angelml.common
 
-import com.tencent.angel.ml.core.conf.MLCoreConf
+import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.core.data.DataBlock
 import com.tencent.angel.ml.core.local.data.LocalMemoryDataBlock
 import com.tencent.angel.ml.math2.utils.LabeledData
@@ -15,7 +15,8 @@ import org.apache.spark.sql.{Row, SPKSQLUtils}
 import scala.collection.mutable.ListBuffer
 
 class Predictor(bcValue: Broadcast[ExecutorContext],
-                featIdx: Int, predictionCol: String, probabilityCol: String = "") extends Serializable {
+                featIdx: Int, predictionCol: String, probabilityCol: String,
+                bcConf: Broadcast[SharedConf]) extends Serializable {
 
   @transient private lazy val executorContext: ExecutorContext = {
     bcValue.value
@@ -33,7 +34,7 @@ class Predictor(bcValue: Broadcast[ExecutorContext],
   }
 
   def predictRDD(data: Iterator[Row]): Iterator[Row] = {
-    val localModel = executorContext.borrowModel
+    val localModel = executorContext.borrowModel(bcConf.value)
     val batchSize = 1024
     val storage = new LocalMemoryDataBlock(batchSize, batchSize * 1024 * 1024)
 
@@ -82,7 +83,7 @@ class Predictor(bcValue: Broadcast[ExecutorContext],
   }
 
   def predictRaw(features: Vector): Vector = {
-    val localModel = executorContext.borrowModel
+    val localModel = executorContext.borrowModel(bcConf.value)
 
     val res = localModel.predict(new LabeledData(features, 0.0))
 

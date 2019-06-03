@@ -37,6 +37,7 @@
     <spark.version>2.4.0</spark.version>
     <angel.version>2.0.1</angel.version>
     <breeze.version>0.13</breeze.version>
+    <json4s.version>3.5.3</json4s.version>
     <!-- Modules that copy jars to the build directory should do so under this location. -->
     <jars.target.dir>${project.build.directory}/scala-${scala.binary.version}/jars</jars.target.dir>
 
@@ -139,6 +140,10 @@
       <version>${spark.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
         </exclusion>
@@ -156,12 +161,12 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -171,12 +176,12 @@
       <version>${spark.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -188,12 +193,12 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -205,12 +210,12 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -220,12 +225,12 @@
       <version>${spark.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -237,12 +242,12 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -254,12 +259,12 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-all</artifactId>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
         </exclusion>
         <exclusion>
           <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
+          <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -268,6 +273,31 @@
       <artifactId>netty-all</artifactId>
       <version>4.1.17.Final</version>
     </dependency>
+    <dependency>
+      <groupId>org.json4s</groupId>
+      <artifactId>json4s-native_${scala.binary.version}</artifactId>
+      <version>${json4s.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json4s</groupId>
+      <artifactId>json4s-ast_${scala.binary.version}</artifactId>
+      <version>${json4s.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json4s</groupId>
+      <artifactId>json4s-core_${scala.binary.version}</artifactId>
+      <version>${json4s.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json4s</groupId>
+      <artifactId>json4s-jackson_${scala.binary.version}</artifactId>
+      <version>${json4s.version}</version>
+    </dependency>
+    <!--dependency>
+      <groupId>org.json4s</groupId>
+      <artifactId>json4s-scalap_${scala.binary.version}</artifactId>
+      <version>${json4s.version}</version>
+    </dependency-->
   </dependencies>
 
   <build>

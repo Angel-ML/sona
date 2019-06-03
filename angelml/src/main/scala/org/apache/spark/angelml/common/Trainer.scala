@@ -1,6 +1,6 @@
 package org.apache.spark.angelml.common
 
-import com.tencent.angel.ml.core.conf.MLCoreConf
+import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.math2.utils.LabeledData
 import com.tencent.angel.sona.core.ExecutorContext
 import com.tencent.angel.sona.util.ConfUtils
@@ -8,7 +8,7 @@ import org.apache.spark.angelml.evaluation.TrainingStat
 import org.apache.spark.angelml.evaluation.training.{ClassificationTrainingStat, ClusteringTrainingStat, RegressionTrainingStat}
 import org.apache.spark.broadcast.Broadcast
 
-class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int) extends Serializable {
+class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast[SharedConf]) extends Serializable {
   @transient private lazy val executorContext: ExecutorContext = {
     bcValue.value
   }
@@ -24,7 +24,7 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int) extends Serializa
         new ClusteringTrainingStat()
     }
 
-    val localModel = executorContext.borrowModel // those code executor on task
+    val localModel = executorContext.borrowModel(bcConf.value) // those code executor on task
 
     val graph = localModel.graph
 

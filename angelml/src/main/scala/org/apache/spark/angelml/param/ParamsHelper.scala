@@ -34,17 +34,19 @@ trait ParamsHelper extends Params {
     this
   }
 
-  def finalizeConf(psClient: AngelPSClient): this.type = {
-    // 1. get the params from Angel Client
-    updateFromCMDConf(psClient)
+  def finalizeConf(psClient: AngelPSClient): this.type = synchronized {
+    if (!finalized) {
+      // 1. get the params from Angel Client
+      updateFromCMDConf(psClient)
 
-    // 2. get the params from json file
-    updateFromJson()
+      // 2. get the params from json file
+      updateFromJson()
 
-    // 3. get the params from user setting in the program
-    updateFromProgramSetting()
+      // 3. get the params from user setting in the program
+      updateFromProgramSetting()
 
-    finalized = true
+      finalized = true
+    }
 
     this
   }

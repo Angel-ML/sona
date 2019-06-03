@@ -4,7 +4,7 @@ import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.ml.core.PSOptimizerProvider
 import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.core.variable.VarState
-import com.tencent.angel.ml.math2.utils.LabeledData
+import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
 import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.sona.core._
 import com.tencent.angel.sona.util.ConfUtils
@@ -13,11 +13,10 @@ import org.apache.spark.angelml.common._
 import org.apache.spark.angelml.evaluation.evaluating.RegressionSummaryImpl
 import org.apache.spark.angelml.evaluation.training.RegressionTrainingStat
 import org.apache.spark.angelml.evaluation.{RegressionSummary, TrainingStat}
-import org.apache.spark.angelml.linalg.{DenseVector, Vector}
-import org.apache.spark.angelml.metaextract.FeatureStats
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, SparseVector, Vector}
 import org.apache.spark.angelml.param.{AngelGraphParams, AngelOptParams, ParamMap}
 import org.apache.spark.angelml.util.DataUtils.Example
-import org.apache.spark.angelml.util._
+import org.apache.spark.angelml.util.{FeatureStats, _}
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.internal.Logging
 import org.apache.spark.rdd.RDD
@@ -37,7 +36,8 @@ class AngelRegressor(override val uid: String)
   private implicit val psClient: AngelPSClient = driverCtx.getAngelClient
   private implicit var psAgent: PSAgent = driverCtx.getPSAgent
   private val sparkEnvCtx: SparkEnvContext = DriverContext.get().sparkEnvContext
-  implicit var bcValue: Broadcast[ExecutorContext] = _
+  implicit var bcExeCtx: Broadcast[ExecutorContext] = _
+  implicit var bcConf: Broadcast[SharedConf] = _
 
   def this() = {
     this(Identifiable.randomUID("AngelRegression_"))
@@ -77,8 +77,8 @@ class AngelRegressor(override val uid: String)
     val numTask = instances.getNumPartitions
     psClient.setTaskNum(numTask)
 
-    bcValue = instances.context.broadcast(ExecutorContext(sharedConf, numTask))
-    DriverContext.get().registerBroadcastVariables(bcValue)
+    bcExeCtx = instances.context.broadcast(ExecutorContext(sharedConf, numTask))
+    DriverContext.get().registerBroadcastVariables(bcExeCtx)
 
     // persist RDD if StorageLevel is NONE
     val handlePersistence = dataset.storageLevel == StorageLevel.NONE
@@ -88,52 +88,92 @@ class AngelRegressor(override val uid: String)
     val instr = Instrumentation.create(this, instances)
     instr.logParams(this, maxIter)
 
-    // 3. calculate statistics for data set
-    val featureStats = new FeatureStats(uid, getModelType, bcValue)
+    // 3. check data configs
     val example = instances.take(1).head.features
-    val (partitionStat, numValidateFeatures) = example match {
-      case v: DenseVector =>
-        setIsSparse(false)
-        val partitionStat_ = instances.mapPartitions(featureStats.denseStats, preservesPartitioning = true)
-          .reduce(featureStats.mergeMap).asScala.toMap
-        val numValidateFeatures_ = v.size
-        partitionStat_ -> numValidateFeatures_
-      case _ =>
-        setIsSparse(true)
-        featureStats.createPSMat(psClient)
-        val partitionStat_ = instances.mapPartitions(featureStats.sparseStats, preservesPartitioning = true)
-          .reduce(featureStats.mergeMap).asScala.toMap
 
-        val numValidateFeatures_ = featureStats.getNumValidateFeatures(psAgent)
-
-        partitionStat_ -> numValidateFeatures_
-    }
-
-    if (example.size != getNumFeature) {
-      setNumFeatures(example.size)
+    // 3.1 NumFeature check
+    if (example.size != getNumFeature && getNumFeature != -1) {
+      // has set
+      setNumFeatures(Math.max(example.size, getNumFeature))
       log.info("number of feature form data and algorithm setting does not match")
+    } else if (example.size != getNumFeature && getNumFeature == -1) {
+      // not set
+      setDefault(numFeature, example.size)
+      log.info("get number of feature form data")
+    } else {
+      log.info("number of feature form data and algorithm setting match")
     }
     instr.logNamedValue("NumFeatures", getNumFeature)
 
-    // update numFeatures, that is mode size
-    sharedConf.set(MLCoreConf.ML_MODEL_SIZE, numValidateFeatures.toString)
+    // 3.2 better modelType default value for sona when ModelSize is unknown
+    if (getModelSize == -1) {
+      if (example.size < 1e6) {
+        setDefault(modelType, RowType.T_DOUBLE_DENSE.toString)
+      } else if (example.size < Int.MaxValue) {
+        setDefault(modelType, RowType.T_DOUBLE_SPARSE.toString)
+      } else {
+        setDefault(modelType, RowType.T_DOUBLE_SPARSE_LONGKEY.toString)
+      }
+    } else {
+      example match {
+        case _: DenseVector =>
+          setDefault(modelType, RowType.T_DOUBLE_DENSE.toString)
+        case iv: IntSparseVector if iv.size <= (2.0 * getModelSize) =>
+          setDefault(modelType, RowType.T_DOUBLE_DENSE.toString)
+        case iv: IntSparseVector if iv.size > (2.0 * getModelSize) =>
+          setDefault(modelType, RowType.T_DOUBLE_SPARSE.toString)
+        case _: LongSparseVector =>
+          setDefault(modelType, RowType.T_DOUBLE_SPARSE_LONGKEY.toString)
+      }
+    }
+
+    // 3.3 ModelSize check && partitionStat
+    val featureStats = new FeatureStats(uid, getModelType, bcExeCtx)
+    val partitionStat = if (getModelSize == -1) {
+      // not set
+      example match {
+        case v: DenseVector =>
+          setModelSize(v.size)
+          instances.mapPartitions(featureStats.partitionStats, preservesPartitioning = true)
+            .reduce(featureStats.mergeMap).asScala.toMap
+        case _: SparseVector =>
+          featureStats.createPSMat(psClient, getNumFeature)
+          val partitionStat_ = instances.mapPartitions(featureStats.partitionStatsWithPS, preservesPartitioning = true)
+            .reduce(featureStats.mergeMap).asScala.toMap
+
+          val numValidateFeatures = featureStats.getNumValidateFeatures(psAgent)
+          setModelSize(numValidateFeatures)
+          partitionStat_
+      }
+    } else {
+      // has set
+      instances.mapPartitions(featureStats.partitionStats, preservesPartitioning = true)
+        .reduce(featureStats.mergeMap).asScala.toMap
+    }
+
+    // 3.4 input data format check and better modelType default value after model known
+    example match {
+      case _: DenseVector =>
+        setIsSparse(false)
+        setDefault(modelType, RowType.T_DOUBLE_DENSE.toString)
+      case iv: IntSparseVector if iv.size <= (2.0 * getModelSize) =>
+        setIsSparse(true)
+        setDefault(modelType, RowType.T_DOUBLE_DENSE.toString)
+      case iv: IntSparseVector if iv.size > (2.0 * getModelSize) =>
+        setIsSparse(true)
+        setDefault(modelType, RowType.T_DOUBLE_SPARSE.toString)
+      case _: LongSparseVector =>
+        setIsSparse(true)
+        setDefault(modelType, RowType.T_DOUBLE_SPARSE_LONGKEY.toString)
+    }
 
     // update sharedConf
     finalizeConf(psClient)
-    val updateConf = instances.mapPartitions { _ =>
-      val exeConf = SharedConf.get()
-      sharedConf.allKeys.foreach { key =>
-        exeConf.set(key, sharedConf.get(key))
-      }
-
-      Iterator.single[Boolean](true)
-    }.reduce((first: Boolean, second: Boolean) => first && second)
-
-    assert(updateConf, "updateConf success!")
-    implicit val dim: Long = getNumFeature
+    bcConf = instances.context.broadcast(sharedConf)
+    DriverContext.get().registerBroadcastVariables(bcConf)
 
     /** *******************************************************************************************/
-
+    implicit val dim: Long = getNumFeature
     val manifoldBuilder = new ManifoldBuilder(instances, getNumBatch, partitionStat)
     val manifoldRDD = manifoldBuilder.manifoldRDD()
 
@@ -144,7 +184,7 @@ class AngelRegressor(override val uid: String)
       new AngelRegressorModel(this.uid, getModelName),
       this.extractParamMap())
 
-    sparkModel.setBCValue(bcValue)
+    sparkModel.setBCValue(bcExeCtx)
 
     val angelModel = sparkModel.angelModel
 
@@ -177,7 +217,7 @@ class AngelRegressor(override val uid: String)
       globalRunStat.clearStat().setAvgLoss(0.0).setNumSamples(0)
       manifoldRDD.foreach { batch: RDD[Array[LabeledData]] =>
         // training one batch
-        val trainer = new Trainer(bcValue, epoch)
+        val trainer = new Trainer(bcExeCtx, epoch, bcConf)
         val runStat = batch.map(miniBatch => trainer.trainOneBatch(miniBatch))
           .reduce(TrainingStat.mergeInBatch)
 
@@ -219,7 +259,7 @@ class AngelRegressorModel(override val uid: String, override val angelModelName:
   extends RegressionModel[Vector, AngelRegressorModel] with AngelSparkModel
     with PredictorParams with MLWritable with Logging {
   @transient implicit override val psClient: AngelPSClient = DriverContext.get().getAngelClient
-  override val numFeatures: Long = getNumFeature
+  override lazy val numFeatures: Long = getNumFeature
 
   def findSummaryModel(): (AngelRegressorModel, String) = {
     val model = if ($(predictionCol).isEmpty) {
@@ -273,7 +313,13 @@ class AngelRegressorModel(override val uid: String, override val angelModelName:
       DriverContext.get().registerBroadcastVariables(bcValue)
     }
 
-    val predictor = new Predictor(bcValue, featIdx, predictionColName)
+    if (bcConf == null) {
+      finalizeConf(psClient)
+      bcConf = dataset.rdd.context.broadcast(sharedConf)
+      DriverContext.get().registerBroadcastVariables(bcConf)
+    }
+
+    val predictor = new Predictor(bcValue, featIdx, predictionColName, "", bcConf)
 
     val newSchema: StructType = dataset.schema.add(predictionColName, DoubleType)
 

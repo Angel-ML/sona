@@ -11,13 +11,19 @@ class GraphModelPool(sparkEnvContext: SparkEnvContext, numTask: Int) {
   @transient private lazy val modelQueue = new mutable.Queue[AngeGraphModel]()
   @transient private lazy val usedMap = new mutable.HashMap[Long, AngeGraphModel]()
 
-  def borrowModel: AngeGraphModel = this.synchronized {
+  def borrowModel(conf: SharedConf): AngeGraphModel = this.synchronized {
     val partitionId = TaskContext.getPartitionId()
+
+    val conf_ = if (conf == null) {
+      SharedConf.get()
+    } else {
+      conf
+    }
 
     if (usedMap.contains(partitionId)) {
       usedMap(partitionId)
     } else if (modelQueue.isEmpty) {
-      val model = new AngeGraphModel(SharedConf.get(), numTask)
+      val model = new AngeGraphModel(conf_, numTask)
       model.buildNetwork()
       model.createMatrices(sparkEnvContext)
       model.setState(VarState.Initialized)

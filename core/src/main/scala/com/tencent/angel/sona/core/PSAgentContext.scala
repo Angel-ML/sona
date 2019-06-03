@@ -18,14 +18,7 @@ abstract class PSAgentContext(conf: SharedConf) extends Logging{
   private def getLocalConf(taskContext: TaskContext): Configuration = {
     val taskConf = new Configuration()
 
-    val sharedConf = SharedConf.get()
-    if (sharedConf != conf) {
-      conf.allKeys.foreach{ key =>
-        sharedConf.set(key, conf.get(key))
-      }
-    }
-
-    sharedConf.allKeys().filter(key => key.startsWith("ml.") || key.startsWith("angel."))
+    conf.allKeys().filter(key => key.startsWith("ml.") || key.startsWith("angel."))
       .foreach { key => taskConf.set(key, conf.get(key)) }
 
     try {
