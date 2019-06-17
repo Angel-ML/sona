@@ -14,7 +14,8 @@ import com.tencent.angel.sona.core.SparkEnvContext
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 
-class SparkPSVariableManager private(isSparseFormat: Boolean) extends VariableManager {
+class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: SharedConf)
+  extends VariableManager(isSparseFormat, sharedConf) {
   override def createALL[T](envCtx: EnvContext[T]): Unit = {
     envCtx match {
       case SparkEnvContext(client: AngelPSClient) if client != null =>
@@ -66,7 +67,6 @@ class SparkPSVariableManager private(isSparseFormat: Boolean) extends VariableMa
   override def saveALL[T](envCtx: EnvContext[T], path: String): Unit = {
     envCtx match {
       case SparkEnvContext(client: AngelPSClient) if client != null =>
-        val sharedConf = SharedConf.get()
         val saveContext = new ModelSaveContext
         getALLVariables.foreach { variable =>
           assert(variable.getState == VarState.Initialized || variable.getState == VarState.Ready)
@@ -86,15 +86,15 @@ class SparkPSVariableManager private(isSparseFormat: Boolean) extends VariableMa
 object SparkPSVariableManager {
   private val sparkPSVariableManager = new ThreadLocal[SparkPSVariableManager]()
 
-  def get(isSparseFormat: Boolean): SparkPSVariableManager = synchronized {
+  def get(isSparseFormat: Boolean, sharedConf: SharedConf): SparkPSVariableManager = synchronized {
     if (sparkPSVariableManager.get() == null) {
-      sparkPSVariableManager.set(new SparkPSVariableManager(isSparseFormat))
+      sparkPSVariableManager.set(new SparkPSVariableManager(isSparseFormat, sharedConf))
     }
 
     sparkPSVariableManager.get()
   }
 
-  def getNew(isSparseFormat: Boolean): SparkPSVariableManager = {
-    new SparkPSVariableManager(isSparseFormat)
+  def getNew(isSparseFormat: Boolean, sharedConf: SharedConf): SparkPSVariableManager = {
+    new SparkPSVariableManager(isSparseFormat, sharedConf)
   }
 }

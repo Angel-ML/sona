@@ -106,9 +106,25 @@ private[dummy] class DummyFileFormat extends TextBasedFileFormat with DataSource
         MLUtils.computeNumFeatures(parsed)
       }
     }
+    val validateFeatureNumber: Long = dummyOptions.numValidateFeatures.getOrElse{
+      if (dummyOptions.isSparse){
+        logWarning(
+          "'numValidateFeatures' option not specified, determining the number of features by going " +
+            "though the input. If you know the number in advance, please specify it via " +
+            "'numValidateFeatures' option to avoid the extra scan.")
+
+        -1L
+      } else {
+        numFeatures
+      }
+    }
+
+    val keyType: String = options.getOrElse(DummyOptions.KEY_TYPE, DummyOptions.INT_KEY_TYPE)
 
     val featuresMetadata = new MetadataBuilder()
       .putLong(DummyOptions.NUM_FEATURES, numFeatures)
+      .putLong(DummyOptions.VALIDATE_FEATURE_NUMBER, validateFeatureNumber)
+      .putString(DummyOptions.KEY_TYPE, keyType)
       .build()
 
     Some(

@@ -553,9 +553,9 @@ trait HasLongKey extends Params {
 }
 
 trait HasNumFeatures extends Params {
-  val numFeatures = new LongParam(this, "numFeature",
+  val numFeature = new LongParam(this, "numFeature",
     "the largest index of features (> 0)", (value: Long) => value == -1 || value > 0)
 
-  def getNumFeatures: Long = $(numFeatures)
+  def getNumFeature: Long = $(numFeature)
 }
 // scalastyle:on

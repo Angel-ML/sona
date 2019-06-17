@@ -21,7 +21,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.annotation.{Experimental, Since}
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.angelml.attribute.AttributeGroup
-import org.apache.spark.angelml.linalg.{BLAS, DenseVector, IntSparseVector, Vector, Vectors}
+import org.apache.spark.angelml.linalg.{BLAS, DenseVector, IntSparseVector, LongSparseVector, Vector, Vectors}
 import org.apache.spark.angelml.param.{Param, ParamMap, ParamValidators}
 import org.apache.spark.angelml.param.shared.{HasFeaturesCol, HasPredictionCol}
 import org.apache.spark.angelml.util._
@@ -637,6 +637,7 @@ private[evaluation] object CosineSilhouette extends Silhouette {
         features match {
           case d: DenseVector => Vectors.dense(d.values.map(_ / norm))
           case s: IntSparseVector => Vectors.sparse(s.size.toInt, s.indices, s.values.map(_ / norm))
+          case s: LongSparseVector => Vectors.sparse(s.size.toInt, s.indices, s.values.map(_ / norm))
         }
       }
     }

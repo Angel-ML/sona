@@ -176,7 +176,7 @@ abstract class PredictionModel[FeaturesType, M <: PredictionModel[FeaturesType, 
 
   /** Returns the number of features the model was trained on. If unknown, returns -1 */
   @Since("1.6.0")
-  def numFeatures: Int = -1
+  def numFeatures: Long = -1
 
   /**
    * Returns the SQL DataType corresponding to the FeaturesType type parameter.

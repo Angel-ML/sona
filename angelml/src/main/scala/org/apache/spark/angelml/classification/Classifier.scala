@@ -17,48 +17,47 @@
 
 package org.apache.spark.angelml.classification
 
-import org.apache.spark.SparkException
-import org.apache.spark.annotation.{DeveloperApi, Since}
-import org.apache.spark.angelml.{PredictionModel, Predictor, PredictorParams}
 import org.apache.spark.angelml.feature.LabeledPoint
 import org.apache.spark.angelml.linalg.{Vector, VectorUDT}
 import org.apache.spark.angelml.param.shared.HasRawPredictionCol
-import org.apache.spark.angelml.util.{MetadataUtils, SchemaUtils}
+import org.apache.spark.angelml.util.SchemaUtils
+import org.apache.spark.angelml.{PredictionModel, Predictor, PredictorParams}
+import org.apache.spark.annotation.DeveloperApi
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, Dataset, Row}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DataType, StructType}
+import org.apache.spark.sql.{DataFrame, Dataset, Row}
 
 /**
- * (private[spark]) Params for classification.
- */
+  * (private[spark]) Params for classification.
+  */
 private[spark] trait ClassifierParams
   extends PredictorParams with HasRawPredictionCol {
 
   override protected def validateAndTransformSchema(
-      schema: StructType,
-      fitting: Boolean,
-      featuresDataType: DataType): StructType = {
+                                                     schema: StructType,
+                                                     fitting: Boolean,
+                                                     featuresDataType: DataType): StructType = {
     val parentSchema = super.validateAndTransformSchema(schema, fitting, featuresDataType)
     SchemaUtils.appendColumn(parentSchema, $(rawPredictionCol), new VectorUDT)
   }
 }
 
 /**
- * :: DeveloperApi ::
- *
- * Single-label binary or multiclass classification.
- * Classes are indexed {0, 1, ..., numClasses - 1}.
- *
- * @tparam FeaturesType  Type of input features.  E.g., `Vector`
- * @tparam E  Concrete Estimator type
- * @tparam M  Concrete Model type
- */
+  * :: DeveloperApi ::
+  *
+  * Single-label binary or multiclass classification.
+  * Classes are indexed {0, 1, ..., numClasses - 1}.
+  *
+  * @tparam FeaturesType Type of input features.  E.g., `Vector`
+  * @tparam E            Concrete Estimator type
+  * @tparam M            Concrete Model type
+  */
 @DeveloperApi
 abstract class Classifier[
-    FeaturesType,
-    E <: Classifier[FeaturesType, E, M],
-    M <: ClassificationModel[FeaturesType, M]]
+FeaturesType,
+E <: Classifier[FeaturesType, E, M],
+M <: ClassificationModel[FeaturesType, M]]
   extends Predictor[FeaturesType, E, M] with ClassifierParams {
 
   /** @group setParam */
@@ -67,15 +66,15 @@ abstract class Classifier[
   // TODO: defaultEvaluator (follow-up PR)
 
   /**
-   * Extract [[labelCol]] and [[featuresCol]] from the given dataset,
-   * and put it in an RDD with strong types.
-   *
-   * @param dataset  DataFrame with columns for labels ([[org.apache.spark.sql.types.NumericType]])
-   *                 and features (`Vector`).
-   * @param numClasses  Number of classes label can take.  Labels must be integers in the range
-   *                    [0, numClasses).
-   * @note Throws `SparkException` if any label is a non-integer or is negative
-   */
+    * Extract [[labelCol]] and [[featuresCol]] from the given dataset,
+    * and put it in an RDD with strong types.
+    *
+    * @param dataset    DataFrame with columns for labels ([[org.apache.spark.sql.types.NumericType]])
+    *                   and features (`Vector`).
+    * @param numClasses Number of classes label can take.  Labels must be integers in the range
+    *                   [0, numClasses).
+    * @note Throws `SparkException` if any label is a non-integer or is negative
+    */
   protected def extractLabeledPoints(dataset: Dataset[_], numClasses: Int): RDD[LabeledPoint] = {
     require(numClasses > 0, s"Classifier (in extractLabeledPoints) found numClasses =" +
       s" $numClasses, but requires numClasses > 0.")
@@ -88,55 +87,17 @@ abstract class Classifier[
     }
   }
 
-  /**
-   * Get the number of classes.  This looks in column metadata first, and if that is missing,
-   * then this assumes classes are indexed 0,1,...,numClasses-1 and computes numClasses
-   * by finding the maximum label value.
-   *
-   * Label validation (ensuring all labels are integers >= 0) needs to be handled elsewhere,
-   * such as in `extractLabeledPoints()`.
-   *
-   * @param dataset  Dataset which contains a column [[labelCol]]
-   * @param maxNumClasses  Maximum number of classes allowed when inferred from data.  If numClasses
-   *                       is specified in the metadata, then maxNumClasses is ignored.
-   * @return  number of classes
-   * @throws IllegalArgumentException  if metadata does not specify numClasses, and the
-   *                                   actual numClasses exceeds maxNumClasses
-   */
-  protected def getNumClasses(dataset: Dataset[_], maxNumClasses: Int = 100): Int = {
-    MetadataUtils.getNumClasses(dataset.schema($(labelCol))) match {
-      case Some(n: Int) => n
-      case None =>
-        // Get number of classes from dataset itself.
-        val maxLabelRow: Array[Row] = dataset.select(max($(labelCol))).take(1)
-        if (maxLabelRow.isEmpty || maxLabelRow(0).get(0) == null) {
-          throw new SparkException("ML algorithm was given empty dataset.")
-        }
-        val maxDoubleLabel: Double = maxLabelRow.head.getDouble(0)
-        require((maxDoubleLabel + 1).isValidInt, s"Classifier found max label value =" +
-          s" $maxDoubleLabel but requires integers in range [0, ... ${Int.MaxValue})")
-        val numClasses = maxDoubleLabel.toInt + 1
-        require(numClasses <= maxNumClasses, s"Classifier inferred $numClasses from label values" +
-          s" in column $labelCol, but this exceeded the max numClasses ($maxNumClasses) allowed" +
-          s" to be inferred from values.  To avoid this error for labels with > $maxNumClasses" +
-          s" classes, specify numClasses explicitly in the metadata; this can be done by applying" +
-          s" StringIndexer to the label column.")
-        logInfo(this.getClass.getCanonicalName + s" inferred $numClasses classes for" +
-          s" labelCol=$labelCol since numClasses was not specified in the column metadata.")
-        numClasses
-    }
-  }
 }
 
 /**
- * :: DeveloperApi ::
- *
- * Model produced by a [[Classifier]].
- * Classes are indexed {0, 1, ..., numClasses - 1}.
- *
- * @tparam FeaturesType  Type of input features.  E.g., `Vector`
- * @tparam M  Concrete Model type
- */
+  * :: DeveloperApi ::
+  *
+  * Model produced by a [[Classifier]].
+  * Classes are indexed {0, 1, ..., numClasses - 1}.
+  *
+  * @tparam FeaturesType Type of input features.  E.g., `Vector`
+  * @tparam M            Concrete Model type
+  */
 @DeveloperApi
 abstract class ClassificationModel[FeaturesType, M <: ClassificationModel[FeaturesType, M]]
   extends PredictionModel[FeaturesType, M] with ClassifierParams {
@@ -148,14 +109,14 @@ abstract class ClassificationModel[FeaturesType, M <: ClassificationModel[Featur
   def numClasses: Int
 
   /**
-   * Transforms dataset by reading from [[featuresCol]], and appending new columns as specified by
-   * parameters:
-   *  - predicted labels as [[predictionCol]] of type `Double`
-   *  - raw predictions (confidences) as [[rawPredictionCol]] of type `Vector`.
-   *
-   * @param dataset input dataset
-   * @return transformed dataset
-   */
+    * Transforms dataset by reading from [[featuresCol]], and appending new columns as specified by
+    * parameters:
+    *  - predicted labels as [[predictionCol]] of type `Double`
+    *  - raw predictions (confidences) as [[rawPredictionCol]] of type `Vector`.
+    *
+    * @param dataset input dataset
+    * @return transformed dataset
+    */
   override def transform(dataset: Dataset[_]): DataFrame = {
     transformSchema(dataset.schema, logging = true)
 
@@ -191,32 +152,33 @@ abstract class ClassificationModel[FeaturesType, M <: ClassificationModel[Featur
   }
 
   /**
-   * Predict label for the given features.
-   * This method is used to implement `transform()` and output [[predictionCol]].
-   *
-   * This default implementation for classification predicts the index of the maximum value
-   * from `predictRaw()`.
-   */
+    * Predict label for the given features.
+    * This method is used to implement `transform()` and output [[predictionCol]].
+    *
+    * This default implementation for classification predicts the index of the maximum value
+    * from `predictRaw()`.
+    */
   override def predict(features: FeaturesType): Double = {
     raw2prediction(predictRaw(features))
   }
 
   /**
-   * Raw prediction for each possible label.
-   * The meaning of a "raw" prediction may vary between algorithms, but it intuitively gives
-   * a measure of confidence in each possible label (where larger = more confident).
-   * This internal method is used to implement `transform()` and output [[rawPredictionCol]].
-   *
-   * @return  vector where element i is the raw prediction for label i.
-   *          This raw prediction may be any real number, where a larger value indicates greater
-   *          confidence for that label.
-   */
+    * Raw prediction for each possible label.
+    * The meaning of a "raw" prediction may vary between algorithms, but it intuitively gives
+    * a measure of confidence in each possible label (where larger = more confident).
+    * This internal method is used to implement `transform()` and output [[rawPredictionCol]].
+    *
+    * @return vector where element i is the raw prediction for label i.
+    *         This raw prediction may be any real number, where a larger value indicates greater
+    *         confidence for that label.
+    */
   protected def predictRaw(features: FeaturesType): Vector
 
   /**
-   * Given a vector of raw predictions, select the predicted label.
-   * This may be overridden to support thresholds which favor particular labels.
-   * @return  predicted label
-   */
+    * Given a vector of raw predictions, select the predicted label.
+    * This may be overridden to support thresholds which favor particular labels.
+    *
+    * @return predicted label
+    */
   protected def raw2prediction(rawPrediction: Vector): Double = rawPrediction.argmax
 }

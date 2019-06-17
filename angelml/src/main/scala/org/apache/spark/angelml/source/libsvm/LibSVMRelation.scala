@@ -78,10 +78,12 @@ private[libsvm] class LibSVMFileFormat
   private def verifySchema(dataSchema: StructType, forWriting: Boolean): Unit = {
     if (
       dataSchema.size != 2 ||
-        !dataSchema(0).dataType.sameType(DataTypes.DoubleType) ||
+        !dataSchema.head.dataType.sameType(DataTypes.DoubleType) ||
         !dataSchema(1).dataType.sameType(new VectorUDT()) ||
-        !(forWriting || dataSchema(1).metadata.getLong(LibSVMOptions.NUM_FEATURES).toInt > 0)
-    ) {
+        !(forWriting || dataSchema(1).metadata.getLong(LibSVMOptions.NUM_FEATURES) > 0) ||
+        !(forWriting || dataSchema(1).metadata.getLong(LibSVMOptions.VALIDATE_FEATURE_NUMBER) >= -1)
+    )
+    {
       throw new IOException(s"Illegal schema for libsvm data, schema=$dataSchema")
     }
   }
@@ -91,8 +93,9 @@ private[libsvm] class LibSVMFileFormat
                             options: Map[String, String],
                             files: Seq[FileStatus]): Option[StructType] = {
     val libSVMOptions = new LibSVMOptions(options)
+
+    require(files.nonEmpty, "No input path specified for libsvm data")
     val numFeatures: Long = libSVMOptions.numFeatures.getOrElse {
-      require(files.nonEmpty, "No input path specified for libsvm data")
       logWarning(
         "'numFeatures' option not specified, determining the number of features by going " +
           "though the input. If you know the number in advance, please specify it via " +
@@ -108,8 +111,25 @@ private[libsvm] class LibSVMFileFormat
       }
     }
 
+    val validateFeatureNumber: Long = libSVMOptions.numValidateFeatures.getOrElse{
+      if (libSVMOptions.isSparse){
+        logWarning(
+          "'numValidateFeatures' option not specified, determining the number of features by going " +
+            "though the input. If you know the number in advance, please specify it via " +
+            "'numValidateFeatures' option to avoid the extra scan.")
+
+        -1L
+      } else {
+        numFeatures
+      }
+    }
+
+    val keyType: String = options.getOrElse(LibSVMOptions.KEY_TYPE, LibSVMOptions.INT_KEY_TYPE)
+
     val featuresMetadata = new MetadataBuilder()
       .putLong(LibSVMOptions.NUM_FEATURES, numFeatures)
+      .putLong(LibSVMOptions.VALIDATE_FEATURE_NUMBER, validateFeatureNumber)
+      .putString(LibSVMOptions.KEY_TYPE, keyType)
       .build()
 
     Some(
@@ -145,7 +165,7 @@ private[libsvm] class LibSVMFileFormat
                             requiredSchema: StructType,
                             filters: Seq[Filter],
                             options: Map[String, String],
-                            hadoopConf: Configuration): (PartitionedFile) => Iterator[InternalRow] = {
+                            hadoopConf: Configuration): PartitionedFile => Iterator[InternalRow] = {
     verifySchema(dataSchema, false)
     val numFeatures = dataSchema("features").metadata.getLong(LibSVMOptions.NUM_FEATURES).toInt
     assert(numFeatures > 0)
@@ -156,7 +176,7 @@ private[libsvm] class LibSVMFileFormat
     val broadcastedHadoopConf =
       sparkSession.sparkContext.broadcast(new SerializableConfiguration(hadoopConf))
 
-    (file: PartitionedFile) => {
+    file: PartitionedFile => {
       val linesReader = new HadoopFileLinesReader(file, broadcastedHadoopConf.value.value)
       Option(TaskContext.get()).foreach(_.addTaskCompletionListener[Unit](_ => linesReader.close()))
 

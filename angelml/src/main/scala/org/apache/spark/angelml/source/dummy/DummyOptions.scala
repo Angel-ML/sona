@@ -34,6 +34,8 @@ private[dummy] class DummyOptions(@transient private val parameters: CaseInsensi
    */
   val numFeatures: Option[Long] = parameters.get(NUM_FEATURES).map(_.toLong).filter(_ > 0)
 
+  val numValidateFeatures: Option[Long] = parameters.get(VALIDATE_FEATURE_NUMBER).map(_.toLong).filter(_ >= -1)
+
   val isSparse: Boolean = parameters.getOrElse(VECTOR_TYPE, SPARSE_VECTOR_TYPE) match {
     case SPARSE_VECTOR_TYPE => true
     case DENSE_VECTOR_TYPE => false
@@ -52,6 +54,7 @@ private[dummy] class DummyOptions(@transient private val parameters: CaseInsensi
 
 private[dummy] object DummyOptions {
   val NUM_FEATURES = "numFeatures"
+  val VALIDATE_FEATURE_NUMBER = "validateFeatureNumber"
   val VECTOR_TYPE = "vectorType"
   val DENSE_VECTOR_TYPE = "dense"
   val SPARSE_VECTOR_TYPE = "sparse"

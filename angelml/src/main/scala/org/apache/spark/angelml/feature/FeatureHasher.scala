@@ -106,12 +106,12 @@ class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transforme
   val categoricalCols = new StringArrayParam(this, "categoricalCols",
     "numeric columns to treat as categorical")
 
-  def setNumFeatures(value: Long): this.type = set(numFeatures, value)
+  def setNumFeatures(value: Long): this.type = set(numFeature, value)
 
   if (getLongKey) {
-    setDefault(numFeatures -> (1L << 36))
+    setDefault(numFeature -> (1L << 36))
   } else {
-    setDefault(numFeatures -> (1 << 18))
+    setDefault(numFeature -> (1 << 18))
   }
 
   /** @group setParam */
@@ -136,7 +136,7 @@ class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transforme
 
   @Since("2.3.0")
   override def transform(dataset: Dataset[_]): DataFrame = {
-    val n = $(numFeatures)
+    val n = $(numFeature)
     val localInputCols = $(inputCols)
     val catCols = if (isSet(categoricalCols)) {
       $(categoricalCols).toSet
@@ -242,7 +242,7 @@ class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transforme
           s"${BooleanType.catalogString} or ${StringType.catalogString}. " +
           s"Column $fieldName was ${dataType.catalogString}")
     }
-    val attrGroup = new AttributeGroup($(outputCol), $(numFeatures))
+    val attrGroup = new AttributeGroup($(outputCol), $(numFeature))
     SchemaUtils.appendColumn(schema, attrGroup.toStructField())
   }
 }

@@ -3,26 +3,26 @@ package com.tencent.angel.sona.ml
 import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.core.data.DataBlock
 import com.tencent.angel.ml.core.local.data.LocalMemoryDataBlock
-import com.tencent.angel.ml.core.network.Graph
-import com.tencent.angel.ml.core.network.layers.PlaceHolder
+import com.tencent.angel.ml.core.network.{Graph, PlaceHolder}
 import com.tencent.angel.ml.core.utils.JsonUtils
 import com.tencent.angel.ml.core.variable.{CILSImpl, VariableManager, VariableProvider}
 import com.tencent.angel.ml.core.{GraphModel, PSVariableProvider, PredictResult}
 import com.tencent.angel.ml.math2.utils.LabeledData
 
 
-class AngeGraphModel(sharedConf: SharedConf, val numTask: Int) extends GraphModel {
-  override val isSparseFormat: Boolean = sharedConf.getBoolean(MLCoreConf.ML_IS_DATA_SPARSE)
+class AngeGraphModel(conf: SharedConf, val numTask: Int) extends GraphModel(conf) {
+  private implicit val sharedConf: SharedConf = conf
+  override val isSparseFormat: Boolean = conf.getBoolean(MLCoreConf.ML_IS_DATA_SPARSE)
 
-  override protected val placeHolder: PlaceHolder = new PlaceHolder(sharedConf)
-  override protected implicit val variableManager: VariableManager = SparkPSVariableManager.get(isSparseFormat)
-  private implicit val cilsImpl: CILSImpl = new SparkCILSImpl()
-  override protected val variableProvider: VariableProvider = new PSVariableProvider(dataFormat, modelType, placeHolder)
+  protected val placeHolder: PlaceHolder = new PlaceHolder(conf)
+  override protected implicit val variableManager: VariableManager = SparkPSVariableManager.get(isSparseFormat, conf)
+  private implicit val cilsImpl: CILSImpl = new SparkCILSImpl(conf)
+  override protected val variableProvider: VariableProvider = new PSVariableProvider(dataFormat, modelType)
 
-  override implicit val graph: Graph = new Graph(variableProvider, placeHolder, sharedConf, numTask)
+  override implicit val graph: Graph = new Graph(variableProvider, conf, numTask)
 
   override def buildNetwork(): this.type = {
-    JsonUtils.layerFromJson(sharedConf.getJson)
+    JsonUtils.layerFromJson(graph)
 
     this
   }

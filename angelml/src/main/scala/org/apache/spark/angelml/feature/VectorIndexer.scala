@@ -18,17 +18,17 @@
 package org.apache.spark.angelml.feature
 
 import java.lang.{Double => JDouble, Integer => JInt}
-import java.util.{Map => JMap, NoSuchElementException}
+import java.util.{NoSuchElementException, Map => JMap}
+
+import com.tencent.angel.ml.core.utils.MLException
 
 import scala.collection.JavaConverters._
-
 import org.apache.hadoop.fs.Path
-
 import org.apache.spark.SparkException
 import org.apache.spark.annotation.Since
 import org.apache.spark.angelml.{Estimator, Model}
 import org.apache.spark.angelml.attribute._
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, VectorUDT}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, VectorUDT}
 import org.apache.spark.angelml.param._
 import org.apache.spark.angelml.param.shared._
 import org.apache.spark.angelml.util._
@@ -411,6 +411,7 @@ class VectorIndexerModel private[angelml](
             }
           }
           if (hasInvalid) null else tmpv
+        case _: LongSparseVector => throw MLException("LongSparseVector not support VectorIndexer")
       }
     }
     f

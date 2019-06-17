@@ -7,11 +7,11 @@ import org.apache.spark.TaskContext
 
 import scala.collection.mutable
 
-class GraphModelPool(sparkEnvContext: SparkEnvContext, conf: SharedConf, numTask: Int) {
+class GraphModelPool(sparkEnvContext: SparkEnvContext, numTask: Int) {
   @transient private lazy val modelQueue = new mutable.Queue[AngeGraphModel]()
   @transient private lazy val usedMap = new mutable.HashMap[Long, AngeGraphModel]()
 
-  def borrowModel: AngeGraphModel = this.synchronized {
+  def borrowModel(conf: SharedConf): AngeGraphModel = this.synchronized {
     val partitionId = TaskContext.getPartitionId()
 
     if (usedMap.contains(partitionId)) {
