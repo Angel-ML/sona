@@ -1,8 +1,11 @@
 package com.tencent.angel.sona.core
 
+import java.io.File
+
 import com.tencent.angel.client.{AngelContext, AngelPSClient}
+import com.tencent.angel.conf.AngelConf
 import com.tencent.angel.ml.core.conf.SharedConf
-import com.tencent.angel.psagent.PSAgent
+import com.tencent.angel.ml.core.utils.JsonUtils
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
@@ -14,7 +17,7 @@ import org.apache.spark.{SparkConf, SparkException}
 
 import scala.collection.mutable
 
-class DriverContext private(hadoopConf: Configuration) extends PSAgentContext(SharedConf.get) {
+class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configuration) extends PSAgentContext(sharedConf) {
   private var angelContext: AngelContext = _
   private var angelClient: AngelPSClient = _
   private var stopAngelHookTask: Runnable = _
@@ -65,7 +68,7 @@ class DriverContext private(hadoopConf: Configuration) extends PSAgentContext(Sh
       hadoopConf.set(ConfUtils.MASTER_IP, angelContext.getMasterLocation.getIp)
       hadoopConf.set(ConfUtils.MASTER_PORT, angelContext.getMasterLocation.getPort.toString)
 
-      ConfUtils.merge(SharedConf.get, hadoopConf,
+      ConfUtils.merge(sharedConf, hadoopConf,
         ConfUtils.MASTER_IP, ConfUtils.MASTER_PORT, "angel", "ml", "spark.ps", "spark.hadoop")
     }
 
@@ -116,10 +119,51 @@ class DriverContext private(hadoopConf: Configuration) extends PSAgentContext(Sh
 object DriverContext {
   private var driverContext: DriverContext = _
 
+  private def initConf(conf: Configuration): SharedConf = {
+    val sharedConf = new SharedConf
+
+    // 1. parse json and update conf
+    if (conf.get(AngelConf.ANGEL_ML_CONF) != null) {
+      var jsonFileName = conf.get(AngelConf.ANGEL_ML_CONF)
+      val validateFileName = if (new File(jsonFileName).exists()) {
+        jsonFileName
+      } else {
+        val splits = jsonFileName.split(File.separator)
+        jsonFileName = splits(splits.length - 1)
+
+        val file = new File(jsonFileName)
+        if (file.exists()) {
+          jsonFileName
+        } else {
+          println("File not found! ")
+          ""
+        }
+      }
+
+      if (!validateFileName.isEmpty) {
+        JsonUtils.parseAndUpdateJson(validateFileName, sharedConf, conf)
+      }
+    }
+
+    // 2. add configure on Hadoop Configuration
+    val iter = conf.iterator()
+    while (iter.hasNext) {
+      val entry = iter.next()
+      val key = entry.getKey
+      val value = entry.getValue
+
+      if (key.startsWith("ml.") || key.startsWith("angel.")) {
+        sharedConf.set(key, value)
+      }
+    }
+
+    sharedConf
+  }
+
   def get(conf: SparkConf): DriverContext = synchronized {
     if (driverContext == null) {
       val hadoopConf = ConfUtils.convertToHadoop(conf)
-      driverContext = new DriverContext(hadoopConf)
+      driverContext = new DriverContext(initConf(hadoopConf), hadoopConf)
     }
 
     driverContext

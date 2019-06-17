@@ -5,6 +5,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.sql.{DataFrameReader, SparkSession}
 import org.scalatest.FunSuite
 
+
 class AngelClassificationSuite extends FunSuite {
 
   val spark: SparkSession = SparkSession.builder()
@@ -31,7 +32,7 @@ class AngelClassificationSuite extends FunSuite {
     val model = classifier.fit(trainData)
 
 
-    model.write.save("test2")
+    model.write.overwrite.save("test2")
 
     driverCtx.stopAngelAndPSAgent()
   }

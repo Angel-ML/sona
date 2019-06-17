@@ -7,7 +7,7 @@ import com.tencent.angel.sona.util.ConfUtils
 
 trait ParamsHelper extends Params {
   var finalized: Boolean = false
-  val sharedConf: SharedConf = SharedConf.get()
+  val sharedConf: SharedConf
 
   def setInternal[T](param: Param[T], value: T): this.type = {
     if (!finalized) {

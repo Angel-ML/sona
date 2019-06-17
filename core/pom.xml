@@ -39,10 +39,6 @@
       <version>${angel.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>org.json4s</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>*</artifactId>
         </exclusion>

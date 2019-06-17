@@ -28,7 +28,7 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
 
     val graph = localModel.graph
 
-    localModel.feedData(data)
+    graph.feedData(data)
     localRunStat.setNumSamples(data.length)
     // note: this step is synchronized
     val pullStart = System.currentTimeMillis()

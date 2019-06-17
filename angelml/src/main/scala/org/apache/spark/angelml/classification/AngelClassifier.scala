@@ -36,7 +36,8 @@ class AngelClassifier(override val uid: String)
   private val driverCtx = DriverContext.get()
   private implicit val psClient: AngelPSClient = driverCtx.getAngelClient
   private implicit val psAgent: PSAgent = driverCtx.getPSAgent
-  private val sparkEnvCtx: SparkEnvContext = DriverContext.get().sparkEnvContext
+  private val sparkEnvCtx: SparkEnvContext = driverCtx.sparkEnvContext
+  override val sharedConf: SharedConf = driverCtx.sharedConf
   implicit var bcExeCtx: Broadcast[ExecutorContext] = _
   implicit var bcConf: Broadcast[SharedConf] = _
 
@@ -267,6 +268,8 @@ class AngelClassifierModel(override val uid: String, override val angelModelName
   @transient implicit override val psClient: AngelPSClient = DriverContext.get().getAngelClient
   override lazy val numFeatures: Long = getNumFeature
   override lazy val numClasses: Int = getNumClass
+  override val sharedConf: SharedConf = DriverContext.get().sharedConf
+
 
   def setProbabilityCol(value: String): this.type = setInternal(probabilityCol, value)
 

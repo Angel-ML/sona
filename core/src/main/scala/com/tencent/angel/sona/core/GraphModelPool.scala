@@ -14,16 +14,10 @@ class GraphModelPool(sparkEnvContext: SparkEnvContext, numTask: Int) {
   def borrowModel(conf: SharedConf): AngeGraphModel = this.synchronized {
     val partitionId = TaskContext.getPartitionId()
 
-    val conf_ = if (conf == null) {
-      SharedConf.get()
-    } else {
-      conf
-    }
-
     if (usedMap.contains(partitionId)) {
       usedMap(partitionId)
     } else if (modelQueue.isEmpty) {
-      val model = new AngeGraphModel(conf_, numTask)
+      val model = new AngeGraphModel(conf, numTask)
       model.buildNetwork()
       model.createMatrices(sparkEnvContext)
       model.setState(VarState.Initialized)

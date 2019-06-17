@@ -5,8 +5,6 @@ import java.io.File
 import com.tencent.angel.ml.core.conf.MLCoreConf
 import com.tencent.angel.ml.core.utils.{JsonUtils, MLException}
 import org.apache.hadoop.conf.Configuration
-import org.json4s.JsonAST.JObject
-
 
 trait AngelGraphParams extends Params with AngelDataParams with HasModelType
   with HasModelName with HasModelJson with ParamsHelper {
@@ -21,16 +19,12 @@ trait AngelGraphParams extends Params with AngelDataParams with HasModelType
 
   def setModelJsonFile(value: String): this.type = setInternal(modelJsonFile, value)
 
-  def setModelJson(value: JObject): this.type = setInternal(modelJson, value)
-
   override def updateFromJson(): this.type = {
     val jsonFile: String = getModelJsonFile
     // require(jsonFile != null && jsonFile.nonEmpty, "json file not set, please set a model json")
     val hadoopConf: Configuration = new Configuration
     if (new File(jsonFile).exists()) {
-      val json: JObject = JsonUtils.parseAndUpdateJson(getModelJsonFile, sharedConf, hadoopConf)
-      setModelJson(json)
-      sharedConf.setJson(json)
+     JsonUtils.parseAndUpdateJson(getModelJsonFile, sharedConf, hadoopConf)
     } else {
       throw MLException("json file not exists!")
     }
@@ -49,11 +43,6 @@ trait HasModelName extends Params {
 
 
 trait HasModelJson extends Params {
-  final val modelJson: JObjectParam = new JObjectParam(this, "modelJson",
-    "the model's correspond json object")
-
-  final def getModelJson: JObject = $(modelJson)
-
   final val modelJsonFile: Param[String] = new Param[String](this, "modelJsonFile",
     "the model json file", (value: String) => value != null && value.nonEmpty)
 
