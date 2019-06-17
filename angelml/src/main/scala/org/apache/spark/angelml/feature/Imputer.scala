@@ -224,7 +224,12 @@ class ImputerModel private[angelml](
           .otherwise(ic)
           .cast(inputType)
     }
-    dataset.withColumns($(outputCols), newCols).toDF()
+    var finalDataset = dataset
+    (0 until newCols.length).foreach { index =>
+      finalDataset = finalDataset.withColumn($(outputCols)(index), newCols(index))
+    }
+    finalDataset.toDF()
+//    dataset.withColumns($(outputCols), newCols).toDF()
   }
 
   override def transformSchema(schema: StructType): StructType = {

@@ -111,11 +111,11 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     val assembleFunc = if (lengths.sum < Int.MaxValue) {
       udf { r: Row =>
         VectorAssembler.assembleInt(lengths.map(_.toInt), keepInvalid)(r.toSeq: _*)
-      }.asNondeterministic()
+      }
     } else {
       udf { r: Row =>
         VectorAssembler.assembleLong(lengths, keepInvalid)(r.toSeq: _*)
-      }.asNondeterministic()
+      }
     }
 
     val args = $(inputCols).map { c =>
