@@ -32,6 +32,7 @@ import org.apache.spark.unsafe.hash.Murmur3_x86_32.{hashInt, hashLong, hashUnsaf
 import org.apache.spark.unsafe.types.UTF8String
 import org.apache.spark.util.Utils
 import org.apache.spark.util.collection.OpenHashMap
+import org.apache.spark.sql.Compatible
 
 /**
   * Feature hashing projects a set of categorical or numerical features into a feature vector of
@@ -238,7 +239,7 @@ class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transforme
       require(dataType.isInstanceOf[NumericType] ||
         dataType.isInstanceOf[StringType] ||
         dataType.isInstanceOf[BooleanType],
-        s"FeatureHasher requires columns to be of ${NumericType.simpleString}, " +
+        s"FeatureHasher requires columns to be of ${Compatible.numericTypeSimpleString}, " +
           s"${BooleanType.catalogString} or ${StringType.catalogString}. " +
           s"Column $fieldName was ${dataType.catalogString}")
     }
