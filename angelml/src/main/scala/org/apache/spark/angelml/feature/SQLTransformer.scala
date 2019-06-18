@@ -23,6 +23,7 @@ import org.apache.spark.angelml.param.{Param, ParamMap}
 import org.apache.spark.angelml.util._
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.Compatible
 
 /**
  * Implements the transformations which are defined by SQL statement.
@@ -71,7 +72,8 @@ class SQLTransformer @Since("1.6.0") (@Since("1.6.0") override val uid: String) 
     val realStatement = $(statement).replace(tableIdentifier, tableName)
     val result = dataset.sparkSession.sql(realStatement)
     // Call SessionCatalog.dropTempView to avoid unpersisting the possibly cached dataset.
-    dataset.sparkSession.sessionState.catalog.dropTempView(tableName)
+//    dataset.sparkSession.sessionState.catalog.dropTempView(tableName)
+    Compatible.sessionstate.catalog.dropTempView(tableName)
     result
   }
 

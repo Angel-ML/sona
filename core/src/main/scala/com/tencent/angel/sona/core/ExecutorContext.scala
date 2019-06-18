@@ -3,11 +3,11 @@ package com.tencent.angel.sona.core
 import com.tencent.angel.ml.core.conf.SharedConf
 import com.tencent.angel.psagent.PSAgent
 import org.apache.spark.TaskContext
-import org.apache.spark.internal.Logging
+import org.apache.spark.internal.CompatibleLogging
 
 
 case class ExecutorContext(conf: SharedConf, numTask: Int)
-  extends PSAgentContext(conf) with Serializable with Logging {
+  extends PSAgentContext(conf) with Serializable with CompatibleLogging {
 
   @transient override lazy val sparkEnvContext: SparkEnvContext = SparkEnvContext(null)
 }

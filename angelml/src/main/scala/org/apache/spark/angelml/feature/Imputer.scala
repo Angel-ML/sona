@@ -148,14 +148,24 @@ class Imputer @Since("2.2.0") (@Since("2.2.0") override val uid: String)
       case Imputer.median =>
         // Function approxQuantile will ignore null automatically.
         // For a column only containing null, approxQuantile will return an empty array.
-        dataset.select(cols: _*).stat.approxQuantile($(inputCols), Array(0.5), 0.001)
-          .map { array =>
-            if (array.isEmpty) {
-              Double.NaN
-            } else {
-              array.head
-            }
+//        dataset.select(cols: _*).stat.approxQuantile($(inputCols), Array(0.5), 0.001)
+//          .map { array =>
+//            if (array.isEmpty) {
+//              Double.NaN
+//            } else {
+//              array.head
+//            }
+//          }
+        val xx = $(inputCols).map { inputCol =>
+          dataset.select(cols: _*).stat.approxQuantile(inputCol, Array(0.5), 0.001)
+        }
+        xx.map { array =>
+          if (array.isEmpty) {
+            Double.NaN
+          } else {
+            array.head
           }
+        }
     }
 
     val emptyCols = $(inputCols).zip(results).filter(_._2.isNaN).map(_._1)

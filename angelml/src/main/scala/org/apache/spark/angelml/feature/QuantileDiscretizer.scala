@@ -213,8 +213,11 @@ final class QuantileDiscretizer @Since("1.6.0") (@Since("1.6.0") override val ui
         }
 
         val probabilityArray = probArrayPerCol.flatten.sorted.distinct
-        val splitsArrayRaw = dataset.stat.approxQuantile($(inputCols),
-          probabilityArray, $(relativeError))
+        val splitsArrayRaw = $(inputCols).map { inputCol  =>
+          dataset.stat.approxQuantile(inputCol, probabilityArray, $(relativeError))
+        }
+//        val splitsArrayRaw = dataset.stat.approxQuantile($(inputCols),
+//          probabilityArray, $(relativeError))
 
         splitsArrayRaw.zip(probArrayPerCol).map { case (splits, probs) =>
           val probSet = probs.toSet
@@ -228,8 +231,12 @@ final class QuantileDiscretizer @Since("1.6.0") (@Since("1.6.0") override val ui
           }
         }
       } else {
-        dataset.stat.approxQuantile($(inputCols),
-          (0.0 to 1.0 by 1.0 / $(numBuckets)).toArray, $(relativeError))
+        $(inputCols).map { inputCol =>
+          dataset.stat.approxQuantile(inputCol,
+            (0.0 to 1.0 by 1.0 / $(numBuckets)).toArray, $(relativeError))
+        }
+//        dataset.stat.approxQuantile($(inputCols),
+//          (0.0 to 1.0 by 1.0 / $(numBuckets)).toArray, $(relativeError))
       }
       bucketizer.setSplitsArray(splitsArray.map(getDistinctSplits))
     } else {

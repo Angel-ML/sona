@@ -50,7 +50,7 @@ private[image] class ImageFileFormat extends FileFormat with DataSourceRegister 
 
   override def shortName(): String = "image"
 
-  override protected def buildReader(
+  override def buildReader(
       sparkSession: SparkSession,
       dataSchema: StructType,
       partitionSchema: StructType,
