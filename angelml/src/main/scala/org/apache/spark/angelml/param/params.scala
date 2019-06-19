@@ -96,6 +96,8 @@ class Param[T](val parent: String, val name: String, val doc: String, val isVali
         JsonVectorConverter.toJson(v)
       case m: Matrix =>
         JsonMatrixConverter.toJson(m)
+      case b: Boolean =>
+        compact(render(JString(b.toString)))
       case _ =>
         throw new NotImplementedError(
           "The default jsonEncode only supports string, vector and matrix. " +
