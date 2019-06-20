@@ -83,17 +83,26 @@ import org.apache.spark.sql.Compatible
 @Experimental
 @Since("2.3.0")
 class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transformer
-  with HasInputCols with HasOutputCol with HasLongKey with HasNumFeatures with DefaultParamsWritable {
+  with HasInputCols with HasOutputCol with HasNumFeatures with DefaultParamsWritable {
+
+  @Since("2.1.0")
+  val longKey: BooleanParam = new BooleanParam(this, "longKey",
+    "Force to index label whether it is numeric or string")
+  setDefault(longKey -> false)
+
+  /** @group getParam */
+  @Since("2.1.0")
+  def getLongKey: Boolean = $(longKey)
 
   @Since("2.3.0")
   def this() = this(Identifiable.randomUID("featureHasher"))
-
-
-  def setLongKey(isLongKey: Boolean): this.type = {
-    set(longKey, isLongKey)
-  }
-
-  setDefault(longKey -> false)
+//
+//
+//  def setLongKey(isLongKey: Boolean): this.type = {
+//    set(longKey, isLongKey)
+//  }
+//
+//  setDefault(longKey -> false)
 
   /**
     * Numeric columns to treat as categorical features. By default only string and boolean

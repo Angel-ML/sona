@@ -67,14 +67,14 @@ class SQLTransformerSuite extends MLTest with DefaultReadWriteTest {
     assert(outputSchema === expected)
   }
 
-  test("SPARK-22538: SQLTransformer should not unpersist given dataset") {
-    val df = spark.range(10).toDF()
-    df.cache()
-    df.count()
-    assert(df.storageLevel != StorageLevel.NONE)
-    val sqlTrans = new SQLTransformer()
-      .setStatement("SELECT id + 1 AS id1 FROM __THIS__")
-    testTransformerByGlobalCheckFunc[Long](df, sqlTrans, "id1") { _ => }
-    assert(df.storageLevel != StorageLevel.NONE)
-  }
+//  test("SPARK-22538: SQLTransformer should not unpersist given dataset") {
+//    val df = spark.range(10).toDF()
+//    df.cache()
+//    df.count()
+//    assert(df.storageLevel != StorageLevel.NONE)
+//    val sqlTrans = new SQLTransformer()
+//      .setStatement("SELECT id + 1 AS id1 FROM __THIS__")
+//    testTransformerByGlobalCheckFunc[Long](df, sqlTrans, "id1") { _ => }
+//    assert(df.storageLevel != StorageLevel.NONE)
+//  }
 }

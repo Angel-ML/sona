@@ -218,7 +218,13 @@ object TestingUtils {
     def absTol(eps: Double): CompareMatrixRightSide = CompareMatrixRightSide(
       (x: Matrix, y: Matrix, eps: Double) => {
         x.numRows == y.numRows && x.numCols == y.numCols &&
-          x.toArray.zip(y.toArray).forall(x => x._1 ~= x._2 absTol eps)
+          x.toArray.zip(y.toArray).forall(x => {
+            if(x._1.isNaN && x._2.isNaN) {
+              true
+            } else {
+              x._1 ~= x._2 absTol eps
+            }
+          })
       }, x, eps, ABS_TOL_MSG)
 
     /**
