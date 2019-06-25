@@ -29,7 +29,7 @@ import org.apache.spark.sql.functions.{col, substring_index}
 class ImageFileFormatSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   // Single column of images named "image"
-  private lazy val imagePath = "../data/mllib/images/partitioned"
+  private lazy val imagePath = "data/mllib/images/partitioned"
 
   test("image datasource count test") {
     val df1 = spark.read.format("image").load(imagePath)
