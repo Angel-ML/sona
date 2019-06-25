@@ -120,6 +120,7 @@ class Imputer @Since("2.2.0") (@Since("2.2.0") override val uid: String)
 
   setDefault(strategy -> Imputer.mean, missingValue -> Double.NaN)
 
+  /*
   override def fit(dataset: Dataset[_]): ImputerModel = {
     transformSchema(dataset.schema, logging = true)
     val spark = dataset.sparkSession
@@ -176,6 +177,33 @@ class Imputer @Since("2.2.0") (@Since("2.2.0") override val uid: String)
     }
 
     val rows = spark.sparkContext.parallelize(Seq(Row.fromSeq(results)))
+    val schema = StructType($(inputCols).map(col => StructField(col, DoubleType, nullable = false)))
+    val surrogateDF = spark.createDataFrame(rows, schema)
+    copyValues(new ImputerModel(uid, surrogateDF).setParent(this))
+  }
+  */
+
+
+  override def fit(dataset: Dataset[_]): ImputerModel = {
+    transformSchema(dataset.schema, logging = true)
+    val spark = dataset.sparkSession
+    import spark.implicits._
+    val surrogates = $(inputCols).map { inputCol =>
+      val ic = col(inputCol)
+      val filtered = dataset.select(ic.cast(DoubleType))
+        .filter(ic.isNotNull && ic =!= $(missingValue) && !ic.isNaN)
+      if(filtered.take(1).length == 0) {
+        throw new SparkException(s"surrogate cannot be computed. " +
+          s"All the values in $inputCol are Null, Nan or missingValue(${$(missingValue)})")
+      }
+      val surrogate = $(strategy) match {
+        case Imputer.mean => filtered.select(avg(inputCol)).as[Double].first()
+        case Imputer.median => filtered.stat.approxQuantile(inputCol, Array(0.5), 0.001).head
+      }
+      surrogate
+    }
+
+    val rows = spark.sparkContext.parallelize(Seq(Row.fromSeq(surrogates)))
     val schema = StructType($(inputCols).map(col => StructField(col, DoubleType, nullable = false)))
     val surrogateDF = spark.createDataFrame(rows, schema)
     copyValues(new ImputerModel(uid, surrogateDF).setParent(this))

@@ -184,6 +184,12 @@ abstract class AggregateFunction extends Expression {
   def inputAggBufferAttributes: Seq[AttributeReference]
 
   /**
+    * Indicates if this function supports partial aggregation.
+    * Currently Hive UDAF is the only one that doesn't support partial aggregation.
+    */
+  def supportsPartial: Boolean = true
+
+  /**
     * Result of the aggregate function when the input is empty. This is currently only used for the
     * proper rewriting of distinct aggregate functions.
     */
