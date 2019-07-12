@@ -48,7 +48,7 @@ private[image] class ImageFileFormat extends FileFormat with DataSourceRegister 
     throw new UnsupportedOperationException("Write is not supported for image data source")
   }
 
-  override def shortName(): String = "image"
+  override def shortName(): String = "imageex"
 
   override def buildReader(
       sparkSession: SparkSession,

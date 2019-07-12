@@ -2,6 +2,7 @@ package org.apache.spark.angelml.common
 
 import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.math2.utils.LabeledData
+import com.tencent.angel.psagent.PSAgentContext
 import com.tencent.angel.sona.core.ExecutorContext
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.spark.angelml.evaluation.TrainingStat
@@ -14,10 +15,10 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
   }
 
   def trainOneBatch(data: Array[LabeledData]): TrainingStat = {
-
     val localRunStat: TrainingStat = executorContext.conf.get(ConfUtils.ALGO_TYPE) match {
       case "class" =>
-        new ClassificationTrainingStat(executorContext.conf.getInt(MLCoreConf.ML_NUM_CLASS))
+//        new ClassificationTrainingStat(executorContext.conf.getInt(MLCoreConf.ML_NUM_CLASS))
+        new ClassificationTrainingStat(bcConf.value.getInt(MLCoreConf.ML_NUM_CLASS))
       case "regression" =>
         new RegressionTrainingStat()
       case "clustering" =>
@@ -32,7 +33,8 @@ class Trainer(bcValue: Broadcast[ExecutorContext], epoch: Int, bcConf: Broadcast
     localRunStat.setNumSamples(data.length)
     // note: this step is synchronized
     val pullStart = System.currentTimeMillis()
-    if (executorContext.conf.getBoolean(MLCoreConf.ML_IS_DATA_SPARSE)) {
+//    if (executorContext.conf.getBoolean(MLCoreConf.ML_IS_DATA_SPARSE)) {
+    if (bcConf.value.getBoolean(MLCoreConf.ML_IS_DATA_SPARSE)) {
       localModel.pullParams(epoch, graph.placeHolder.getIndices)
     } else {
       localModel.pullParams(epoch)

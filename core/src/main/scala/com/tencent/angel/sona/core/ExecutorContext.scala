@@ -1,9 +1,10 @@
 package com.tencent.angel.sona.core
 
 import com.tencent.angel.ml.core.conf.SharedConf
-import com.tencent.angel.psagent.PSAgent
+import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
 import org.apache.spark.TaskContext
 import org.apache.spark.internal.CompatibleLogging
+import org.apache.spark.sql.SPKSQLUtils
 
 
 case class ExecutorContext(conf: SharedConf, numTask: Int)
@@ -18,8 +19,11 @@ object ExecutorContext {
 
   def getPSAgent(exeCtx: ExecutorContext): PSAgent = synchronized {
     while (psAgent == null) {
+      SPKSQLUtils.registerUDT()
       psAgent = exeCtx.createAndInitPSAgent
     }
+
+    PSAgentContext.get().getPsAgent.refreshMatrixInfo()
 
     psAgent
   }

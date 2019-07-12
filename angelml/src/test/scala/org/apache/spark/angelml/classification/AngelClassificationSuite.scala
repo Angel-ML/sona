@@ -1,6 +1,8 @@
 package org.apache.spark.angelml.classification
 
 import com.tencent.angel.sona.core.DriverContext
+import org.apache.spark.angelml.feature.LabeledPoint
+import org.apache.spark.angelml.linalg.Vectors
 import org.apache.spark.{SparkConf, SparkFunSuite}
 import org.apache.spark.sql.{DataFrameReader, SparkSession}
 import org.scalatest.FunSuite
@@ -20,7 +22,7 @@ class AngelClassificationSuite extends SparkFunSuite {
       .appName("AngelClassification")
       .getOrCreate()
 
-    libsvm = spark.read.format("libsvm")
+    libsvm = spark.read.format("libsvmex")
     dummy = spark.read.format("dummy")
     sparkConf = spark.sparkContext.getConf
     driverCtx = DriverContext.get(sparkConf)
@@ -37,7 +39,7 @@ class AngelClassificationSuite extends SparkFunSuite {
   test("daw_train") {
 //    val driverCtx = DriverContext.get(sparkConf)
 //    driverCtx.startAngelAndPSAgent()
-    val trainData = libsvm.load("data/angel/census/census_148d_train.libsvm")
+    val trainData = libsvm.load("../data/angel/census/census_148d_train.libsvm")
 
     val classifier = new AngelClassifier()
       .setModelJsonFile("E:\\angel-things\\fitzwang\\sona\\angelml\\src\\test\\jsons\\daw.json")
@@ -157,7 +159,7 @@ class AngelClassificationSuite extends SparkFunSuite {
   test("linreg_train") {
 //    val driverCtx = DriverContext.get(sparkConf)
 //    driverCtx.startAngelAndPSAgent()
-    val trainData = libsvm.load("data/angel/a9a/a9a_123d_train.libsvm")
+    val trainData = libsvm.load("../data/angel/a9a/a9a_123d_train.libsvm")
 
     val classifier = new AngelClassifier()
       .setModelJsonFile("E:\\angel-things\\fitzwang\\sona\\angelml\\src\\test\\jsons\\linreg.json")
@@ -177,7 +179,13 @@ class AngelClassificationSuite extends SparkFunSuite {
   test("dnn_train") {
 //    val driverCtx = DriverContext.get(sparkConf)
 //    driverCtx.startAngelAndPSAgent()
-    val trainData = libsvm.load("data/angel/census/census_148d_train.libsvm")
+//    val trainData = libsvm.load("data/angel/census/census_148d_train.libsvm")
+
+    val Data = spark.sparkContext.textFile("../data/angel/census/census_148d_train.dense").map(_.split(" "))
+    val Data_ = Data.map(x => LabeledPoint(x(0).toDouble, Vectors.dense(x.slice(1, x.length-1).map(_.toDouble))))
+    val trainData = spark.createDataFrame(Data_)
+
+    trainData.show()
 
     val dnn_classifier = new AngelClassifier()
       .setModelJsonFile("E:\\angel-things\\fitzwang\\sona\\angelml\\src\\test\\jsons\\dnn.json")
@@ -187,6 +195,7 @@ class AngelClassificationSuite extends SparkFunSuite {
       .setLearningRate(0.1)
       .setNumField(13)
 
+    println(dnn_classifier.getNumClass)
     val model = dnn_classifier.fit(trainData)
 
     model.write.overwrite().save("trained_models/dnn")

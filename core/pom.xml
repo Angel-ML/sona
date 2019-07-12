@@ -29,7 +29,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>core</artifactId>
+  <artifactId>spark-on-angel-core</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>
