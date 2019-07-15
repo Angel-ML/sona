@@ -29,6 +29,7 @@
     <modules>
         <module>core</module>
         <module>angelml</module>
+        <module>pyps</module>
     </modules>
 
     <properties>
