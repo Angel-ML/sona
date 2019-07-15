@@ -6,7 +6,7 @@ import java.util
 import com.tencent.angel.apiserver.plasma.PlasmaClient
 
 class Handler(client: PlasmaClient) {
-  private val funcMap = new util.HashMap[Long, Require => Response]()
+  private val funcMap = new util.HashMap[Long, Request => Response]()
   private val handlerMap = new util.HashMap[Int, util.ArrayList[Long]]()
 
   private val memMsger = new MemMsger(client)
@@ -29,9 +29,9 @@ class Handler(client: PlasmaClient) {
       handlerMap.put(handlerId.id, list)
 
       obj.getClass.getMethods.map{ method =>
-        if (method.getParameterCount == 1 && method.getParameterTypes.head == classOf[Require] &&
+        if (method.getParameterCount == 1 && method.getParameterTypes.head == classOf[Request] &&
           method.getReturnType == classOf[Response]) {
-          val func = (req: Require) => method.invoke(obj, req).asInstanceOf[Response]
+          val func = (req: Request) => method.invoke(obj, req).asInstanceOf[Response]
 
           val funcId = method.getAnnotation(classOf[FuncId])
 
@@ -67,7 +67,7 @@ class Handler(client: PlasmaClient) {
     this
   }
 
-  def handle(req: Require): Response = {
+  def handle(req: Request): Response = {
     if (memMsger.hasResponse(req)) {
       memMsger.get(req)
     } else {

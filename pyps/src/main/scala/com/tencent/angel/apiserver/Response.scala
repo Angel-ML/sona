@@ -34,8 +34,8 @@ class Response(val pid: Long, val funcId: Long, val sharedFlag: Int, val msgLen:
       buf.put(objectId)
     }
 
-    if (buf.position() - mkPos < Require.bufferLen) {
-      val paddingLen = Require.bufferLen - buf.position() + mkPos
+    if (buf.position() - mkPos < Request.bufferLen) {
+      val paddingLen = Request.bufferLen - buf.position() + mkPos
       (0 until paddingLen).foreach{_ => buf.put(0.toByte)}
     }
   }

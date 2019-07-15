@@ -7,12 +7,12 @@ import com.tencent.angel.apiserver.plasma.PlasmaClient
 import scala.collection.mutable
 
 class MemMsger(client: PlasmaClient, totalMemInByte: Long) extends Runnable{
-  private val shared = new mutable.HashMap[Require.ReqKey, Response]()
-  private val unshared = new mutable.HashMap[Require, Response]()
+  private val shared = new mutable.HashMap[Request.ReqKey, Response]()
+  private val unshared = new mutable.HashMap[Request, Response]()
   private val status = new mutable.HashMap[Long, MemMsger.Status]()
   private var usedMemInByte: Long = 0
 
-  private def delete(req: Require): this.type = {
+  private def delete(req: Request): this.type = {
     if (req.hasObjectId && client.contains(req.getObjectId)) {
       client.delete(req.getObjectId)
     }
@@ -28,11 +28,11 @@ class MemMsger(client: PlasmaClient, totalMemInByte: Long) extends Runnable{
     this
   }
 
-  def hasResponse(req: Require): Boolean = synchronized {
+  def hasResponse(req: Request): Boolean = synchronized {
     shared.contains(req)
   }
 
-  def get(req: Require): Response = synchronized {
+  def get(req: Request): Response = synchronized {
     if (shared.contains(req)) {
       val temp = shared(req)
       assert(temp.funcId == req.funcId)
@@ -42,7 +42,7 @@ class MemMsger(client: PlasmaClient, totalMemInByte: Long) extends Runnable{
     }
   }
 
-  def put(req: Require, resp: Response): this.type = synchronized {
+  def put(req: Request, resp: Response): this.type = synchronized {
     usedMemInByte += req.msgLen
     usedMemInByte += resp.msgLen
 

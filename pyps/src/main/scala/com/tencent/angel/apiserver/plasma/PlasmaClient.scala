@@ -1,10 +1,13 @@
 package com.tencent.angel.apiserver.plasma
 
 import java.nio.ByteBuffer
-import java.util.Random
+import java.util
+import java.util.{ArrayList, List, Random}
 
 import com.tencent.angel.apiserver.plasma.exceptions.{DuplicateObjectException, PlasmaOutOfMemoryException}
-import com.tencent.angel.ml.servingmath2.matrix.Matrix
+import com.tencent.angel.common.{DataHead, Deserializer, Meta, Serializer}
+import com.tencent.angel.ml.servingmath2.vector._
+import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.utils.LabeledData
 
 
@@ -14,7 +17,7 @@ class PlasmaClient(storeSocketName: String, managerSocketName: String, releaseDe
 
   @throws[DuplicateObjectException]
   @throws[PlasmaOutOfMemoryException]
-  def create(objectId: Array[Byte], buf: ByteBuffer): Unit = {
+  def put(objectId: Array[Byte], buf: ByteBuffer): Unit = {
     val tmpBuf = PlasmaClientJNI.create(conn, objectId, buf.remaining(), null)
     tmpBuf.put(buf)
     PlasmaClientJNI.seal(conn, objectId)
@@ -23,7 +26,7 @@ class PlasmaClient(storeSocketName: String, managerSocketName: String, releaseDe
 
   @throws[DuplicateObjectException]
   @throws[PlasmaOutOfMemoryException]
-  def create(objectId: Array[Byte], buf: ByteBuffer, metadata: Array[Byte]): Unit = {
+  def put(objectId: Array[Byte], buf: ByteBuffer, metadata: Array[Byte]): Unit = {
     val tmpBuf = PlasmaClientJNI.create(conn, objectId, buf.remaining(), metadata)
     tmpBuf.put(buf)
     PlasmaClientJNI.seal(conn, objectId)
@@ -32,16 +35,19 @@ class PlasmaClient(storeSocketName: String, managerSocketName: String, releaseDe
 
   @throws[DuplicateObjectException]
   @throws[PlasmaOutOfMemoryException]
-  def create(objectId: Array[Byte], buf: ByteBuffer, metadata: ByteBuffer): Unit = {
+  def put(objectId: Array[Byte], buf: ByteBuffer, metadata: ByteBuffer): Unit = {
     val meta = new Array[Byte](metadata.remaining())
     metadata.get(meta)
-    create(objectId, buf, metadata)
+    put(objectId, buf, metadata)
   }
 
   @throws[DuplicateObjectException]
   @throws[PlasmaOutOfMemoryException]
-  def put(objectId: Array[Byte], mat: Matrix): Array[Byte] = {
-    val buf = PlasmaClientJNI.create(conn, objectId, value.length, metadata)
+  def put(objectId: Array[Byte], mat: Matrix, meta: Meta): Array[Byte] = {
+    val dataHead: DataHead = Serializer.getDataHeadFromMatrix(mat, meta)
+    val buf = PlasmaClientJNI.create(conn, objectId, DataHead.headLen + dataHead.length, null)
+
+    Serializer.putMatrix(buf, mat, meta, dataHead)
 
     PlasmaClientJNI.seal(conn, objectId)
     PlasmaClientJNI.release(conn, objectId)
@@ -49,12 +55,49 @@ class PlasmaClient(storeSocketName: String, managerSocketName: String, releaseDe
     objectId
   }
 
-  def get(objectId: Array[Byte]): Matrix = {
+  @throws[DuplicateObjectException]
+  @throws[PlasmaOutOfMemoryException]
+  def put(objectId: Array[Byte], vec: Vector, meta: Meta): Array[Byte] = {
+    val dataHead: DataHead = Serializer.getDataHeadFromVector(vec, meta)
+    val buf = PlasmaClientJNI.create(conn, objectId, DataHead.headLen + dataHead.length, null)
 
+    Serializer.putVector(buf, vec, meta, dataHead)
+
+    PlasmaClientJNI.seal(conn, objectId)
+    PlasmaClientJNI.release(conn, objectId)
+
+    objectId
+  }
+
+  def getMatrix(objectId: Array[Byte], meta: Meta, timeoutMs: Int): Matrix = {
+    val bufs = PlasmaClientJNI.get(conn, Array[Array[Byte]](objectId), timeoutMs)
+    assert(bufs.length == 1)
+
+    val dataBuf = bufs(0)(0)
+    val metaBuf = bufs(0)(1)
+
+    Deserializer.matrixFromBuffer(dataBuf, meta)
+  }
+
+  def getVector(objectId: Array[Byte], meta: Meta, timeoutMs: Int): Vector = {
+    val bufs = PlasmaClientJNI.get(conn, Array[Array[Byte]](objectId), timeoutMs)
+    assert(bufs.length == 1)
+
+    val dataBuf = bufs(0)(0)
+    val metaBuf = bufs(0)(1)
+
+    Deserializer.vectorFromBuffer(dataBuf, meta)
+  }
+
+  def getBuffer(objectId: Array[Byte], timeoutMs: Int): ByteBuffer = {
+    val bufs = PlasmaClientJNI.get(conn, Array[Array[Byte]](objectId), timeoutMs)
+    assert(bufs.length == 1)
+
+    bufs(0)(0)
   }
 
   def putBatch(data: Array[LabeledData]): Array[Byte] = {
-
+    null
   }
 
   def seal(objectId: Array[Byte]): Unit = {

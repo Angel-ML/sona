@@ -63,6 +63,134 @@ object Deserializer {
       case _: LongFloatVector => MFactory.rbLongFloatMatrix(vectors.map(_.asInstanceOf[LongFloatVector]))
       case _: LongLongVector => MFactory.rbLongLongMatrix(vectors.map(_.asInstanceOf[LongLongVector]))
       case _: LongIntVector => MFactory.rbLongIntMatrix(vectors.map(_.asInstanceOf[LongIntVector]))
+      case _ => throw new Exception("vector type is not supported!")
+    }
+  }
+
+  private def getDenseVector(matrixId: Int, rowId:Int, dim: Int, dataHead: DataHead, valBuf: ByteBuffer): Vector = {
+    if (dataHead.dtype == DataHead.DT_DOUBLE) {
+      val row = new Array[Double](dim)
+      var i = 0
+      while (i < dim) {
+        row(i) = valBuf.getDouble()
+        i += 1
+      }
+
+      VFactory.denseDoubleVector(matrixId, rowId, 0, row)
+    } else if (dataHead.dtype == DataHead.DT_FLOAT) {
+      val row = new Array[Float](dim)
+      var i = 0
+      while (i < dim) {
+        row(i) = valBuf.getFloat()
+        i += 1
+      }
+
+      VFactory.denseFloatVector(matrixId, rowId, 0, row)
+    } else if (dataHead.dtype == DataHead.DT_LONG) {
+      val row = new Array[Long](dim)
+      var i = 0
+      while (i < dim) {
+        row(i) = valBuf.getLong()
+        i += 1
+      }
+
+      VFactory.denseLongVector(matrixId, rowId, 0, row)
+    } else {
+      val row = new Array[Int](dim)
+      var i = 0
+      while (i < dim) {
+        row(i) = valBuf.getInt()
+        i += 1
+      }
+
+      VFactory.denseIntVector(matrixId, rowId, 0, row)
+    }
+  }
+
+  private def getSparseVector(matrixId: Int, rowId:Int, len: Int, dim: Long, dataHead: DataHead, meta: Meta,
+                  colBuf: ByteBuffer, valBuf: ByteBuffer): Vector = {
+    if (dataHead.dtype == DataHead.DT_DOUBLE && isIntKey(meta)) {
+      val indices = new Array[Int](len)
+      val values = new Array[Double](len)
+      var j = 0
+      while (j < len) {
+        indices(j) = colBuf.getLong.toInt
+        values(j) = valBuf.getDouble
+        j += 1
+      }
+      VFactory.sortedDoubleVector(matrixId, rowId, 0, dim.toInt, indices, values)
+    } else if (dataHead.dtype == DataHead.DT_DOUBLE && isLongKey(meta)) {
+      val indices = new Array[Long](len)
+      val values = new Array[Double](len)
+      var j = 0
+      while (j < len) {
+        indices(j) = colBuf.getLong
+        values(j) = valBuf.getDouble
+        j += 1
+      }
+      VFactory.sortedLongKeyDoubleVector(matrixId, rowId, 0, dim, indices, values)
+    } else if (dataHead.dtype == DataHead.DT_FLOAT && isIntKey(meta)) {
+      val indices = new Array[Int](len)
+      val values = new Array[Float](len)
+      var j = 0
+      while (j < len) {
+        indices(j) = colBuf.getLong.toInt
+        values(j) = valBuf.getFloat
+        j += 1
+      }
+      VFactory.sortedFloatVector(matrixId, rowId, 0, dim.toInt, indices, values)
+    } else if (dataHead.dtype == DataHead.DT_FLOAT && isLongKey(meta)) {
+      val indices = new Array[Long](len)
+      val values = new Array[Float](len)
+      var j = 0
+      while (j < len) {
+        indices(j) = colBuf.getLong
+        values(j) = valBuf.getFloat
+        j += 1
+      }
+      VFactory.sortedLongKeyFloatVector(matrixId, rowId, 0, dim, indices, values)
+    } else if (dataHead.dtype == DataHead.DT_LONG && isIntKey(meta)) {
+      val indices = new Array[Int](len)
+      val values = new Array[Long](len)
+      var j = 0
+      while (j < len) {
+        indices(j) = colBuf.getLong.toInt
+        values(j) = valBuf.getLong
+        j += 1
+      }
+      VFactory.sortedLongVector(matrixId, rowId, 0, dim.toInt, indices, values)
+    } else if (dataHead.dtype == DataHead.DT_LONG && isLongKey(meta)) {
+      val indices = new Array[Long](len)
+      val values = new Array[Long](len)
+      var j = 0
+      while (j < len) {
+        indices(j) = colBuf.getLong
+        values(j) = valBuf.getLong
+        j += 1
+      }
+      VFactory.sortedLongKeyLongVector(matrixId, rowId, 0, dim, indices, values)
+    } else if (dataHead.dtype == DataHead.DT_INT && isIntKey(meta)) {
+      val indices = new Array[Int](len)
+      val values = new Array[Int](len)
+      var j = 0
+      while (j < len) {
+        indices(j) = colBuf.getLong.toInt
+        values(j) = valBuf.getInt
+        j += 1
+      }
+      VFactory.sortedIntVector(matrixId, 0, rowId, dim.toInt, indices, values)
+    } else if (dataHead.dtype == DataHead.DT_INT && isLongKey(meta)) {
+      val indices = new Array[Long](len)
+      val values = new Array[Int](len)
+      var j = 0
+      while (j < len) {
+        indices(j) = colBuf.getLong
+        values(j) = valBuf.getInt
+        j += 1
+      }
+      VFactory.sortedLongKeyIntVector(matrixId, rowId, 0, dim, indices, values)
+    } else {
+      throw new Exception("Unknown data type!")
     }
   }
 
@@ -70,8 +198,7 @@ object Deserializer {
     assert(dataHead.sparseDim == 1 && dataHead.denseDim >= 1)
 
     val matrixId = meta.getMatrixContext.getMatrixId
-    val rows = dataHead.nnz
-    val cols = {
+    val dim = {
       var count = 1
       (1 until dataHead.shape.length).foreach { i =>
         count *= dataHead.shape(i)
@@ -82,52 +209,15 @@ object Deserializer {
 
     val bytes = buf.array()
     var start: Int = buf.position()
-    val rowIdxs = ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
-    rowIdxs.order(ByteOrder.LITTLE_ENDIAN)
+    val rowBuf = ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
+    rowBuf.order(ByteOrder.LITTLE_ENDIAN)
     start += dataHead.nnz * 8
 
     val valBuf = ByteBuffer.wrap(bytes, start, bytes.length - start)
     valBuf.order(ByteOrder.LITTLE_ENDIAN)
 
-    val vectors: Array[Vector] = (0 until rows).toArray.map { _ =>
-      val rowId = rowIdxs.getLong.toInt
-      if (dataHead.dtype == DataHead.DT_DOUBLE) {
-        val row = new Array[Double](cols)
-        var i = 0
-        while (i < cols) {
-          row(i) = valBuf.getDouble()
-          i += 1
-        }
-
-        VFactory.denseDoubleVector(matrixId, rowId, 0, row)
-      } else if (dataHead.dtype == DataHead.DT_FLOAT) {
-        val row = new Array[Float](cols)
-        var i = 0
-        while (i < cols) {
-          row(i) = buf.getFloat()
-          i += 1
-        }
-
-        VFactory.denseFloatVector(matrixId, rowId, 0, row)
-      } else if (dataHead.dtype == DataHead.DT_LONG) {
-        val row = new Array[Long](cols)
-        var i = 0
-        while (i < cols) {
-          row(i) = buf.getLong()
-          i += 1
-        }
-
-        VFactory.denseLongVector(matrixId, rowId, 0, row)
-      } else {
-        val row = new Array[Int](cols)
-        var i = 0
-        while (i < cols) {
-          row(i) = buf.getInt()
-          i += 1
-        }
-
-        VFactory.denseIntVector(matrixId, rowId, 0, row)
-      }
+    val vectors: Array[Vector] = (0 until dataHead.nnz).toArray.map { _ =>
+      getDenseVector(matrixId, rowBuf.getLong.toInt, dim, dataHead, valBuf)
     }
 
     start += valBuf.position()
@@ -143,18 +233,17 @@ object Deserializer {
 
     val bytes = buf.array()
     var start: Int = buf.position()
-    val rowIdxs = ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
-    rowIdxs.order(ByteOrder.LITTLE_ENDIAN)
+    val rowBuf = ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
+    rowBuf.order(ByteOrder.LITTLE_ENDIAN)
     start += dataHead.nnz * 8
 
-    val colIdx = ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
-    colIdx.order(ByteOrder.LITTLE_ENDIAN)
+    val colBuf = ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
+    colBuf.order(ByteOrder.LITTLE_ENDIAN)
     start += dataHead.nnz * 8
 
     val valBuf = ByteBuffer.wrap(bytes, start, bytes.length - start)
     valBuf.order(ByteOrder.LITTLE_ENDIAN)
 
-    val colDim = dataHead.shape(1)
     var lastRowId: Long = -1L
     val csrRow = new ListBuffer[Int]()
     (0 until dataHead.nnz).foreach { i =>
@@ -167,93 +256,11 @@ object Deserializer {
     csrRow.append(dataHead.nnz)
     val rowIdx = csrRow.toArray
 
-    val vectors: Array[Vector] = (0 until rowIdx.length - 1).toArray.map { i =>
+    val vectors: Array[Vector] = (0 until dataHead.nnz).toArray.map { i =>
       val len = rowIdx(i + 1) - rowIdx(i)
-      val rowId = rowIdxs.getLong(rowIdx(i)).toInt
+      val rowId = rowBuf.getLong(rowIdx(i)).toInt
 
-      if (dataHead.dtype == DataHead.DT_DOUBLE && isIntKey(meta)) {
-        val indices = new Array[Int](len)
-        val values = new Array[Double](len)
-        var j = 0
-        while (j < len) {
-          indices(j) = colIdx.getLong.toInt
-          values(j) = valBuf.getDouble
-          j += 1
-        }
-        VFactory.sortedDoubleVector(matrixId, rowId, 0, colDim.toInt, indices, values)
-      } else if (dataHead.dtype == DataHead.DT_DOUBLE && isLongKey(meta)) {
-        val indices = new Array[Long](len)
-        val values = new Array[Double](len)
-        var j = 0
-        while (j < len) {
-          indices(j) = colIdx.getLong
-          values(j) = valBuf.getDouble
-          j += 1
-        }
-        VFactory.sortedLongKeyDoubleVector(matrixId, rowId, 0, colDim, indices, values)
-      } else if (dataHead.dtype == DataHead.DT_FLOAT && isIntKey(meta)) {
-        val indices = new Array[Int](len)
-        val values = new Array[Float](len)
-        var j = 0
-        while (j < len) {
-          indices(j) = colIdx.getLong.toInt
-          values(j) = valBuf.getFloat
-          j += 1
-        }
-        VFactory.sortedFloatVector(matrixId, rowId, 0, colDim.toInt, indices, values)
-      } else if (dataHead.dtype == DataHead.DT_FLOAT && isLongKey(meta)) {
-        val indices = new Array[Long](len)
-        val values = new Array[Float](len)
-        var j = 0
-        while (j < len) {
-          indices(j) = colIdx.getLong
-          values(j) = valBuf.getFloat
-          j += 1
-        }
-        VFactory.sortedLongKeyFloatVector(matrixId, rowId, 0, colDim, indices, values)
-      } else if (dataHead.dtype == DataHead.DT_LONG && isIntKey(meta)) {
-        val indices = new Array[Int](len)
-        val values = new Array[Long](len)
-        var j = 0
-        while (j < len) {
-          indices(j) = colIdx.getLong.toInt
-          values(j) = valBuf.getLong
-          j += 1
-        }
-        VFactory.sortedLongVector(matrixId, rowId, 0, colDim.toInt, indices, values)
-      } else if (dataHead.dtype == DataHead.DT_LONG && isLongKey(meta)) {
-        val indices = new Array[Long](len)
-        val values = new Array[Long](len)
-        var j = 0
-        while (j < len) {
-          indices(j) = colIdx.getLong
-          values(j) = valBuf.getLong
-          j += 1
-        }
-        VFactory.sortedLongKeyLongVector(matrixId, rowId, 0, colDim, indices, values)
-      } else if (dataHead.dtype == DataHead.DT_INT && isIntKey(meta)) {
-        val indices = new Array[Int](len)
-        val values = new Array[Int](len)
-        var j = 0
-        while (j < len) {
-          indices(j) = colIdx.getLong.toInt
-          values(j) = valBuf.getInt
-          j += 1
-        }
-        VFactory.sortedIntVector(matrixId, rowId, 0, colDim.toInt, indices, values)
-      } else if (dataHead.dtype == DataHead.DT_INT && isLongKey(meta)) {
-        val indices = new Array[Long](len)
-        val values = new Array[Int](len)
-        var j = 0
-        while (j < len) {
-          indices(j) = colIdx.getLong
-          values(j) = valBuf.getInt
-          j += 1
-        }
-        VFactory.sortedLongKeyIntVector(matrixId, rowId, 0, colDim, indices, values)
-      } else {
-        throw new Exception("Unknown data type!")
-      }
+      getSparseVector(matrixId, rowId, len, dataHead.shape(1), dataHead, meta, colBuf, valBuf)
     }
 
     start += valBuf.position()
@@ -297,8 +304,6 @@ object Deserializer {
   }
 
   def vectorFromBuffer(buf: ByteBuffer, meta: Meta): Vector = {
-    buf.order(ByteOrder.LITTLE_ENDIAN)
-
     val dataHead = DataHead.fromBuffer(buf)
     if (dataHead.shape.length > 1) {
       if (dataHead.sparseDim == -1 && dataHead.denseDim == 1) {
@@ -315,49 +320,105 @@ object Deserializer {
     }
   }
 
-  private def dummyVectorFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Vector = {}
+  private def dummyVectorFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Vector = {
+    assert(dataHead.sparseDim == 1 && dataHead.denseDim == -1 )  // vector, dummy
+    val oldOrder = buf.order()
+    buf.order(ByteOrder.LITTLE_ENDIAN)
 
-  private def sparseVectorFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Vector = {}
+    val dim  = meta.shape(0)
+    val matrixId = meta.getMatrixContext.getMatrixId
+    val vector = if (isIntKey(meta)) {
+      val values = new Array[Int](dataHead.nnz)
+      var i = 0
+      while (i < dataHead.nnz) {
+        values(i) = buf.getLong.toInt
+        i += 1
+      }
+      VFactory.intDummyVector(matrixId, 0, 0, dim.toInt, values)
+    } else {
+      val values = new Array[Long](dataHead.nnz)
+      var i = 0
+      while (i < dataHead.nnz) {
+        values(i) = buf.getLong
+        i += 1
+      }
+      VFactory.longDummyVector(matrixId, 0, 0, dim, values)
+    }
 
-  private def denseVectorFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Vector = {}
+    buf.order(oldOrder)
+    vector
+  }
+
+  private def sparseVectorFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Vector = {
+    assert(dataHead.sparseDim == 1 && dataHead.denseDim == 0)  // vector, sparse
+
+    val matrixId = meta.getMatrixContext.getMatrixId
+
+    val bytes = buf.array()
+    var start: Int = buf.position()
+    val colBuf = ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
+    colBuf.order(ByteOrder.LITTLE_ENDIAN)
+    start += dataHead.nnz * 8
+
+    val valBuf = ByteBuffer.wrap(bytes, start, bytes.length - start)
+    valBuf.order(ByteOrder.LITTLE_ENDIAN)
+
+    val vector = getSparseVector(matrixId, 0, dataHead.nnz, meta.shape(0), dataHead, meta, colBuf, valBuf)
+
+    start += valBuf.position()
+    buf.position(start)
+    vector
+  }
+
+  private def denseVectorFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Vector = {
+    assert(dataHead.sparseDim == 1 && dataHead.denseDim == 0)  // vector, sparse
+    val oldOrder = buf.order()
+    buf.order(ByteOrder.LITTLE_ENDIAN)
+
+    val matrixId = meta.getMatrixContext.getMatrixId
+    val vector = getDenseVector(matrixId, 0, dataHead.nnz, dataHead, buf)
+
+    buf.order(oldOrder)
+    vector
+  }
 
   def indicesFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Vector = {
     assert(meta.getMatrixContext.getRowType.isSparse)
 
     val bytes = buf.array()
     var start = buf.position()
-    val inxBuf = if (dataHead.sparseDim == 1) {
+    val idxBuf = if (dataHead.sparseDim == 1) {
       ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
     } else if (dataHead.sparseDim == 2) {
       start += dataHead.nnz * 8
       ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
     } else {
-      throw new Exception("dim > 2 not supported!")
+      throw new Exception("indicesFromBuffer not supported!")
     }
 
-    inxBuf.order(ByteOrder.LITTLE_ENDIAN)
+    idxBuf.order(ByteOrder.LITTLE_ENDIAN)
 
     if (isIntKey(meta)) {
       val hashSet = new IntOpenHashSet(dataHead.nnz)
       var i = 0
       while (i < dataHead.nnz) {
-        hashSet.add(inxBuf.getLong.toInt)
+        hashSet.add(idxBuf.getLong.toInt)
         i += 1
       }
 
       val data = hashSet.toIntArray
-      util.Arrays.sort(data)
+      // util.Arrays.sort(data)
       VFactory.denseIntVector(data)
     } else {
       val hashSet = new LongOpenHashSet(dataHead.nnz)
       var i = 0
       while (i < dataHead.nnz) {
-        hashSet.add(inxBuf.getLong)
+        hashSet.add(idxBuf.getLong)
         i += 1
       }
 
       val data = hashSet.toLongArray
-      util.Arrays.sort(data)
+      // util.Arrays.sort(data)
       VFactory.denseLongVector(data)
     }
   }

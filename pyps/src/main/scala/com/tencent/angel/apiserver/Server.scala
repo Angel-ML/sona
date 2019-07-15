@@ -80,9 +80,9 @@ class Server(host: String, port: Int, handler: Handler) {
     try {
       // Attempt to read off the channel
       val numRead = socketChannel.read(readBuffer)
-      assert(numRead >= Require.bufferLen)
+      assert(numRead >= Request.bufferLen)
       readBuffer.flip()
-      val req: Require = Require.fromBuffer(readBuffer)
+      val req: Request = Request.fromBuffer(readBuffer)
       pool.execute(new ReadRunnable(req, key, handler))
     } catch {
       case e: IOException =>
@@ -97,7 +97,7 @@ class Server(host: String, port: Int, handler: Handler) {
     }
   }
 
-  private class ReadRunnable(req: Require, key: SelectionKey, handler: Handler) extends Runnable {
+  private class ReadRunnable(req: Request, key: SelectionKey, handler: Handler) extends Runnable {
     override def run(): Unit = {
       val socketChannel = key.channel().asInstanceOf[SocketChannel]
       val selector: Selector = key.selector()

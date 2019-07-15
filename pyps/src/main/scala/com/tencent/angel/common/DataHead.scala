@@ -3,7 +3,7 @@ package com.tencent.angel.common
 import java.nio.{ByteBuffer, ByteOrder}
 
 
-class DataHead(val sparseDim: Int, val denseDim: Int, val shape: Array[Long], val nnz: Int, val dtype: Int, length: Int) {
+class DataHead(val sparseDim: Int, val denseDim: Int, val shape: Array[Long], val nnz: Int, val dtype: Int, val length: Int) {
   assert(sparseDim + denseDim <= 8)
 
   def toBytes: Array[Byte] = {

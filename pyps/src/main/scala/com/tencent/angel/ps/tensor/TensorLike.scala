@@ -1,10 +1,10 @@
 package com.tencent.angel.ps.tensor
 
-import java.nio.ByteBuffer
+
 import java.util
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
-import com.tencent.angel.apiserver.FuncId
+
 import com.tencent.angel.client.AngelClient
 import com.tencent.angel.common.Meta
 import com.tencent.angel.ml.servingmath2.matrix.Matrix
@@ -35,7 +35,6 @@ abstract class TensorLike(val name: String,
 
   def getMatClient: MatrixClient = matClient
 
-  @FuncId(1)
   def create[T](envCtx: EnvContext[T]): Unit = {
     writeLock.lock()
 
@@ -64,7 +63,6 @@ abstract class TensorLike(val name: String,
     }
   }
 
-  @FuncId(2)
   def init(taskFlag: Int): Unit = {
     writeLock.lock()
 
@@ -84,7 +82,6 @@ abstract class TensorLike(val name: String,
     }
   }
 
-  @FuncId(3)
   def load[T](envCtx: EnvContext[T], path: String, conf: Configuration): Unit = {
     writeLock.lock()
 
@@ -112,44 +109,16 @@ abstract class TensorLike(val name: String,
     }
   }
 
-  @FuncId(4)
-  def pull(epoch: Int, indices: Vector): Array[ByteBuffer] = {
-    writeLock.lock()
-
-    assert(matClient != null)
-    var pulled: Array[ByteBuffer] = null
-    try {
-      if (state != State.New && state != State.Expired) {
-        val headBuf = ByteBuffer.allocate(128)
-        val params = doPull(epoch, indices)
-        pulled = Array(headBuf, SerDeUtils.vecArray2Byte(params))
-
-        // trans state
-        if (state == State.Initialized) {
-          transSate(State.Initialized, State.Ready)
-        } else if (state == State.Created) {
-          transSate(State.Created, State.Ready)
-        }
-      }
-
-      assert(state == State.Ready)
-
-      pulled
-    } finally {
-      writeLock.unlock()
-    }
-  }
-
   protected def doPull(epoch: Int, indices: Vector): Array[Vector]
 
-  @FuncId(5)
-  def push(grad: Array[Byte], alpha: Double): Unit = {
+  def push(grad: Matrix, alpha: Double): Unit = {
     writeLock.lock()
 
     assert(matClient != null)
     try {
       assert(state != State.New && state != State.Expired)
-      doPush(SerDeUtils.byte2Matrix(grad), alpha)
+      doPush(grad, alpha)
+
     } finally {
       writeLock.unlock()
     }

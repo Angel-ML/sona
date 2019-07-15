@@ -7,7 +7,6 @@ import com.tencent.angel.ml.servingmath2.vector._
 import com.tencent.angel.ps.variable.{Initializer, NormalInitializer}
 
 
-@HandlerId(1)
 class Tensor(name: String, dim: Int, shape: Array[Long], dtype: String, validIndexNum: Long,
              initializer: Initializer = new NormalInitializer(0.0, 1e-6))
   extends TensorLike(name, dim, shape, dtype, validIndexNum, initializer) {

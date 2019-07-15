@@ -3,9 +3,9 @@ package com.tencent.angel.apiserver
 import java.nio.ByteBuffer
 import java.util
 
-class Require(val pid: Long, val funcId: Long, val matId: Int, val epoch: Int, val batch: Int, val msgLen: Int, objectId: Array[Byte]) {
+class Request(val pid: Long, val funcId: Long, val matId: Int, val epoch: Int, val batch: Int, val msgLen: Int, objectId: Array[Byte]) {
   private lazy val reqBytes: Array[Byte] = {
-    val bytes = new Array[Byte](Require.bufferLen)
+    val bytes = new Array[Byte](Request.bufferLen)
     val buf = ByteBuffer.wrap(bytes)
     put2Buffer(buf)
 
@@ -21,7 +21,7 @@ class Require(val pid: Long, val funcId: Long, val matId: Int, val epoch: Int, v
   }
 
   def put2Buffer(buf: ByteBuffer): Unit = {
-    assert(buf.remaining() >= Require.bufferLen)
+    assert(buf.remaining() >= Request.bufferLen)
 
     val mkPos = buf.position()
     buf.putLong(pid)
@@ -35,8 +35,8 @@ class Require(val pid: Long, val funcId: Long, val matId: Int, val epoch: Int, v
       buf.put(objectId)
     }
 
-    if (buf.position() - mkPos < Require.bufferLen) {
-      val paddingLen = Require.bufferLen - buf.position() + mkPos
+    if (buf.position() - mkPos < Request.bufferLen) {
+      val paddingLen = Request.bufferLen - buf.position() + mkPos
       (0 until paddingLen).foreach{_ => buf.put(0.toByte)}
     }
   }
@@ -58,7 +58,7 @@ class Require(val pid: Long, val funcId: Long, val matId: Int, val epoch: Int, v
 
   override def equals(obj: Any): Boolean = {
     obj match {
-      case req: Require => util.Arrays.equals(reqBytes, req.reqBytes)
+      case req: Request => util.Arrays.equals(reqBytes, req.reqBytes)
       case _ => false
     }
   }
@@ -68,14 +68,14 @@ class Require(val pid: Long, val funcId: Long, val matId: Int, val epoch: Int, v
   }
 }
 
-object Require {
+object Request {
   val bufferLen = 128 // padding zeros
 
-  def apply(pid: Long, funcId: Long, matId: Int, epoch: Int, batch: Int, msgLen: Int, objectId: Array[Byte]): Require = {
-    new Require(pid, funcId, matId, epoch, batch, msgLen, objectId)
+  def apply(pid: Long, funcId: Long, matId: Int, epoch: Int, batch: Int, msgLen: Int, objectId: Array[Byte]): Request = {
+    new Request(pid, funcId, matId, epoch, batch, msgLen, objectId)
   }
 
-  def unapply(req: Require): Option[(Long, Long, Int, Int, Int, Int, Array[Byte])] = {
+  def unapply(req: Request): Option[(Long, Long, Int, Int, Int, Int, Array[Byte])] = {
     if (req == null) {
       None
     } else {
@@ -83,7 +83,7 @@ object Require {
     }
   }
 
-  def fromBuffer(buf: ByteBuffer): Require = {
+  def fromBuffer(buf: ByteBuffer): Request = {
     val pid = buf.getLong
     val funcId = buf.getLong
     val matId = buf.getInt
@@ -94,9 +94,9 @@ object Require {
     if (msgLen > 0) {
       val objectId = new Array[Byte](20)
       buf.get(objectId)
-      new Require(pid, funcId, matId, epoch, batch, msgLen, objectId)
+      new Request(pid, funcId, matId, epoch, batch, msgLen, objectId)
     } else { // no objectId
-      new Require(pid, funcId, matId, epoch, batch, 0,null)
+      new Request(pid, funcId, matId, epoch, batch, 0,null)
     }
   }
 
@@ -117,7 +117,7 @@ object Require {
     }
   }
 
-  implicit def toReqKey(req: Require): ReqKey = {
+  implicit def toReqKey(req: Request): ReqKey = {
     new ReqKey(req.pid, req.matId, req.epoch, req.batch)
   }
 }
