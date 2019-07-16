@@ -1,5 +1,6 @@
 package com.tencent.angel.common
 
+import com.tencent.angel.ml.servingmath2.MFactory
 import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.utils.RowType
 import com.tencent.angel.ml.servingmath2.vector._
@@ -36,37 +37,38 @@ object Utils {
     }
   }
 
-  def toBytes(vec: Vector): Array[Byte] = {
-    /*
-    vec match {
-      case v: IntDoubleVector if v.isDense =>
-      case v: IntDoubleVector if v.isSparse =>
-      case v: IntDoubleVector if v.isSorted =>
-      case v: IntFloatVector if v.isDense =>
-      case v: IntFloatVector if v.isSparse =>
-      case v: IntFloatVector if v.isSorted =>
-      case v: IntLongVector if v.isDense =>
-      case v: IntLongVector if v.isSparse =>
-      case v: IntLongVector if v.isSorted =>
-      case v: IntIntVector if v.isDense =>
-      case v: IntIntVector if v.isSparse =>
-      case v: IntIntVector if v.isSorted =>
-      case v: LongDoubleVector if v.isSparse =>
-      case v: LongDoubleVector if v.isSorted =>
-      case v: LongFloatVector if v.isSparse =>
-      case v: LongFloatVector if v.isSorted =>
-      case v: LongLongVector if v.isSparse =>
-      case v: LongLongVector if v.isSorted =>
-      case v: LongIntVector if v.isSparse =>
-      case v: LongIntVector if v.isSorted =>
+  def vectorArray2Matrix(vectors: Array[Vector]): Matrix = {
+    val vec = vectors.head
+    val mat = vec match {
+      case _: IntDoubleVector => MFactory.rbIntDoubleMatrix(vectors.map(_.asInstanceOf[IntDoubleVector]))
+      case _: IntFloatVector => MFactory.rbIntFloatMatrix(vectors.map(_.asInstanceOf[IntFloatVector]))
+      case _: IntLongVector => MFactory.rbIntLongMatrix(vectors.map(_.asInstanceOf[IntLongVector]))
+      case _: IntIntVector => MFactory.rbIntIntMatrix(vectors.map(_.asInstanceOf[IntIntVector]))
+      case _: LongDoubleVector => MFactory.rbLongDoubleMatrix(vectors.map(_.asInstanceOf[LongDoubleVector]))
+      case _: LongFloatVector => MFactory.rbLongFloatMatrix(vectors.map(_.asInstanceOf[LongFloatVector]))
+      case _: LongLongVector => MFactory.rbLongLongMatrix(vectors.map(_.asInstanceOf[LongLongVector]))
+      case _: LongIntVector => MFactory.rbLongIntMatrix(vectors.map(_.asInstanceOf[LongIntVector]))
+      case _ => throw new Exception("vector type is not supported!")
     }
-
-     */
-
-    null
+    mat.setMatrixId(vec.getMatrixId)
+    mat
   }
 
-  def fromBytes(bytes: Array[Byte], meta: Meta): Matrix = {
-    null
+  def vector2Matrix(vec: Vector): Matrix = {
+    val mat = vec match {
+      case v: IntDoubleVector => MFactory.rbIntDoubleMatrix(Array(v))
+      case v: IntFloatVector => MFactory.rbIntFloatMatrix(Array(v))
+      case v: IntLongVector => MFactory.rbIntLongMatrix(Array(v))
+      case v: IntIntVector => MFactory.rbIntIntMatrix(Array(v))
+      case v: LongDoubleVector => MFactory.rbLongDoubleMatrix(Array(v))
+      case v: LongFloatVector => MFactory.rbLongFloatMatrix(Array(v))
+      case v: LongLongVector => MFactory.rbLongLongMatrix(Array(v))
+      case v: LongIntVector => MFactory.rbLongIntMatrix(Array(v))
+      case _ => throw new Exception("vector type is not supported!")
+    }
+
+    mat.setMatrixId(vec.getMatrixId)
+
+    mat
   }
 }

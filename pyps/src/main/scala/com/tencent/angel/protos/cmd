@@ -1,0 +1,1 @@
+.\protoc.exe --proto_path=. --java_out=E:\github\fitzwang\sona\pyps\src\main\scala .\msg.proto

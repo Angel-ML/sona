@@ -46,9 +46,9 @@ object Optimizer {
   }
 
   def get(params: Map[String, String]): Optimizer = {
+    val getD = getDouble(params) _
     val name = params.getOrElse("name", "Momentum")
-    val lr = params.getOrElse[Double]("lr", 0.0001)
-    val getD = getDouble(params)
+    val lr = getD("lr", 0.0001)
 
     val opt = if (name.equalsIgnoreCase("AdaDelta")) {
       // AdaDelta(lr: Double, alpha: Double, beta: Double)

@@ -8,7 +8,7 @@ import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
 import java.io.IOException
 import java.util.concurrent.Executors
-
+import com.tencent.angel.apiserver.protos.MSGProtos._
 
 class Server(host: String, port: Int, handler: Handler) {
   private val selector: Selector = Selector.open() // 通过open()方法找到Selector
@@ -67,7 +67,8 @@ class Server(host: String, port: Int, handler: Handler) {
   private def write(key: SelectionKey): Unit = {
     val channel = key.channel().asInstanceOf[SocketChannel]
     val resp = key.attachment().asInstanceOf[Response]
-    channel.write(resp.toBuffer)
+    val writeBuf = ByteBuffer.wrap(resp.toByteArray)
+    channel.write(writeBuf)
     channel.register(selector, SelectionKey.OP_READ)
   }
 
@@ -75,15 +76,14 @@ class Server(host: String, port: Int, handler: Handler) {
     val socketChannel = key.channel().asInstanceOf[SocketChannel]
     key.selector()
     // Clear out our read buffer so it's ready for new data
-    val readBuffer = ByteBuffer.allocate(1024)
+    val readBuffer = ByteBuffer.allocate(2048)
 
     try {
       // Attempt to read off the channel
-      val numRead = socketChannel.read(readBuffer)
-      assert(numRead >= Request.bufferLen)
+      socketChannel.read(readBuffer)
       readBuffer.flip()
-      val req: Request = Request.fromBuffer(readBuffer)
-      pool.execute(new ReadRunnable(req, key, handler))
+      val req:Request = Request.parseFrom(readBuffer)
+      pool.execute(new Handle(req, key, handler))
     } catch {
       case e: IOException =>
         if (key != null) {
@@ -97,7 +97,7 @@ class Server(host: String, port: Int, handler: Handler) {
     }
   }
 
-  private class ReadRunnable(req: Request, key: SelectionKey, handler: Handler) extends Runnable {
+  private class Handle(req: Request, key: SelectionKey, handler: Handler) extends Runnable {
     override def run(): Unit = {
       val socketChannel = key.channel().asInstanceOf[SocketChannel]
       val selector: Selector = key.selector()
@@ -119,7 +119,7 @@ object Server {
   @throws[IOException]
   def main(args: Array[String]): Unit = {
     System.out.println("server started...")
-    val server = new Server("localhost", 8001, new Handler)
+    val server = new Server("localhost", 8001, new Handler(null, 12345))
     server.start()
   }
 }

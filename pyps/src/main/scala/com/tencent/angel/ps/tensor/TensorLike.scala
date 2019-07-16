@@ -4,11 +4,10 @@ package com.tencent.angel.ps.tensor
 import java.util
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
-
 import com.tencent.angel.client.AngelClient
 import com.tencent.angel.common.Meta
+import com.tencent.angel.ml.servingmath2.MathObject
 import com.tencent.angel.ml.servingmath2.matrix.Matrix
-import com.tencent.angel.ml.servingmath2.vector.Vector
 import com.tencent.angel.model.{ModelLoadContext, ModelSaveContext}
 import com.tencent.angel.ps.common.State.State
 import com.tencent.angel.ps.common.{EnvContext, MasterContext, State, WorkerContext}
@@ -46,7 +45,7 @@ abstract class TensorLike(val name: String,
           case WorkerContext(client: PSAgent) =>
             // cannot create matrix from worker
             if (matClient == null) {
-              matClient = client.getMatrixClient(meta.getName)
+              matClient = client.getMatrixClient(meta.name)
             }
         }
 
@@ -63,12 +62,12 @@ abstract class TensorLike(val name: String,
     }
   }
 
-  def init(taskFlag: Int): Unit = {
+  def init(): Unit = {
     writeLock.lock()
 
     try {
       if (state == State.Created) {
-        if (meta.getRowType.isDense && matClient != null) {
+        if (meta.rowType.isDense && matClient != null) {
           matClient.update(initializer.getUpdateFunc(matClient.getMatrixId, meta)).get()
         }
 
@@ -95,7 +94,7 @@ abstract class TensorLike(val name: String,
           case WorkerContext(client: PSAgent) =>
             // cannot load matrix from worker
             if (matClient == null) {
-              matClient = client.getMatrixClient(meta.getName)
+              matClient = client.getMatrixClient(meta.name)
             }
         }
 
@@ -109,7 +108,20 @@ abstract class TensorLike(val name: String,
     }
   }
 
-  protected def doPull(epoch: Int, indices: Vector): Array[Vector]
+  def pull(epoch: Int, indices: Matrix): Matrix = {
+    writeLock.lock()
+
+    assert(matClient != null)
+    try {
+      assert(state != State.New && state != State.Expired)
+      doPull(epoch, indices)
+
+    } finally {
+      writeLock.unlock()
+    }
+  }
+
+  protected def doPull(epoch: Int, indices: Matrix): Matrix
 
   def push(grad: Matrix, alpha: Double): Unit = {
     writeLock.lock()
@@ -140,7 +152,7 @@ abstract class TensorLike(val name: String,
         case WorkerContext(client: PSAgent) =>
           // cannot save matrix from worker
           if (matClient == null) {
-            matClient = client.getMatrixClient(meta.getName)
+            matClient = client.getMatrixClient(meta.name)
           }
       }
 

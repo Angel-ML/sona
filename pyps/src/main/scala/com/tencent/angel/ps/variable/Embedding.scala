@@ -3,7 +3,7 @@ package com.tencent.angel.ps.variable
 
 import java.util
 
-import com.tencent.angel.apiserver.HandlerId
+import com.tencent.angel.common.Utils
 import com.tencent.angel.ml.psf.columns._
 import com.tencent.angel.ml.servingmath2.VFactory
 import com.tencent.angel.ml.servingmath2.matrix.Matrix
@@ -11,20 +11,21 @@ import com.tencent.angel.ml.servingmath2.vector._
 import it.unimi.dsi.fastutil.ints.{IntArrays, IntOpenHashBigSet}
 import it.unimi.dsi.fastutil.longs.{LongArrays, LongOpenHashBigSet}
 
-@HandlerId(3)
+
 class Embedding(name: String,
                 numFeats: Long,
                 embeddingSize: Int,
                 dtype: String,
-                updaterParams: Map[String, String],
-                initializer: Initializer = new NormalInitializer(0.0, 1e-6))
-  extends Variable(name, 2, Array[Long](embeddingSize, numFeats), dtype, -1, updaterParams, initializer) {
+                updater: Updater,
+                initializer: Initializer)
+  extends Variable(name, 2, Array[Long](embeddingSize, numFeats), dtype, -1, updater, initializer) {
 
   private var embeddings: util.Map[java.lang.Long, Vector] = _
   private var uniqueIdx: Vector = _
   private var lastIndices: Vector = _
 
-  override protected def doPull(epoch: Int, indices: Vector): Array[Vector] = {
+  override protected def doPull(epoch: Int, data: Matrix): Matrix = {
+    val indices = data.getRow(0)
     val matrixId = matClient.getMatrixId
 
     lastIndices = indices
@@ -62,7 +63,7 @@ class Embedding(name: String,
     val result = matClient.get(func).asInstanceOf[GetColsResult]
     embeddings = result.results
 
-    indices match {
+    val vectors = indices match {
       case v: IntIntVector if v.isDense =>
         v.getStorage.getValues.map { idx => embeddings.get(idx.toLong) }
       case v: IntDummyVector =>
@@ -72,6 +73,8 @@ class Embedding(name: String,
       case v: LongDummyVector =>
         v.getIndices.map { idx => embeddings.get(idx) }
     }
+
+    Utils.vectorArray2Matrix(vectors)
   }
 
   override protected def doPush(grad: Matrix, alpha: Double): Unit = {
@@ -86,7 +89,7 @@ class Embedding(name: String,
     val map = new util.HashMap[java.lang.Long, Vector](embeddings.size())
     lastIndices match {
       case v: IntIntVector if v.isDense =>
-        v.getStorage.getValues.zipWithIndex { case (mapIdx: Int, rowIdx: Int) =>
+        v.getStorage.getValues.zipWithIndex.map{ case (mapIdx: Int, rowIdx: Int) =>
           if (map.containsKey(mapIdx.toLong)) {
             map.get(mapIdx.toLong).iadd(grad.getRow(rowIdx).imul(alpha))
           } else {
@@ -94,7 +97,7 @@ class Embedding(name: String,
           }
         }
       case v: IntDummyVector =>
-        v.getIndices.zipWithIndex { case (mapIdx: Int, rowIdx: Int) =>
+        v.getIndices.zipWithIndex.map { case (mapIdx: Int, rowIdx: Int) =>
           if (map.containsKey(mapIdx.toLong)) {
             map.get(mapIdx.toLong).iadd(grad.getRow(rowIdx).imul(alpha))
           } else {
@@ -102,7 +105,7 @@ class Embedding(name: String,
           }
         }
       case v: IntLongVector if v.isDense =>
-        v.getStorage.getValues.zipWithIndex { case (mapIdx: Long, rowIdx: Int) =>
+        v.getStorage.getValues.zipWithIndex.map { case (mapIdx: Long, rowIdx: Int) =>
           if (map.containsKey(mapIdx)) {
             map.get(mapIdx).iadd(grad.getRow(rowIdx).imul(alpha))
           } else {
@@ -110,7 +113,7 @@ class Embedding(name: String,
           }
         }
       case v: LongDummyVector =>
-        v.getIndices.zipWithIndex { case (mapIdx: Long, rowIdx: Int) =>
+        v.getIndices.zipWithIndex.map { case (mapIdx: Long, rowIdx: Int) =>
           if (map.containsKey(mapIdx)) {
             map.get(mapIdx).iadd(grad.getRow(rowIdx).imul(alpha))
           } else {

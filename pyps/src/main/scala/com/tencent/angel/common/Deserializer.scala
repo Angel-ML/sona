@@ -36,7 +36,7 @@ object Deserializer {
   def matrixFromBuffer(buf: ByteBuffer, meta: Meta): Matrix = {
     val dataHead = DataHead.fromBuffer(buf)
     if (dataHead.shape.length >= 2) {
-      assert(util.Arrays.equals(meta.getShape, dataHead.shape))
+      assert(util.Arrays.equals(meta.shape, dataHead.shape))
       assert(checkValueType(dataHead, meta))
 
       if (dataHead.sparseDim == 1 && dataHead.denseDim >= 1) { // sparse (the first dim is sparse)
@@ -50,20 +50,6 @@ object Deserializer {
       }
     } else {
       null
-    }
-  }
-
-  private def vectorArray2Matrix(vectors: Array[Vector]): Matrix = {
-    vectors.head match {
-      case _: IntDoubleVector => MFactory.rbIntDoubleMatrix(vectors.map(_.asInstanceOf[IntDoubleVector]))
-      case _: IntFloatVector => MFactory.rbIntFloatMatrix(vectors.map(_.asInstanceOf[IntFloatVector]))
-      case _: IntLongVector => MFactory.rbIntLongMatrix(vectors.map(_.asInstanceOf[IntLongVector]))
-      case _: IntIntVector => MFactory.rbIntIntMatrix(vectors.map(_.asInstanceOf[IntIntVector]))
-      case _: LongDoubleVector => MFactory.rbLongDoubleMatrix(vectors.map(_.asInstanceOf[LongDoubleVector]))
-      case _: LongFloatVector => MFactory.rbLongFloatMatrix(vectors.map(_.asInstanceOf[LongFloatVector]))
-      case _: LongLongVector => MFactory.rbLongLongMatrix(vectors.map(_.asInstanceOf[LongLongVector]))
-      case _: LongIntVector => MFactory.rbLongIntMatrix(vectors.map(_.asInstanceOf[LongIntVector]))
-      case _ => throw new Exception("vector type is not supported!")
     }
   }
 
@@ -201,7 +187,7 @@ object Deserializer {
     val dim = {
       var count = 1
       (1 until dataHead.shape.length).foreach { i =>
-        count *= dataHead.shape(i)
+        count *= dataHead.shape(i).toInt
       }
 
       count
@@ -222,7 +208,7 @@ object Deserializer {
 
     start += valBuf.position()
     buf.position(start)
-    vectorArray2Matrix(vectors)
+    Utils.vectorArray2Matrix(vectors)
   }
 
   private def sparseMatrixFromBuffer2(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Matrix = {
@@ -265,7 +251,7 @@ object Deserializer {
 
     start += valBuf.position()
     buf.position(start)
-    vectorArray2Matrix(vectors)
+    Utils.vectorArray2Matrix(vectors)
   }
 
   private def denseMatrixFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Matrix = {

@@ -2,58 +2,53 @@ package com.tencent.angel.apiserver
 
 import java.nio.ByteBuffer
 import java.util
-
+import com.tencent.angel.apiserver.protos.MSGProtos._
 import com.tencent.angel.apiserver.plasma.PlasmaClient
+import scala.reflect.runtime.universe._
 
-class Handler(client: PlasmaClient) {
+class Handler(client: PlasmaClient, totalMemInByte: Long) {
   private val funcMap = new util.HashMap[Long, Request => Response]()
   private val handlerMap = new util.HashMap[Int, util.ArrayList[Long]]()
 
-  private val memMsger = new MemMsger(client)
-  private val memMsgerThread = new Thread(memMsger)
+  def register[T: TypeTag](obj: T): this.type = synchronized {
+    val tpe: Type = typeOf[T]
+    val symbol: Symbol = tpe.typeSymbol
+    val annotation: Annotation = symbol.annotations.head
+    val Apply(_, Literal(Constant(handlerId: Int)) :: Nil) = annotation.tree
 
-  def startMemMsger():Unit = {
-    memMsgerThread.start()
-    memMsgerThread.setDaemon(true)
-  }
+    val list = new util.ArrayList[Long]()
+    handlerMap.put(handlerId, list)
 
-  def stopMemMsger():Unit = {
-    memMsgerThread.interrupt()
-  }
+    obj.getClass.getMethods.map { method =>
+      if (method.getParameterCount == 1 && method.getParameterTypes.head == classOf[Request] &&
+        method.getReturnType == classOf[Response]) {
+        val func = (req: Request) => method.invoke(obj, req).asInstanceOf[Response]
 
-  def register(obj: AnyRef): this.type = synchronized {
-    val handlerId = obj.getClass.getAnnotation(classOf[HandlerId])
+        val methodAnnotation = tpe.decl(TermName(method.getName)).annotations.head
+        val Apply(_, Literal(Constant(funcId: Int)) :: Nil) = methodAnnotation.tree
 
-    if (handlerId != null) {
-      val list = new util.ArrayList[Long]()
-      handlerMap.put(handlerId.id, list)
+        val buf = ByteBuffer.allocate(8)
+        buf.putInt(handlerId)
+        buf.putInt(funcId)
+        list.add(funcId)
 
-      obj.getClass.getMethods.map{ method =>
-        if (method.getParameterCount == 1 && method.getParameterTypes.head == classOf[Request] &&
-          method.getReturnType == classOf[Response]) {
-          val func = (req: Request) => method.invoke(obj, req).asInstanceOf[Response]
-
-          val funcId = method.getAnnotation(classOf[FuncId])
-
-          val buf = ByteBuffer.allocate(8)
-          buf.putInt(handlerId.id)
-          buf.putInt(funcId.id)
-          list.add(funcId.id)
-
-          buf.flip()
-          funcMap.put(buf.getLong, func)
-        }
+        buf.flip()
+        funcMap.put(buf.getLong, func)
       }
     }
+
 
     this
   }
 
-  def unregister(obj: AnyRef): this.type = synchronized {
-    val handlerId = obj.getClass.getAnnotation(classOf[HandlerId])
+  def unregister[T: TypeTag](obj: T): this.type = synchronized {
+    val tpe: Type = typeOf[T]
+    val symbol: Symbol = tpe.typeSymbol
+    val annotation: Annotation = symbol.annotations.head
+    val Apply(_, Literal(Constant(handlerId: Int)) :: Nil) = annotation.tree
 
-    if (handlerId != null && handlerMap.containsKey(handlerId.id)) {
-      val iter = handlerMap.get(handlerId.id).iterator()
+    if (handlerMap.containsKey(handlerId)) {
+      val iter = handlerMap.get(handlerId).iterator()
       while (iter.hasNext) {
         val funcId = iter.next()
         if (funcMap.containsKey(funcId)) {
@@ -61,23 +56,17 @@ class Handler(client: PlasmaClient) {
         }
       }
 
-      handlerMap.remove(handlerId.id)
+      handlerMap.remove(handlerId)
     }
 
     this
   }
 
   def handle(req: Request): Response = {
-    if (memMsger.hasResponse(req)) {
-      memMsger.get(req)
+    if (funcMap.containsKey(req.getFuncId)) {
+      funcMap.get(req.getFuncId)(req)
     } else {
-      if (handlerMap.containsKey(req.funcId)) {
-        val resp: Response = handlerMap(req.funcId)(req)
-        memMsger.put(req, resp)
-        resp
-      } else {
-        throw new Exception("method not found!")
-      }
+      throw new Exception("method not found!")
     }
   }
 }

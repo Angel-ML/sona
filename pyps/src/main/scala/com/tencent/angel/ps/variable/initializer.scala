@@ -24,10 +24,10 @@ class NormalInitializer(val mean: Double, val std: Double) extends Initializer {
     val originRows = meta match {
       case _: TensorMeta => numRow
       case vmeta: VariableMeta =>
-        if (numRow == vmeta.getNumSlot + 1) {
+        if (numRow == vmeta.numSlot + 1) {
           1
         } else {
-          numRow / (vmeta.getNumSlot + 1)
+          numRow / (vmeta.numSlot + 1)
         }
     }
 

@@ -1,6 +1,6 @@
 package com.tencent.angel.ps.tensor
 
-import com.tencent.angel.apiserver.HandlerId
+import com.tencent.angel.common.Utils
 import com.tencent.angel.ml.servingmath2.VFactory
 import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.vector._
@@ -15,10 +15,11 @@ class Tensor(name: String, dim: Int, shape: Array[Long], dtype: String, validInd
 
   override def getMeta: TensorMeta = meta
 
-  protected def doPull(epoch: Int, indices: Vector): Array[Vector] = {
+  protected def doPull(epoch: Int, idxs: Matrix): Matrix = {
+    val indices = idxs.getRow(0)
     val rowIds = (0 until meta.getMatrixContext.getRowNum).toArray
 
-    if (indices != null) {
+    val pulled = if (indices != null) {
       indices match {
         case v: IntIntVector if v.isDense =>
           matClient.get(rowIds, v.getStorage.getValues)
@@ -32,6 +33,8 @@ class Tensor(name: String, dim: Int, shape: Array[Long], dtype: String, validInd
     } else {
       matClient.getRows(rowIds)
     }
+
+    Utils.vectorArray2Matrix(pulled)
   }
 
   protected def doPush(data: Matrix, alpha: Double): Unit = {
@@ -61,7 +64,7 @@ class Tensor(name: String, dim: Int, shape: Array[Long], dtype: String, validInd
           row
         }
 
-        matClient.update(rowIds, rows)
+        matClient.update(rowIds, rows.asInstanceOf[Array[Vector]])
     }
   }
 
