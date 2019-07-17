@@ -1,5 +1,8 @@
 package org.apache.spark.examples
 
+import java.io.File
+import java.nio.file.Paths
+
 import com.tencent.angel.ps.PSContext
 import com.tencent.angel.sona.core.DriverContext
 import org.apache.spark.SparkConf

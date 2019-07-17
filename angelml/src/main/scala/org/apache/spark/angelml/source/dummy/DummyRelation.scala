@@ -35,7 +35,7 @@ import org.apache.spark.sql.execution.datasources._
 import org.apache.spark.sql.execution.datasources.CodecStreams
 import org.apache.spark.sql.sources._
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.{Row, SPKSQLUtils, SparkSession}
 import org.apache.spark.util.SerializableConfiguration
 
 private[dummy] class DummyOutputWriter(
@@ -173,6 +173,7 @@ private[dummy] class DummyFileFormat extends TextBasedFileFormat with DataSource
       sparkSession.sparkContext.broadcast(new SerializableConfiguration(hadoopConf))
 
     file: PartitionedFile => {
+      SPKSQLUtils.registerUDT()
       val linesReader = new HadoopFileLinesReader(file, broadcastedHadoopConf.value.value)
       Option(TaskContext.get()).foreach(_.addTaskCompletionListener(_ => linesReader.close()))
 

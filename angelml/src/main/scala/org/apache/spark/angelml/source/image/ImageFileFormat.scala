@@ -21,9 +21,8 @@ import com.google.common.io.{ByteStreams, Closeables}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileStatus, Path}
 import org.apache.hadoop.mapreduce.Job
-
 import org.apache.spark.angelml.image.ImageSchema
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SPKSQLUtils, SparkSession}
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.encoders.RowEncoder
 import org.apache.spark.sql.catalyst.expressions.{AttributeReference, UnsafeRow}
@@ -68,6 +67,7 @@ private[image] class ImageFileFormat extends FileFormat with DataSourceRegister 
     val imageSourceOptions = new ImageOptions(options)
 
     (file: PartitionedFile) => {
+      SPKSQLUtils.registerUDT()
       val emptyUnsafeRow = new UnsafeRow(0)
       if (!imageSourceOptions.dropInvalid && requiredSchema.isEmpty) {
         Iterator(emptyUnsafeRow)
