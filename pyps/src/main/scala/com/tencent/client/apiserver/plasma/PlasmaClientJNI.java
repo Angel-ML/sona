@@ -1,7 +1,7 @@
 package com.tencent.client.apiserver.plasma;
 
-import com.tencent.angel.apiserver.plasma.exceptions.DuplicateObjectException;
-import com.tencent.angel.apiserver.plasma.exceptions.PlasmaOutOfMemoryException;
+import com.tencent.client.apiserver.plasma.exceptions.DuplicateObjectException;
+import com.tencent.client.apiserver.plasma.exceptions.PlasmaOutOfMemoryException;
 
 import java.nio.ByteBuffer;
 

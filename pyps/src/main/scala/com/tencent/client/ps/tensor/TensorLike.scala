@@ -4,22 +4,25 @@ import java.util
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 import com.tencent.angel.client.AngelPSClient
+import com.tencent.angel.exception.{AngelException, InvalidParameterException}
 import com.tencent.angel.ml.servingmath2.matrix.Matrix
 import com.tencent.angel.model.{ModelLoadContext, ModelSaveContext}
 import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.psagent.matrix.MatrixClient
 import com.tencent.client.common.Meta
-import com.tencent.client.ps.common.{EnvContext, MasterContext, WorkerContext, State}
+import com.tencent.client.master.Master
+import com.tencent.client.ps.common.{EnvContext, MasterContext, State, WorkerContext}
 import com.tencent.client.ps.common.State.State
 import com.tencent.client.ps.variable.Initializer
 import org.apache.hadoop.conf.Configuration
+import org.apache.spark.internal.Logging
 
 abstract class TensorLike(val name: String,
                           val dim: Int,
                           val shape: Array[Long],
                           val dtype: String,
                           val validIndexNum: Long,
-                          val initializer: Initializer) {
+                          val initializer: Initializer) extends Logging {
   protected var state: State = State.New
   protected val lock = new ReentrantReadWriteLock()
   protected val readLock: ReentrantReadWriteLock.ReadLock = lock.readLock()
@@ -40,10 +43,40 @@ abstract class TensorLike(val name: String,
         envCtx match {
           case MasterContext(client: AngelPSClient) =>
             client.createMatrices(util.Arrays.asList(meta.getMatrixContext))
+            while (matClient == null) {
+              try {
+                matClient = Master.get.getPSAgent.getMatrixClient(meta.name)
+              } catch {
+                case e: InvalidParameterException =>
+                  logInfo(e.getMessage)
+                  Thread.sleep(50)
+                  Master.get.refreshMatrixInfo()
+                case e: Exception =>
+                  logInfo(e.getMessage)
+                  Thread.sleep(50)
+              }
+            }
           case WorkerContext(client: PSAgent) =>
             // cannot create matrix from worker
-            if (matClient == null) {
-              matClient = client.getMatrixClient(meta.name)
+
+            // try to query matrix from ps, but it may not create yet
+            // so we catch the exception and sleep (50 millis)
+            // after that, we query again until we get the right data
+            while (matClient == null) {
+              try {
+                matClient = client.getMatrixClient(meta.name)
+              } catch {
+                case e: InvalidParameterException =>
+                  logInfo(e.getMessage)
+                  Thread.sleep(50)
+                  client.refreshMatrixInfo()
+                case e: AngelException =>
+                  logInfo(e.getMessage)
+                  Thread.sleep(50)
+                case e: Exception =>
+                  logInfo(e.getMessage)
+                  Thread.sleep(50)
+              }
             }
         }
 
@@ -60,13 +93,17 @@ abstract class TensorLike(val name: String,
     }
   }
 
-  def init(): Unit = {
+  def init[T](envCtx: EnvContext[T]): Unit = {
     writeLock.lock()
 
     try {
       if (state == State.Created) {
         if (meta.rowType.isDense && matClient != null) {
-          matClient.update(initializer.getUpdateFunc(matClient.getMatrixId, meta)).get()
+          envCtx match {
+            case MasterContext(_: AngelPSClient) =>
+              matClient.update(initializer.getUpdateFunc(matClient.getMatrixId, meta)).get()
+            case WorkerContext(_: PSAgent) =>
+          }
         }
 
         // trans stats
@@ -89,11 +126,7 @@ abstract class TensorLike(val name: String,
             val modelLoadContext = new ModelLoadContext(path)
             modelLoadContext.addMatrix(meta.getMatrixLoadContext(path))
             client.load(modelLoadContext)
-          case WorkerContext(client: PSAgent) =>
-            // cannot load matrix from worker
-            if (matClient == null) {
-              matClient = client.getMatrixClient(meta.name)
-            }
+          case WorkerContext(_: PSAgent) =>
         }
 
         // trans state
@@ -147,11 +180,7 @@ abstract class TensorLike(val name: String,
           val saveContext = new ModelSaveContext(path)
           saveContext.addMatrix(meta.getMatrixSaveContext(path, formatClassName))
           client.save(saveContext, true)
-        case WorkerContext(client: PSAgent) =>
-          // cannot save matrix from worker
-          if (matClient == null) {
-            matClient = client.getMatrixClient(meta.name)
-          }
+        case WorkerContext(_: PSAgent) =>
       }
 
     } finally {

@@ -2,6 +2,7 @@ package com.tencent.client.ps.updater
 
 import java.util.concurrent.Future
 
+import com.tencent.angel.matrix.psf.update.base.VoidResult
 import com.tencent.client.ps.variable.Variable
 import com.tencent.client.common.psf.optimizer.MomentumUpdateFunc
 import org.apache.commons.logging.LogFactory
@@ -11,14 +12,14 @@ class Momentum(override var lr: Double, val momentum: Double) extends Optimizer 
 
   override val numSlot: Int = 2
 
-  override def update[T](variable: Variable, epoch: Int, batchSize: Int = 1): Future[T] = {
+  override def update(variable: Variable, epoch: Int, batchSize: Int = 1): Future[VoidResult] = {
     val matClient = variable.getMatClient
     val matrixId = matClient.getMatrixId
     val numInnerRows = getNumInnerRows(variable)
 
     val func = new MomentumUpdateFunc(matrixId, numInnerRows, momentum, lr, regL2Param, batchSize)
 
-    matClient.update(func).asInstanceOf[Future[T]]
+    matClient.update(func)
   }
 
   override def toString: String = {

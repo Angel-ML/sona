@@ -3,8 +3,8 @@ package com.tencent.client.apiserver
 import java.nio.ByteBuffer
 import java.util
 
-import com.tencent.angel.apiserver.protos.MSGProtos._
-import com.tencent.angel.apiserver.plasma.PlasmaClient
+import com.tencent.client.apiserver.protos.MSGProtos._
+import com.tencent.client.apiserver.plasma.PlasmaClient
 import org.apache.spark.internal.Logging
 
 import scala.reflect.runtime.universe._

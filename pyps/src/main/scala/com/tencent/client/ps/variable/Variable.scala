@@ -2,11 +2,14 @@ package com.tencent.client.ps.variable
 
 import java.util.concurrent.Future
 
+import com.tencent.angel.client.AngelPSClient
+import com.tencent.angel.matrix.psf.update.base.VoidResult
 import com.tencent.client.common.Utils
 import com.tencent.angel.ml.servingmath2.VFactory
 import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.vector._
-import com.tencent.client.ps.common.State
+import com.tencent.angel.psagent.PSAgent
+import com.tencent.client.ps.common.{EnvContext, MasterContext, State, WorkerContext}
 import com.tencent.client.ps.tensor.TensorLike
 
 
@@ -89,17 +92,21 @@ class Variable(name: String, dim: Int, shape: Array[Long], dtype: String, validI
     }
   }
 
-  def update[T](epoch: Int, batchSize: Int): Future[T] = {
+  def update[T](envCtx: EnvContext[T], epoch: Int, batchSize: Int): Unit = {
     writeLock.lock()
 
     try {
       assert(state != State.New && state != State.Expired)
-
       if (numSlot > 0) {
-        updater.update[T](this, epoch, batchSize)
-      } else {
-        null.asInstanceOf[Future[T]]
+        envCtx match {
+          case MasterContext(_: AngelPSClient, _) =>
+            updater.update(this, epoch, batchSize).get
+          case WorkerContext(_: PSAgent, _) if envCtx.isASP =>
+            updater.update(this, epoch, batchSize).get
+          case _ =>
+        }
       }
+
     } finally {
       writeLock.unlock()
     }

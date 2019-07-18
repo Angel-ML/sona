@@ -6,11 +6,12 @@ import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.util.ShutdownHookManager
 import com.tencent.angel.common.location.Location
 import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
-import com.tencent.client.common.Executor
-import com.tencent.client.ps.common.{EnvContext, MasterContext}
+import com.tencent.client.common.AsyncModel.AsyncModel
+import com.tencent.client.common.{AsyncModel, Executor}
+import com.tencent.client.ps.common.{EnvContext, MasterContext, WorkerContext}
 import org.apache.spark.internal.Logging
 
-class Master private(val conf: Configuration) extends Executor with Logging {
+class Master private(val conf: Configuration, asyncModel: AsyncModel) extends Executor with Logging {
   var angelClient: AngelPSClient = _
 
   private var angelContext: AngelContext = _
@@ -30,7 +31,25 @@ class Master private(val conf: Configuration) extends Executor with Logging {
       logWarning("angelClient is empty, please start master first!")
       null
     } else {
-      MasterContext(angelClient)
+      MasterContext(angelClient, asyncModel)
+    }
+  }
+
+  def getMasterContext: MasterContext = {
+    if (angelClient == null) {
+      logWarning("angelClient is empty, please start master first!")
+      null
+    } else {
+      MasterContext(angelClient, asyncModel)
+    }
+  }
+
+  def getWorkerContext: WorkerContext = {
+    if (psAgent == null) {
+      logWarning("psAgent is empty, please start psAgent first!")
+      null
+    } else {
+      WorkerContext(psAgent, asyncModel)
     }
   }
 
@@ -125,14 +144,26 @@ class Master private(val conf: Configuration) extends Executor with Logging {
       psAgent.stop()
     }
   }
+
+  override def isASP: Boolean = {
+    asyncModel == AsyncModel.ASP
+  }
+
+  override def isBSP: Boolean = {
+    asyncModel == AsyncModel.BSP
+  }
+
+  override def isSSP: Boolean = {
+    asyncModel == AsyncModel.SSP
+  }
 }
 
 object Master {
   private var master: Master = _
 
-  def get(hadoopConf: Configuration): Master = synchronized {
+  def get(hadoopConf: Configuration, asyncModel: AsyncModel): Master = synchronized {
     if (master == null) {
-      master = new Master(hadoopConf)
+      master = new Master(hadoopConf, asyncModel)
     }
 
     master

@@ -250,7 +250,7 @@ public final class MSGProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_descriptor;
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -268,9 +268,9 @@ public final class MSGProtos {
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_fieldAccessorTable
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.class, com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.Builder.class);
+              com.tencent.client.apiserver.protos.MSGProtos.TensorProto.class, com.tencent.client.apiserver.protos.MSGProtos.TensorProto.Builder.class);
     }
 
     private int bitField0_;
@@ -431,7 +431,7 @@ public final class MSGProtos {
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_InitializerParamsEntry_descriptor, 
+                  com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_InitializerParamsEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
@@ -607,10 +607,10 @@ public final class MSGProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tencent.angel.apiserver.protos.MSGProtos.TensorProto)) {
+      if (!(obj instanceof com.tencent.client.apiserver.protos.MSGProtos.TensorProto)) {
         return super.equals(obj);
       }
-      com.tencent.angel.apiserver.protos.MSGProtos.TensorProto other = (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) obj;
+      com.tencent.client.apiserver.protos.MSGProtos.TensorProto other = (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) obj;
 
       boolean result = true;
       result = result && (hasMatId() == other.hasMatId());
@@ -687,69 +687,69 @@ public final class MSGProtos {
       return hash;
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(byte[] data)
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseDelimitedFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseDelimitedFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -762,7 +762,7 @@ public final class MSGProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tencent.angel.apiserver.protos.MSGProtos.TensorProto prototype) {
+    public static Builder newBuilder(com.tencent.client.apiserver.protos.MSGProtos.TensorProto prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -783,10 +783,10 @@ public final class MSGProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:apiserver.TensorProto)
-        com.tencent.angel.apiserver.protos.MSGProtos.TensorProtoOrBuilder {
+        com.tencent.client.apiserver.protos.MSGProtos.TensorProtoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_descriptor;
       }
 
       @SuppressWarnings({"rawtypes"})
@@ -814,12 +814,12 @@ public final class MSGProtos {
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_fieldAccessorTable
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.class, com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.Builder.class);
+                com.tencent.client.apiserver.protos.MSGProtos.TensorProto.class, com.tencent.client.apiserver.protos.MSGProtos.TensorProto.Builder.class);
       }
 
-      // Construct using com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.newBuilder()
+      // Construct using com.tencent.client.apiserver.protos.MSGProtos.TensorProto.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -856,17 +856,17 @@ public final class MSGProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_TensorProto_descriptor;
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.TensorProto getDefaultInstanceForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
+      public com.tencent.client.apiserver.protos.MSGProtos.TensorProto getDefaultInstanceForType() {
+        return com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.TensorProto build() {
-        com.tencent.angel.apiserver.protos.MSGProtos.TensorProto result = buildPartial();
+      public com.tencent.client.apiserver.protos.MSGProtos.TensorProto build() {
+        com.tencent.client.apiserver.protos.MSGProtos.TensorProto result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -874,8 +874,8 @@ public final class MSGProtos {
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.TensorProto buildPartial() {
-        com.tencent.angel.apiserver.protos.MSGProtos.TensorProto result = new com.tencent.angel.apiserver.protos.MSGProtos.TensorProto(this);
+      public com.tencent.client.apiserver.protos.MSGProtos.TensorProto buildPartial() {
+        com.tencent.client.apiserver.protos.MSGProtos.TensorProto result = new com.tencent.client.apiserver.protos.MSGProtos.TensorProto(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -944,16 +944,16 @@ public final class MSGProtos {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) {
-          return mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.TensorProto)other);
+        if (other instanceof com.tencent.client.apiserver.protos.MSGProtos.TensorProto) {
+          return mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.TensorProto)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tencent.angel.apiserver.protos.MSGProtos.TensorProto other) {
-        if (other == com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.tencent.client.apiserver.protos.MSGProtos.TensorProto other) {
+        if (other == com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance()) return this;
         if (other.hasMatId()) {
           setMatId(other.getMatId());
         }
@@ -1009,11 +1009,11 @@ public final class MSGProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tencent.angel.apiserver.protos.MSGProtos.TensorProto parsedMessage = null;
+        com.tencent.client.apiserver.protos.MSGProtos.TensorProto parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) e.getUnfinishedMessage();
+          parsedMessage = (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1477,12 +1477,12 @@ public final class MSGProtos {
     }
 
     // @@protoc_insertion_point(class_scope:apiserver.TensorProto)
-    private static final com.tencent.angel.apiserver.protos.MSGProtos.TensorProto DEFAULT_INSTANCE;
+    private static final com.tencent.client.apiserver.protos.MSGProtos.TensorProto DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tencent.angel.apiserver.protos.MSGProtos.TensorProto();
+      DEFAULT_INSTANCE = new com.tencent.client.apiserver.protos.MSGProtos.TensorProto();
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.TensorProto getDefaultInstance() {
+    public static com.tencent.client.apiserver.protos.MSGProtos.TensorProto getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1507,7 +1507,7 @@ public final class MSGProtos {
     }
 
     @java.lang.Override
-    public com.tencent.angel.apiserver.protos.MSGProtos.TensorProto getDefaultInstanceForType() {
+    public com.tencent.client.apiserver.protos.MSGProtos.TensorProto getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1796,7 +1796,7 @@ public final class MSGProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_descriptor;
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -1816,9 +1816,9 @@ public final class MSGProtos {
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_fieldAccessorTable
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.class, com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.Builder.class);
+              com.tencent.client.apiserver.protos.MSGProtos.VariableProto.class, com.tencent.client.apiserver.protos.MSGProtos.VariableProto.Builder.class);
     }
 
     private int bitField0_;
@@ -1979,7 +1979,7 @@ public final class MSGProtos {
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_InitializerParamsEntry_descriptor, 
+                  com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_InitializerParamsEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
@@ -2055,7 +2055,7 @@ public final class MSGProtos {
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_UpdaterParamsEntry_descriptor, 
+                  com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_UpdaterParamsEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
@@ -2247,10 +2247,10 @@ public final class MSGProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tencent.angel.apiserver.protos.MSGProtos.VariableProto)) {
+      if (!(obj instanceof com.tencent.client.apiserver.protos.MSGProtos.VariableProto)) {
         return super.equals(obj);
       }
-      com.tencent.angel.apiserver.protos.MSGProtos.VariableProto other = (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) obj;
+      com.tencent.client.apiserver.protos.MSGProtos.VariableProto other = (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) obj;
 
       boolean result = true;
       result = result && (hasMatId() == other.hasMatId());
@@ -2333,69 +2333,69 @@ public final class MSGProtos {
       return hash;
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(byte[] data)
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseDelimitedFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseDelimitedFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2408,7 +2408,7 @@ public final class MSGProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tencent.angel.apiserver.protos.MSGProtos.VariableProto prototype) {
+    public static Builder newBuilder(com.tencent.client.apiserver.protos.MSGProtos.VariableProto prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -2429,10 +2429,10 @@ public final class MSGProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:apiserver.VariableProto)
-        com.tencent.angel.apiserver.protos.MSGProtos.VariableProtoOrBuilder {
+        com.tencent.client.apiserver.protos.MSGProtos.VariableProtoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_descriptor;
       }
 
       @SuppressWarnings({"rawtypes"})
@@ -2464,12 +2464,12 @@ public final class MSGProtos {
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_fieldAccessorTable
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.class, com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.Builder.class);
+                com.tencent.client.apiserver.protos.MSGProtos.VariableProto.class, com.tencent.client.apiserver.protos.MSGProtos.VariableProto.Builder.class);
       }
 
-      // Construct using com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.newBuilder()
+      // Construct using com.tencent.client.apiserver.protos.MSGProtos.VariableProto.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2507,17 +2507,17 @@ public final class MSGProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_VariableProto_descriptor;
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.VariableProto getDefaultInstanceForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
+      public com.tencent.client.apiserver.protos.MSGProtos.VariableProto getDefaultInstanceForType() {
+        return com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.VariableProto build() {
-        com.tencent.angel.apiserver.protos.MSGProtos.VariableProto result = buildPartial();
+      public com.tencent.client.apiserver.protos.MSGProtos.VariableProto build() {
+        com.tencent.client.apiserver.protos.MSGProtos.VariableProto result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2525,8 +2525,8 @@ public final class MSGProtos {
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.VariableProto buildPartial() {
-        com.tencent.angel.apiserver.protos.MSGProtos.VariableProto result = new com.tencent.angel.apiserver.protos.MSGProtos.VariableProto(this);
+      public com.tencent.client.apiserver.protos.MSGProtos.VariableProto buildPartial() {
+        com.tencent.client.apiserver.protos.MSGProtos.VariableProto result = new com.tencent.client.apiserver.protos.MSGProtos.VariableProto(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -2597,16 +2597,16 @@ public final class MSGProtos {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) {
-          return mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.VariableProto)other);
+        if (other instanceof com.tencent.client.apiserver.protos.MSGProtos.VariableProto) {
+          return mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.VariableProto)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tencent.angel.apiserver.protos.MSGProtos.VariableProto other) {
-        if (other == com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.tencent.client.apiserver.protos.MSGProtos.VariableProto other) {
+        if (other == com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance()) return this;
         if (other.hasMatId()) {
           setMatId(other.getMatId());
         }
@@ -2664,11 +2664,11 @@ public final class MSGProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tencent.angel.apiserver.protos.MSGProtos.VariableProto parsedMessage = null;
+        com.tencent.client.apiserver.protos.MSGProtos.VariableProto parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) e.getUnfinishedMessage();
+          parsedMessage = (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3255,12 +3255,12 @@ public final class MSGProtos {
     }
 
     // @@protoc_insertion_point(class_scope:apiserver.VariableProto)
-    private static final com.tencent.angel.apiserver.protos.MSGProtos.VariableProto DEFAULT_INSTANCE;
+    private static final com.tencent.client.apiserver.protos.MSGProtos.VariableProto DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tencent.angel.apiserver.protos.MSGProtos.VariableProto();
+      DEFAULT_INSTANCE = new com.tencent.client.apiserver.protos.MSGProtos.VariableProto();
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.VariableProto getDefaultInstance() {
+    public static com.tencent.client.apiserver.protos.MSGProtos.VariableProto getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3285,7 +3285,7 @@ public final class MSGProtos {
     }
 
     @java.lang.Override
-    public com.tencent.angel.apiserver.protos.MSGProtos.VariableProto getDefaultInstanceForType() {
+    public com.tencent.client.apiserver.protos.MSGProtos.VariableProto getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3521,7 +3521,7 @@ public final class MSGProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_descriptor;
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -3541,9 +3541,9 @@ public final class MSGProtos {
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_fieldAccessorTable
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.class, com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.Builder.class);
+              com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.class, com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.Builder.class);
     }
 
     private int bitField0_;
@@ -3667,7 +3667,7 @@ public final class MSGProtos {
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_InitializerParamsEntry_descriptor, 
+                  com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_InitializerParamsEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
@@ -3743,7 +3743,7 @@ public final class MSGProtos {
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_UpdaterParamsEntry_descriptor, 
+                  com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_UpdaterParamsEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
@@ -3920,10 +3920,10 @@ public final class MSGProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto)) {
+      if (!(obj instanceof com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto)) {
         return super.equals(obj);
       }
-      com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto other = (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) obj;
+      com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto other = (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) obj;
 
       boolean result = true;
       result = result && (hasName() == other.hasName());
@@ -3991,69 +3991,69 @@ public final class MSGProtos {
       return hash;
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(byte[] data)
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseDelimitedFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseDelimitedFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -4066,7 +4066,7 @@ public final class MSGProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto prototype) {
+    public static Builder newBuilder(com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -4087,10 +4087,10 @@ public final class MSGProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:apiserver.EmbeddingProto)
-        com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder {
+        com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_descriptor;
       }
 
       @SuppressWarnings({"rawtypes"})
@@ -4122,12 +4122,12 @@ public final class MSGProtos {
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_fieldAccessorTable
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.class, com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.Builder.class);
+                com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.class, com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.Builder.class);
       }
 
-      // Construct using com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.newBuilder()
+      // Construct using com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -4161,17 +4161,17 @@ public final class MSGProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_EmbeddingProto_descriptor;
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto getDefaultInstanceForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
+      public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto getDefaultInstanceForType() {
+        return com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto build() {
-        com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto result = buildPartial();
+      public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto build() {
+        com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -4179,8 +4179,8 @@ public final class MSGProtos {
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto buildPartial() {
-        com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto result = new com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto(this);
+      public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto buildPartial() {
+        com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto result = new com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -4242,16 +4242,16 @@ public final class MSGProtos {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) {
-          return mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto)other);
+        if (other instanceof com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) {
+          return mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto other) {
-        if (other == com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto other) {
+        if (other == com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance()) return this;
         if (other.hasName()) {
           bitField0_ |= 0x00000001;
           name_ = other.name_;
@@ -4299,11 +4299,11 @@ public final class MSGProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto parsedMessage = null;
+        com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) e.getUnfinishedMessage();
+          parsedMessage = (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -4792,12 +4792,12 @@ public final class MSGProtos {
     }
 
     // @@protoc_insertion_point(class_scope:apiserver.EmbeddingProto)
-    private static final com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto DEFAULT_INSTANCE;
+    private static final com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto();
+      DEFAULT_INSTANCE = new com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto();
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto getDefaultInstance() {
+    public static com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4822,7 +4822,7 @@ public final class MSGProtos {
     }
 
     @java.lang.Override
-    public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto getDefaultInstanceForType() {
+    public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4960,7 +4960,7 @@ public final class MSGProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_descriptor;
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -4978,9 +4978,9 @@ public final class MSGProtos {
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_fieldAccessorTable
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.class, com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder.class);
+              com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.class, com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder.class);
     }
 
     private int bitField0_;
@@ -5032,7 +5032,7 @@ public final class MSGProtos {
           java.lang.String, java.lang.String> defaultEntry =
               com.google.protobuf.MapEntry
               .<java.lang.String, java.lang.String>newDefaultInstance(
-                  com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_ConfEntry_descriptor, 
+                  com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_ConfEntry_descriptor, 
                   com.google.protobuf.WireFormat.FieldType.STRING,
                   "",
                   com.google.protobuf.WireFormat.FieldType.STRING,
@@ -5161,10 +5161,10 @@ public final class MSGProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto)) {
+      if (!(obj instanceof com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto)) {
         return super.equals(obj);
       }
-      com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto other = (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) obj;
+      com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto other = (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) obj;
 
       boolean result = true;
       result = result && (hasPath() == other.hasPath());
@@ -5198,69 +5198,69 @@ public final class MSGProtos {
       return hash;
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(byte[] data)
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseDelimitedFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseDelimitedFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -5273,7 +5273,7 @@ public final class MSGProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto prototype) {
+    public static Builder newBuilder(com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -5294,10 +5294,10 @@ public final class MSGProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:apiserver.LoadTensorLikeProto)
-        com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder {
+        com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_descriptor;
       }
 
       @SuppressWarnings({"rawtypes"})
@@ -5325,12 +5325,12 @@ public final class MSGProtos {
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_fieldAccessorTable
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.class, com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder.class);
+                com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.class, com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder.class);
       }
 
-      // Construct using com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.newBuilder()
+      // Construct using com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -5357,17 +5357,17 @@ public final class MSGProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_LoadTensorLikeProto_descriptor;
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto getDefaultInstanceForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
+      public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto getDefaultInstanceForType() {
+        return com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto build() {
-        com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto result = buildPartial();
+      public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto build() {
+        com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -5375,8 +5375,8 @@ public final class MSGProtos {
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto buildPartial() {
-        com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto result = new com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto(this);
+      public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto buildPartial() {
+        com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto result = new com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -5424,16 +5424,16 @@ public final class MSGProtos {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) {
-          return mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto)other);
+        if (other instanceof com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) {
+          return mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto other) {
-        if (other == com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto other) {
+        if (other == com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance()) return this;
         if (other.hasPath()) {
           bitField0_ |= 0x00000001;
           path_ = other.path_;
@@ -5459,11 +5459,11 @@ public final class MSGProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto parsedMessage = null;
+        com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) e.getUnfinishedMessage();
+          parsedMessage = (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -5689,12 +5689,12 @@ public final class MSGProtos {
     }
 
     // @@protoc_insertion_point(class_scope:apiserver.LoadTensorLikeProto)
-    private static final com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto DEFAULT_INSTANCE;
+    private static final com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto();
+      DEFAULT_INSTANCE = new com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto();
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto getDefaultInstance() {
+    public static com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5719,7 +5719,7 @@ public final class MSGProtos {
     }
 
     @java.lang.Override
-    public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto getDefaultInstanceForType() {
+    public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5831,15 +5831,15 @@ public final class MSGProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_descriptor;
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_fieldAccessorTable
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.class, com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder.class);
+              com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.class, com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder.class);
     }
 
     private int bitField0_;
@@ -5980,10 +5980,10 @@ public final class MSGProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto)) {
+      if (!(obj instanceof com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto)) {
         return super.equals(obj);
       }
-      com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto other = (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) obj;
+      com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto other = (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) obj;
 
       boolean result = true;
       result = result && (hasPath() == other.hasPath());
@@ -6020,69 +6020,69 @@ public final class MSGProtos {
       return hash;
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(byte[] data)
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseDelimitedFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseDelimitedFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -6095,7 +6095,7 @@ public final class MSGProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto prototype) {
+    public static Builder newBuilder(com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -6116,21 +6116,21 @@ public final class MSGProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:apiserver.SaveTensorLikeProto)
-        com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder {
+        com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_fieldAccessorTable
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.class, com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder.class);
+                com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.class, com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder.class);
       }
 
-      // Construct using com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.newBuilder()
+      // Construct using com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -6158,17 +6158,17 @@ public final class MSGProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_SaveTensorLikeProto_descriptor;
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto getDefaultInstanceForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
+      public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto getDefaultInstanceForType() {
+        return com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto build() {
-        com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto result = buildPartial();
+      public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto build() {
+        com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -6176,8 +6176,8 @@ public final class MSGProtos {
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto buildPartial() {
-        com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto result = new com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto(this);
+      public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto buildPartial() {
+        com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto result = new com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -6227,16 +6227,16 @@ public final class MSGProtos {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) {
-          return mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto)other);
+        if (other instanceof com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) {
+          return mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto other) {
-        if (other == com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto other) {
+        if (other == com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance()) return this;
         if (other.hasPath()) {
           bitField0_ |= 0x00000001;
           path_ = other.path_;
@@ -6268,11 +6268,11 @@ public final class MSGProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto parsedMessage = null;
+        com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) e.getUnfinishedMessage();
+          parsedMessage = (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -6451,12 +6451,12 @@ public final class MSGProtos {
     }
 
     // @@protoc_insertion_point(class_scope:apiserver.SaveTensorLikeProto)
-    private static final com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto DEFAULT_INSTANCE;
+    private static final com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto();
+      DEFAULT_INSTANCE = new com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto();
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto getDefaultInstance() {
+    public static com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -6481,7 +6481,7 @@ public final class MSGProtos {
     }
 
     @java.lang.Override
-    public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto getDefaultInstanceForType() {
+    public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -6552,11 +6552,11 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.TensorProto tensor = 10;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.TensorProto getTensor();
+    com.tencent.client.apiserver.protos.MSGProtos.TensorProto getTensor();
     /**
      * <code>optional .apiserver.TensorProto tensor = 10;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.TensorProtoOrBuilder getTensorOrBuilder();
+    com.tencent.client.apiserver.protos.MSGProtos.TensorProtoOrBuilder getTensorOrBuilder();
 
     /**
      * <code>optional .apiserver.VariableProto variable = 11;</code>
@@ -6565,11 +6565,11 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.VariableProto variable = 11;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.VariableProto getVariable();
+    com.tencent.client.apiserver.protos.MSGProtos.VariableProto getVariable();
     /**
      * <code>optional .apiserver.VariableProto variable = 11;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.VariableProtoOrBuilder getVariableOrBuilder();
+    com.tencent.client.apiserver.protos.MSGProtos.VariableProtoOrBuilder getVariableOrBuilder();
 
     /**
      * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
@@ -6578,11 +6578,11 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto getEmbed();
+    com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto getEmbed();
     /**
      * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder getEmbedOrBuilder();
+    com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder getEmbedOrBuilder();
 
     /**
      * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
@@ -6591,11 +6591,11 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto getLoadInfo();
+    com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto getLoadInfo();
     /**
      * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder getLoadInfoOrBuilder();
+    com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder getLoadInfoOrBuilder();
 
     /**
      * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
@@ -6604,11 +6604,11 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto getSaveInfo();
+    com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto getSaveInfo();
     /**
      * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
      */
-    com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder getSaveInfoOrBuilder();
+    com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder getSaveInfoOrBuilder();
 
     /**
      * <code>optional bytes objectId = 15;</code>
@@ -6619,7 +6619,7 @@ public final class MSGProtos {
      */
     com.google.protobuf.ByteString getObjectId();
 
-    public com.tencent.angel.apiserver.protos.MSGProtos.Request.DataCase getDataCase();
+    public com.tencent.client.apiserver.protos.MSGProtos.Request.DataCase getDataCase();
   }
   /**
    * Protobuf type {@code apiserver.Request}
@@ -6697,70 +6697,70 @@ public final class MSGProtos {
               break;
             }
             case 82: {
-              com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.Builder subBuilder = null;
+              com.tencent.client.apiserver.protos.MSGProtos.TensorProto.Builder subBuilder = null;
               if (dataCase_ == 10) {
-                subBuilder = ((com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_).toBuilder();
+                subBuilder = ((com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_).toBuilder();
               }
               data_ =
-                  input.readMessage(com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.PARSER, extensionRegistry);
+                  input.readMessage(com.tencent.client.apiserver.protos.MSGProtos.TensorProto.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_);
+                subBuilder.mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_);
                 data_ = subBuilder.buildPartial();
               }
               dataCase_ = 10;
               break;
             }
             case 90: {
-              com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.Builder subBuilder = null;
+              com.tencent.client.apiserver.protos.MSGProtos.VariableProto.Builder subBuilder = null;
               if (dataCase_ == 11) {
-                subBuilder = ((com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_).toBuilder();
+                subBuilder = ((com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_).toBuilder();
               }
               data_ =
-                  input.readMessage(com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.PARSER, extensionRegistry);
+                  input.readMessage(com.tencent.client.apiserver.protos.MSGProtos.VariableProto.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_);
+                subBuilder.mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_);
                 data_ = subBuilder.buildPartial();
               }
               dataCase_ = 11;
               break;
             }
             case 98: {
-              com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.Builder subBuilder = null;
+              com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.Builder subBuilder = null;
               if (dataCase_ == 12) {
-                subBuilder = ((com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_).toBuilder();
+                subBuilder = ((com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_).toBuilder();
               }
               data_ =
-                  input.readMessage(com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.PARSER, extensionRegistry);
+                  input.readMessage(com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_);
+                subBuilder.mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_);
                 data_ = subBuilder.buildPartial();
               }
               dataCase_ = 12;
               break;
             }
             case 106: {
-              com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder subBuilder = null;
+              com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder subBuilder = null;
               if (dataCase_ == 13) {
-                subBuilder = ((com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_).toBuilder();
+                subBuilder = ((com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_).toBuilder();
               }
               data_ =
-                  input.readMessage(com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.PARSER, extensionRegistry);
+                  input.readMessage(com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_);
+                subBuilder.mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_);
                 data_ = subBuilder.buildPartial();
               }
               dataCase_ = 13;
               break;
             }
             case 114: {
-              com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder subBuilder = null;
+              com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder subBuilder = null;
               if (dataCase_ == 14) {
-                subBuilder = ((com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_).toBuilder();
+                subBuilder = ((com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_).toBuilder();
               }
               data_ =
-                  input.readMessage(com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.PARSER, extensionRegistry);
+                  input.readMessage(com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_);
+                subBuilder.mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_);
                 data_ = subBuilder.buildPartial();
               }
               dataCase_ = 14;
@@ -6792,15 +6792,15 @@ public final class MSGProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Request_descriptor;
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Request_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Request_fieldAccessorTable
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Request_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tencent.angel.apiserver.protos.MSGProtos.Request.class, com.tencent.angel.apiserver.protos.MSGProtos.Request.Builder.class);
+              com.tencent.client.apiserver.protos.MSGProtos.Request.class, com.tencent.client.apiserver.protos.MSGProtos.Request.Builder.class);
     }
 
     private int bitField0_;
@@ -6950,20 +6950,20 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.TensorProto tensor = 10;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.TensorProto getTensor() {
+    public com.tencent.client.apiserver.protos.MSGProtos.TensorProto getTensor() {
       if (dataCase_ == 10) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
     }
     /**
      * <code>optional .apiserver.TensorProto tensor = 10;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.TensorProtoOrBuilder getTensorOrBuilder() {
+    public com.tencent.client.apiserver.protos.MSGProtos.TensorProtoOrBuilder getTensorOrBuilder() {
       if (dataCase_ == 10) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
     }
 
     public static final int VARIABLE_FIELD_NUMBER = 11;
@@ -6976,20 +6976,20 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.VariableProto variable = 11;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.VariableProto getVariable() {
+    public com.tencent.client.apiserver.protos.MSGProtos.VariableProto getVariable() {
       if (dataCase_ == 11) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
     }
     /**
      * <code>optional .apiserver.VariableProto variable = 11;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.VariableProtoOrBuilder getVariableOrBuilder() {
+    public com.tencent.client.apiserver.protos.MSGProtos.VariableProtoOrBuilder getVariableOrBuilder() {
       if (dataCase_ == 11) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
     }
 
     public static final int EMBED_FIELD_NUMBER = 12;
@@ -7002,20 +7002,20 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto getEmbed() {
+    public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto getEmbed() {
       if (dataCase_ == 12) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
     }
     /**
      * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder getEmbedOrBuilder() {
+    public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder getEmbedOrBuilder() {
       if (dataCase_ == 12) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
     }
 
     public static final int LOADINFO_FIELD_NUMBER = 13;
@@ -7028,20 +7028,20 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto getLoadInfo() {
+    public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto getLoadInfo() {
       if (dataCase_ == 13) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
     }
     /**
      * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder getLoadInfoOrBuilder() {
+    public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder getLoadInfoOrBuilder() {
       if (dataCase_ == 13) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
     }
 
     public static final int SAVEINFO_FIELD_NUMBER = 14;
@@ -7054,20 +7054,20 @@ public final class MSGProtos {
     /**
      * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto getSaveInfo() {
+    public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto getSaveInfo() {
       if (dataCase_ == 14) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
     }
     /**
      * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
      */
-    public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder getSaveInfoOrBuilder() {
+    public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder getSaveInfoOrBuilder() {
       if (dataCase_ == 14) {
-         return (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_;
+         return (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_;
       }
-      return com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
+      return com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
     }
 
     public static final int OBJECTID_FIELD_NUMBER = 15;
@@ -7158,19 +7158,19 @@ public final class MSGProtos {
         output.writeInt32(6, batchSize_);
       }
       if (dataCase_ == 10) {
-        output.writeMessage(10, (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_);
+        output.writeMessage(10, (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_);
       }
       if (dataCase_ == 11) {
-        output.writeMessage(11, (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_);
+        output.writeMessage(11, (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_);
       }
       if (dataCase_ == 12) {
-        output.writeMessage(12, (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_);
+        output.writeMessage(12, (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_);
       }
       if (dataCase_ == 13) {
-        output.writeMessage(13, (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_);
+        output.writeMessage(13, (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_);
       }
       if (dataCase_ == 14) {
-        output.writeMessage(14, (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_);
+        output.writeMessage(14, (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_);
       }
       if (dataCase_ == 15) {
         output.writeBytes(
@@ -7211,23 +7211,23 @@ public final class MSGProtos {
       }
       if (dataCase_ == 10) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_);
+          .computeMessageSize(10, (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_);
       }
       if (dataCase_ == 11) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(11, (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_);
+          .computeMessageSize(11, (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_);
       }
       if (dataCase_ == 12) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_);
+          .computeMessageSize(12, (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_);
       }
       if (dataCase_ == 13) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_);
+          .computeMessageSize(13, (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_);
       }
       if (dataCase_ == 14) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(14, (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_);
+          .computeMessageSize(14, (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_);
       }
       if (dataCase_ == 15) {
         size += com.google.protobuf.CodedOutputStream
@@ -7244,10 +7244,10 @@ public final class MSGProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tencent.angel.apiserver.protos.MSGProtos.Request)) {
+      if (!(obj instanceof com.tencent.client.apiserver.protos.MSGProtos.Request)) {
         return super.equals(obj);
       }
-      com.tencent.angel.apiserver.protos.MSGProtos.Request other = (com.tencent.angel.apiserver.protos.MSGProtos.Request) obj;
+      com.tencent.client.apiserver.protos.MSGProtos.Request other = (com.tencent.client.apiserver.protos.MSGProtos.Request) obj;
 
       boolean result = true;
       result = result && (hasPid() == other.hasPid());
@@ -7380,69 +7380,69 @@ public final class MSGProtos {
       return hash;
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(byte[] data)
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseDelimitedFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseDelimitedFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -7455,7 +7455,7 @@ public final class MSGProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tencent.angel.apiserver.protos.MSGProtos.Request prototype) {
+    public static Builder newBuilder(com.tencent.client.apiserver.protos.MSGProtos.Request prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -7476,21 +7476,21 @@ public final class MSGProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:apiserver.Request)
-        com.tencent.angel.apiserver.protos.MSGProtos.RequestOrBuilder {
+        com.tencent.client.apiserver.protos.MSGProtos.RequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Request_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Request_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Request_fieldAccessorTable
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Request_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tencent.angel.apiserver.protos.MSGProtos.Request.class, com.tencent.angel.apiserver.protos.MSGProtos.Request.Builder.class);
+                com.tencent.client.apiserver.protos.MSGProtos.Request.class, com.tencent.client.apiserver.protos.MSGProtos.Request.Builder.class);
       }
 
-      // Construct using com.tencent.angel.apiserver.protos.MSGProtos.Request.newBuilder()
+      // Construct using com.tencent.client.apiserver.protos.MSGProtos.Request.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -7528,17 +7528,17 @@ public final class MSGProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Request_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Request_descriptor;
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.Request getDefaultInstanceForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.Request.getDefaultInstance();
+      public com.tencent.client.apiserver.protos.MSGProtos.Request getDefaultInstanceForType() {
+        return com.tencent.client.apiserver.protos.MSGProtos.Request.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.Request build() {
-        com.tencent.angel.apiserver.protos.MSGProtos.Request result = buildPartial();
+      public com.tencent.client.apiserver.protos.MSGProtos.Request build() {
+        com.tencent.client.apiserver.protos.MSGProtos.Request result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -7546,8 +7546,8 @@ public final class MSGProtos {
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.Request buildPartial() {
-        com.tencent.angel.apiserver.protos.MSGProtos.Request result = new com.tencent.angel.apiserver.protos.MSGProtos.Request(this);
+      public com.tencent.client.apiserver.protos.MSGProtos.Request buildPartial() {
+        com.tencent.client.apiserver.protos.MSGProtos.Request result = new com.tencent.client.apiserver.protos.MSGProtos.Request(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -7652,16 +7652,16 @@ public final class MSGProtos {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tencent.angel.apiserver.protos.MSGProtos.Request) {
-          return mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.Request)other);
+        if (other instanceof com.tencent.client.apiserver.protos.MSGProtos.Request) {
+          return mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.Request)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tencent.angel.apiserver.protos.MSGProtos.Request other) {
-        if (other == com.tencent.angel.apiserver.protos.MSGProtos.Request.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.tencent.client.apiserver.protos.MSGProtos.Request other) {
+        if (other == com.tencent.client.apiserver.protos.MSGProtos.Request.getDefaultInstance()) return this;
         if (other.hasPid()) {
           setPid(other.getPid());
         }
@@ -7755,11 +7755,11 @@ public final class MSGProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tencent.angel.apiserver.protos.MSGProtos.Request parsedMessage = null;
+        com.tencent.client.apiserver.protos.MSGProtos.Request parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tencent.angel.apiserver.protos.MSGProtos.Request) e.getUnfinishedMessage();
+          parsedMessage = (com.tencent.client.apiserver.protos.MSGProtos.Request) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -7978,7 +7978,7 @@ public final class MSGProtos {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.TensorProto, com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.TensorProtoOrBuilder> tensorBuilder_;
+          com.tencent.client.apiserver.protos.MSGProtos.TensorProto, com.tencent.client.apiserver.protos.MSGProtos.TensorProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.TensorProtoOrBuilder> tensorBuilder_;
       /**
        * <code>optional .apiserver.TensorProto tensor = 10;</code>
        */
@@ -7988,23 +7988,23 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.TensorProto tensor = 10;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.TensorProto getTensor() {
+      public com.tencent.client.apiserver.protos.MSGProtos.TensorProto getTensor() {
         if (tensorBuilder_ == null) {
           if (dataCase_ == 10) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
         } else {
           if (dataCase_ == 10) {
             return tensorBuilder_.getMessage();
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.TensorProto tensor = 10;</code>
        */
-      public Builder setTensor(com.tencent.angel.apiserver.protos.MSGProtos.TensorProto value) {
+      public Builder setTensor(com.tencent.client.apiserver.protos.MSGProtos.TensorProto value) {
         if (tensorBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8021,7 +8021,7 @@ public final class MSGProtos {
        * <code>optional .apiserver.TensorProto tensor = 10;</code>
        */
       public Builder setTensor(
-          com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.Builder builderForValue) {
+          com.tencent.client.apiserver.protos.MSGProtos.TensorProto.Builder builderForValue) {
         if (tensorBuilder_ == null) {
           data_ = builderForValue.build();
           onChanged();
@@ -8034,11 +8034,11 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.TensorProto tensor = 10;</code>
        */
-      public Builder mergeTensor(com.tencent.angel.apiserver.protos.MSGProtos.TensorProto value) {
+      public Builder mergeTensor(com.tencent.client.apiserver.protos.MSGProtos.TensorProto value) {
         if (tensorBuilder_ == null) {
           if (dataCase_ == 10 &&
-              data_ != com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance()) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.newBuilder((com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_)
+              data_ != com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance()) {
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.TensorProto.newBuilder((com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_)
                 .mergeFrom(value).buildPartial();
           } else {
             data_ = value;
@@ -8075,35 +8075,35 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.TensorProto tensor = 10;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.Builder getTensorBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.TensorProto.Builder getTensorBuilder() {
         return getTensorFieldBuilder().getBuilder();
       }
       /**
        * <code>optional .apiserver.TensorProto tensor = 10;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.TensorProtoOrBuilder getTensorOrBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.TensorProtoOrBuilder getTensorOrBuilder() {
         if ((dataCase_ == 10) && (tensorBuilder_ != null)) {
           return tensorBuilder_.getMessageOrBuilder();
         } else {
           if (dataCase_ == 10) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.TensorProto tensor = 10;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.TensorProto, com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.TensorProtoOrBuilder> 
+          com.tencent.client.apiserver.protos.MSGProtos.TensorProto, com.tencent.client.apiserver.protos.MSGProtos.TensorProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.TensorProtoOrBuilder> 
           getTensorFieldBuilder() {
         if (tensorBuilder_ == null) {
           if (!(dataCase_ == 10)) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.TensorProto.getDefaultInstance();
           }
           tensorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.tencent.angel.apiserver.protos.MSGProtos.TensorProto, com.tencent.angel.apiserver.protos.MSGProtos.TensorProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.TensorProtoOrBuilder>(
-                  (com.tencent.angel.apiserver.protos.MSGProtos.TensorProto) data_,
+              com.tencent.client.apiserver.protos.MSGProtos.TensorProto, com.tencent.client.apiserver.protos.MSGProtos.TensorProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.TensorProtoOrBuilder>(
+                  (com.tencent.client.apiserver.protos.MSGProtos.TensorProto) data_,
                   getParentForChildren(),
                   isClean());
           data_ = null;
@@ -8114,7 +8114,7 @@ public final class MSGProtos {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.VariableProto, com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.VariableProtoOrBuilder> variableBuilder_;
+          com.tencent.client.apiserver.protos.MSGProtos.VariableProto, com.tencent.client.apiserver.protos.MSGProtos.VariableProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.VariableProtoOrBuilder> variableBuilder_;
       /**
        * <code>optional .apiserver.VariableProto variable = 11;</code>
        */
@@ -8124,23 +8124,23 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.VariableProto variable = 11;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.VariableProto getVariable() {
+      public com.tencent.client.apiserver.protos.MSGProtos.VariableProto getVariable() {
         if (variableBuilder_ == null) {
           if (dataCase_ == 11) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
         } else {
           if (dataCase_ == 11) {
             return variableBuilder_.getMessage();
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.VariableProto variable = 11;</code>
        */
-      public Builder setVariable(com.tencent.angel.apiserver.protos.MSGProtos.VariableProto value) {
+      public Builder setVariable(com.tencent.client.apiserver.protos.MSGProtos.VariableProto value) {
         if (variableBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8157,7 +8157,7 @@ public final class MSGProtos {
        * <code>optional .apiserver.VariableProto variable = 11;</code>
        */
       public Builder setVariable(
-          com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.Builder builderForValue) {
+          com.tencent.client.apiserver.protos.MSGProtos.VariableProto.Builder builderForValue) {
         if (variableBuilder_ == null) {
           data_ = builderForValue.build();
           onChanged();
@@ -8170,11 +8170,11 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.VariableProto variable = 11;</code>
        */
-      public Builder mergeVariable(com.tencent.angel.apiserver.protos.MSGProtos.VariableProto value) {
+      public Builder mergeVariable(com.tencent.client.apiserver.protos.MSGProtos.VariableProto value) {
         if (variableBuilder_ == null) {
           if (dataCase_ == 11 &&
-              data_ != com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance()) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.newBuilder((com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_)
+              data_ != com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance()) {
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.VariableProto.newBuilder((com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_)
                 .mergeFrom(value).buildPartial();
           } else {
             data_ = value;
@@ -8211,35 +8211,35 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.VariableProto variable = 11;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.Builder getVariableBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.VariableProto.Builder getVariableBuilder() {
         return getVariableFieldBuilder().getBuilder();
       }
       /**
        * <code>optional .apiserver.VariableProto variable = 11;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.VariableProtoOrBuilder getVariableOrBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.VariableProtoOrBuilder getVariableOrBuilder() {
         if ((dataCase_ == 11) && (variableBuilder_ != null)) {
           return variableBuilder_.getMessageOrBuilder();
         } else {
           if (dataCase_ == 11) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.VariableProto variable = 11;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.VariableProto, com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.VariableProtoOrBuilder> 
+          com.tencent.client.apiserver.protos.MSGProtos.VariableProto, com.tencent.client.apiserver.protos.MSGProtos.VariableProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.VariableProtoOrBuilder> 
           getVariableFieldBuilder() {
         if (variableBuilder_ == null) {
           if (!(dataCase_ == 11)) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.VariableProto.getDefaultInstance();
           }
           variableBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.tencent.angel.apiserver.protos.MSGProtos.VariableProto, com.tencent.angel.apiserver.protos.MSGProtos.VariableProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.VariableProtoOrBuilder>(
-                  (com.tencent.angel.apiserver.protos.MSGProtos.VariableProto) data_,
+              com.tencent.client.apiserver.protos.MSGProtos.VariableProto, com.tencent.client.apiserver.protos.MSGProtos.VariableProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.VariableProtoOrBuilder>(
+                  (com.tencent.client.apiserver.protos.MSGProtos.VariableProto) data_,
                   getParentForChildren(),
                   isClean());
           data_ = null;
@@ -8250,7 +8250,7 @@ public final class MSGProtos {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto, com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder> embedBuilder_;
+          com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto, com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder> embedBuilder_;
       /**
        * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
        */
@@ -8260,23 +8260,23 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto getEmbed() {
+      public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto getEmbed() {
         if (embedBuilder_ == null) {
           if (dataCase_ == 12) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
         } else {
           if (dataCase_ == 12) {
             return embedBuilder_.getMessage();
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
        */
-      public Builder setEmbed(com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto value) {
+      public Builder setEmbed(com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto value) {
         if (embedBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8293,7 +8293,7 @@ public final class MSGProtos {
        * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
        */
       public Builder setEmbed(
-          com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.Builder builderForValue) {
+          com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.Builder builderForValue) {
         if (embedBuilder_ == null) {
           data_ = builderForValue.build();
           onChanged();
@@ -8306,11 +8306,11 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
        */
-      public Builder mergeEmbed(com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto value) {
+      public Builder mergeEmbed(com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto value) {
         if (embedBuilder_ == null) {
           if (dataCase_ == 12 &&
-              data_ != com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance()) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.newBuilder((com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_)
+              data_ != com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance()) {
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.newBuilder((com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_)
                 .mergeFrom(value).buildPartial();
           } else {
             data_ = value;
@@ -8347,35 +8347,35 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.Builder getEmbedBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.Builder getEmbedBuilder() {
         return getEmbedFieldBuilder().getBuilder();
       }
       /**
        * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder getEmbedOrBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder getEmbedOrBuilder() {
         if ((dataCase_ == 12) && (embedBuilder_ != null)) {
           return embedBuilder_.getMessageOrBuilder();
         } else {
           if (dataCase_ == 12) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.EmbeddingProto embed = 12;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto, com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder> 
+          com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto, com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder> 
           getEmbedFieldBuilder() {
         if (embedBuilder_ == null) {
           if (!(dataCase_ == 12)) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.getDefaultInstance();
           }
           embedBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto, com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder>(
-                  (com.tencent.angel.apiserver.protos.MSGProtos.EmbeddingProto) data_,
+              com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto, com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProtoOrBuilder>(
+                  (com.tencent.client.apiserver.protos.MSGProtos.EmbeddingProto) data_,
                   getParentForChildren(),
                   isClean());
           data_ = null;
@@ -8386,7 +8386,7 @@ public final class MSGProtos {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto, com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder> loadInfoBuilder_;
+          com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto, com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder> loadInfoBuilder_;
       /**
        * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
        */
@@ -8396,23 +8396,23 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto getLoadInfo() {
+      public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto getLoadInfo() {
         if (loadInfoBuilder_ == null) {
           if (dataCase_ == 13) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
         } else {
           if (dataCase_ == 13) {
             return loadInfoBuilder_.getMessage();
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
        */
-      public Builder setLoadInfo(com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto value) {
+      public Builder setLoadInfo(com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto value) {
         if (loadInfoBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8429,7 +8429,7 @@ public final class MSGProtos {
        * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
        */
       public Builder setLoadInfo(
-          com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder builderForValue) {
+          com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder builderForValue) {
         if (loadInfoBuilder_ == null) {
           data_ = builderForValue.build();
           onChanged();
@@ -8442,11 +8442,11 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
        */
-      public Builder mergeLoadInfo(com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto value) {
+      public Builder mergeLoadInfo(com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto value) {
         if (loadInfoBuilder_ == null) {
           if (dataCase_ == 13 &&
-              data_ != com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance()) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.newBuilder((com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_)
+              data_ != com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance()) {
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.newBuilder((com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_)
                 .mergeFrom(value).buildPartial();
           } else {
             data_ = value;
@@ -8483,35 +8483,35 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder getLoadInfoBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder getLoadInfoBuilder() {
         return getLoadInfoFieldBuilder().getBuilder();
       }
       /**
        * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder getLoadInfoOrBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder getLoadInfoOrBuilder() {
         if ((dataCase_ == 13) && (loadInfoBuilder_ != null)) {
           return loadInfoBuilder_.getMessageOrBuilder();
         } else {
           if (dataCase_ == 13) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.LoadTensorLikeProto loadInfo = 13;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto, com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder> 
+          com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto, com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder> 
           getLoadInfoFieldBuilder() {
         if (loadInfoBuilder_ == null) {
           if (!(dataCase_ == 13)) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.getDefaultInstance();
           }
           loadInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto, com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder>(
-                  (com.tencent.angel.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_,
+              com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto, com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProtoOrBuilder>(
+                  (com.tencent.client.apiserver.protos.MSGProtos.LoadTensorLikeProto) data_,
                   getParentForChildren(),
                   isClean());
           data_ = null;
@@ -8522,7 +8522,7 @@ public final class MSGProtos {
       }
 
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto, com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder> saveInfoBuilder_;
+          com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto, com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder> saveInfoBuilder_;
       /**
        * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
        */
@@ -8532,23 +8532,23 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto getSaveInfo() {
+      public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto getSaveInfo() {
         if (saveInfoBuilder_ == null) {
           if (dataCase_ == 14) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
         } else {
           if (dataCase_ == 14) {
             return saveInfoBuilder_.getMessage();
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
        */
-      public Builder setSaveInfo(com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto value) {
+      public Builder setSaveInfo(com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto value) {
         if (saveInfoBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8565,7 +8565,7 @@ public final class MSGProtos {
        * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
        */
       public Builder setSaveInfo(
-          com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder builderForValue) {
+          com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder builderForValue) {
         if (saveInfoBuilder_ == null) {
           data_ = builderForValue.build();
           onChanged();
@@ -8578,11 +8578,11 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
        */
-      public Builder mergeSaveInfo(com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto value) {
+      public Builder mergeSaveInfo(com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto value) {
         if (saveInfoBuilder_ == null) {
           if (dataCase_ == 14 &&
-              data_ != com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance()) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.newBuilder((com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_)
+              data_ != com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance()) {
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.newBuilder((com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_)
                 .mergeFrom(value).buildPartial();
           } else {
             data_ = value;
@@ -8619,35 +8619,35 @@ public final class MSGProtos {
       /**
        * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder getSaveInfoBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder getSaveInfoBuilder() {
         return getSaveInfoFieldBuilder().getBuilder();
       }
       /**
        * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
        */
-      public com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder getSaveInfoOrBuilder() {
+      public com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder getSaveInfoOrBuilder() {
         if ((dataCase_ == 14) && (saveInfoBuilder_ != null)) {
           return saveInfoBuilder_.getMessageOrBuilder();
         } else {
           if (dataCase_ == 14) {
-            return (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_;
+            return (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_;
           }
-          return com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
+          return com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
         }
       }
       /**
        * <code>optional .apiserver.SaveTensorLikeProto saveInfo = 14;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto, com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder> 
+          com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto, com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder> 
           getSaveInfoFieldBuilder() {
         if (saveInfoBuilder_ == null) {
           if (!(dataCase_ == 14)) {
-            data_ = com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
+            data_ = com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.getDefaultInstance();
           }
           saveInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto, com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder, com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder>(
-                  (com.tencent.angel.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_,
+              com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto, com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto.Builder, com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProtoOrBuilder>(
+                  (com.tencent.client.apiserver.protos.MSGProtos.SaveTensorLikeProto) data_,
                   getParentForChildren(),
                   isClean());
           data_ = null;
@@ -8712,12 +8712,12 @@ public final class MSGProtos {
     }
 
     // @@protoc_insertion_point(class_scope:apiserver.Request)
-    private static final com.tencent.angel.apiserver.protos.MSGProtos.Request DEFAULT_INSTANCE;
+    private static final com.tencent.client.apiserver.protos.MSGProtos.Request DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tencent.angel.apiserver.protos.MSGProtos.Request();
+      DEFAULT_INSTANCE = new com.tencent.client.apiserver.protos.MSGProtos.Request();
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Request getDefaultInstance() {
+    public static com.tencent.client.apiserver.protos.MSGProtos.Request getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -8742,7 +8742,7 @@ public final class MSGProtos {
     }
 
     @java.lang.Override
-    public com.tencent.angel.apiserver.protos.MSGProtos.Request getDefaultInstanceForType() {
+    public com.tencent.client.apiserver.protos.MSGProtos.Request getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -8908,15 +8908,15 @@ public final class MSGProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Response_descriptor;
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Response_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Response_fieldAccessorTable
+      return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Response_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.tencent.angel.apiserver.protos.MSGProtos.Response.class, com.tencent.angel.apiserver.protos.MSGProtos.Response.Builder.class);
+              com.tencent.client.apiserver.protos.MSGProtos.Response.class, com.tencent.client.apiserver.protos.MSGProtos.Response.Builder.class);
     }
 
     private int bitField0_;
@@ -9123,10 +9123,10 @@ public final class MSGProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.tencent.angel.apiserver.protos.MSGProtos.Response)) {
+      if (!(obj instanceof com.tencent.client.apiserver.protos.MSGProtos.Response)) {
         return super.equals(obj);
       }
-      com.tencent.angel.apiserver.protos.MSGProtos.Response other = (com.tencent.angel.apiserver.protos.MSGProtos.Response) obj;
+      com.tencent.client.apiserver.protos.MSGProtos.Response other = (com.tencent.client.apiserver.protos.MSGProtos.Response) obj;
 
       boolean result = true;
       result = result && (hasPid() == other.hasPid());
@@ -9200,69 +9200,69 @@ public final class MSGProtos {
       return hash;
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(byte[] data)
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseDelimitedFrom(java.io.InputStream input)
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseDelimitedFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response parseFrom(
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -9275,7 +9275,7 @@ public final class MSGProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.tencent.angel.apiserver.protos.MSGProtos.Response prototype) {
+    public static Builder newBuilder(com.tencent.client.apiserver.protos.MSGProtos.Response prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -9296,21 +9296,21 @@ public final class MSGProtos {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:apiserver.Response)
-        com.tencent.angel.apiserver.protos.MSGProtos.ResponseOrBuilder {
+        com.tencent.client.apiserver.protos.MSGProtos.ResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Response_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Response_descriptor;
       }
 
       @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Response_fieldAccessorTable
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Response_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.tencent.angel.apiserver.protos.MSGProtos.Response.class, com.tencent.angel.apiserver.protos.MSGProtos.Response.Builder.class);
+                com.tencent.client.apiserver.protos.MSGProtos.Response.class, com.tencent.client.apiserver.protos.MSGProtos.Response.Builder.class);
       }
 
-      // Construct using com.tencent.angel.apiserver.protos.MSGProtos.Response.newBuilder()
+      // Construct using com.tencent.client.apiserver.protos.MSGProtos.Response.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -9346,17 +9346,17 @@ public final class MSGProtos {
       @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.internal_static_apiserver_Response_descriptor;
+        return com.tencent.client.apiserver.protos.MSGProtos.internal_static_apiserver_Response_descriptor;
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.Response getDefaultInstanceForType() {
-        return com.tencent.angel.apiserver.protos.MSGProtos.Response.getDefaultInstance();
+      public com.tencent.client.apiserver.protos.MSGProtos.Response getDefaultInstanceForType() {
+        return com.tencent.client.apiserver.protos.MSGProtos.Response.getDefaultInstance();
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.Response build() {
-        com.tencent.angel.apiserver.protos.MSGProtos.Response result = buildPartial();
+      public com.tencent.client.apiserver.protos.MSGProtos.Response build() {
+        com.tencent.client.apiserver.protos.MSGProtos.Response result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -9364,8 +9364,8 @@ public final class MSGProtos {
       }
 
       @java.lang.Override
-      public com.tencent.angel.apiserver.protos.MSGProtos.Response buildPartial() {
-        com.tencent.angel.apiserver.protos.MSGProtos.Response result = new com.tencent.angel.apiserver.protos.MSGProtos.Response(this);
+      public com.tencent.client.apiserver.protos.MSGProtos.Response buildPartial() {
+        com.tencent.client.apiserver.protos.MSGProtos.Response result = new com.tencent.client.apiserver.protos.MSGProtos.Response(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -9431,16 +9431,16 @@ public final class MSGProtos {
       }
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.tencent.angel.apiserver.protos.MSGProtos.Response) {
-          return mergeFrom((com.tencent.angel.apiserver.protos.MSGProtos.Response)other);
+        if (other instanceof com.tencent.client.apiserver.protos.MSGProtos.Response) {
+          return mergeFrom((com.tencent.client.apiserver.protos.MSGProtos.Response)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.tencent.angel.apiserver.protos.MSGProtos.Response other) {
-        if (other == com.tencent.angel.apiserver.protos.MSGProtos.Response.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.tencent.client.apiserver.protos.MSGProtos.Response other) {
+        if (other == com.tencent.client.apiserver.protos.MSGProtos.Response.getDefaultInstance()) return this;
         if (other.hasPid()) {
           setPid(other.getPid());
         }
@@ -9485,11 +9485,11 @@ public final class MSGProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.tencent.angel.apiserver.protos.MSGProtos.Response parsedMessage = null;
+        com.tencent.client.apiserver.protos.MSGProtos.Response parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.tencent.angel.apiserver.protos.MSGProtos.Response) e.getUnfinishedMessage();
+          parsedMessage = (com.tencent.client.apiserver.protos.MSGProtos.Response) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -9755,12 +9755,12 @@ public final class MSGProtos {
     }
 
     // @@protoc_insertion_point(class_scope:apiserver.Response)
-    private static final com.tencent.angel.apiserver.protos.MSGProtos.Response DEFAULT_INSTANCE;
+    private static final com.tencent.client.apiserver.protos.MSGProtos.Response DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.tencent.angel.apiserver.protos.MSGProtos.Response();
+      DEFAULT_INSTANCE = new com.tencent.client.apiserver.protos.MSGProtos.Response();
     }
 
-    public static com.tencent.angel.apiserver.protos.MSGProtos.Response getDefaultInstance() {
+    public static com.tencent.client.apiserver.protos.MSGProtos.Response getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9785,7 +9785,7 @@ public final class MSGProtos {
     }
 
     @java.lang.Override
-    public com.tencent.angel.apiserver.protos.MSGProtos.Response getDefaultInstanceForType() {
+    public com.tencent.client.apiserver.protos.MSGProtos.Response getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9906,8 +9906,8 @@ public final class MSGProtos {
       "LikeProtoH\000\022\022\n\010objectId\030\017 \001(\014H\000B\006\n\004data\"" +
       "g\n\010Response\022\013\n\003pid\030\001 \002(\005\022\016\n\006funcId\030\002 \002(\003" +
       "\022\r\n\005matId\030\003 \001(\005\022\013\n\003ret\030\004 \002(\005\022\020\n\010errorMsg" +
-      "\030\005 \001(\t\022\020\n\010objectId\030\006 \001(\014B/\n\"com.tencent." +
-      "angel.apiserver.protosB\tMSGProtos"
+      "\030\005 \001(\t\022\020\n\010objectId\030\006 \001(\014B0\n#com.tencent." +
+      "client.apiserver.protosB\tMSGProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

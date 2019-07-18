@@ -1,14 +1,15 @@
 package com.tencent.client.worker
 
 import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
-import com.tencent.client.common.Executor
+import com.tencent.client.common.AsyncModel.AsyncModel
+import com.tencent.client.common.{AsyncModel, Executor}
 import com.tencent.client.ps.common.{EnvContext, WorkerContext}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.util.ShutdownHookManager
 import org.apache.spark.internal.Logging
 
-class Worker private(conf: Configuration, ip: String, port: Int, contextId: Int) extends Executor with Logging {
+class Worker private(conf: Configuration, asyncModel: AsyncModel, ip: String, port: Int, contextId: Int) extends Executor with Logging {
   private var psAgent: PSAgent = _
 
   private var stopAgentHookTask = new Runnable {
@@ -59,17 +60,29 @@ class Worker private(conf: Configuration, ip: String, port: Int, contextId: Int)
       logWarning("psAgent is empty, please start master first!")
       null
     } else {
-      WorkerContext(psAgent)
+      WorkerContext(psAgent, asyncModel)
     }
+  }
+
+  override def isASP: Boolean = {
+    asyncModel == AsyncModel.ASP
+  }
+
+  override def isBSP: Boolean = {
+    asyncModel == AsyncModel.BSP
+  }
+
+  override def isSSP: Boolean = {
+    asyncModel == AsyncModel.SSP
   }
 }
 
 object Worker {
   private var worker: Worker = _
 
-  def get(hadoopConf: Configuration, ip: String, port: Int, contextId: Int): Worker = synchronized {
+  def get(hadoopConf: Configuration, asyncModel: AsyncModel, ip: String, port: Int, contextId: Int): Worker = synchronized {
     if (worker == null) {
-      worker = new Worker(hadoopConf, ip, port, contextId)
+      worker = new Worker(hadoopConf, asyncModel, ip, port, contextId)
     }
 
     worker

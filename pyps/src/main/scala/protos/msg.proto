@@ -1,7 +1,7 @@
 syntax = "proto2";
 
 package apiserver;
-option java_package="com.tencent.angel.apiserver.protos";
+option java_package="com.tencent.client.apiserver.protos";
 option java_outer_classname="MSGProtos";
 
 message TensorProto{

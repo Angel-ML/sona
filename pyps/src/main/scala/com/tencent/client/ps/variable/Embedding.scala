@@ -88,7 +88,7 @@ class Embedding(name: String,
     val map = new util.HashMap[java.lang.Long, Vector](embeddings.size())
     lastIndices match {
       case v: IntIntVector if v.isDense =>
-        v.getStorage.getValues.zipWithIndex.map{ case (mapIdx: Int, rowIdx: Int) =>
+        v.getStorage.getValues.zipWithIndex.map { case (mapIdx: Int, rowIdx: Int) =>
           if (map.containsKey(mapIdx.toLong)) {
             map.get(mapIdx.toLong).iadd(grad.getRow(rowIdx).imul(alpha))
           } else {

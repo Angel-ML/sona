@@ -4,8 +4,8 @@ import java.nio.ByteBuffer
 import java.util
 import java.util.{ArrayList, List, Random}
 
-import com.tencent.angel.apiserver.plasma.exceptions.{DuplicateObjectException, PlasmaOutOfMemoryException}
-import com.tencent.angel.common.{DataHead, Deserializer, Meta, Serializer}
+import com.tencent.client.apiserver.plasma.exceptions.{DuplicateObjectException, PlasmaOutOfMemoryException}
+import com.tencent.client.common.{DataHead, Deserializer, Meta, Serializer}
 import com.tencent.angel.ml.servingmath2.vector._
 import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.utils.LabeledData

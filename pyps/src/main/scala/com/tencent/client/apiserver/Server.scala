@@ -8,7 +8,7 @@ import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
 import java.io.IOException
 import java.util.concurrent.Executors
-import com.tencent.angel.apiserver.protos.MSGProtos._
+import com.tencent.client.apiserver.protos.MSGProtos._
 
 class Server(host: String, port: Int, handler: Handler) {
   private val selector: Selector = Selector.open() // 通过open()方法找到Selector
@@ -119,7 +119,9 @@ object Server {
   @throws[IOException]
   def main(args: Array[String]): Unit = {
     System.out.println("server started...")
-    val server = new Server("localhost", 8001, new Handler(null, 12345))
+    val handler =  new Handler(null, 12345)
+    handler.register(null)
+    val server = new Server("localhost", 8001,handler)
     server.start()
   }
 }
