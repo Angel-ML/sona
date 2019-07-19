@@ -74,7 +74,6 @@ class Server(host: String, port: Int, handler: Handler) {
 
   private def read(key: SelectionKey): Unit = {
     val socketChannel = key.channel().asInstanceOf[SocketChannel]
-    key.selector()
     // Clear out our read buffer so it's ready for new data
     val readBuffer = ByteBuffer.allocate(2048)
 

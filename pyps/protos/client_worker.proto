@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package ClientMaster;
+
+option java_multiple_files = true;
+option java_generic_services = true;
+option java_package = "com.tencent.client.worker.protos";
+option java_outer_classname = "ClientWorkerProto";
+
+import "common.proto";
+
+message TensorLike {
+    int32 pid = 1;
+    string name = 2;
+    int32 matId = 3;
+}
+
+message RPCTensor {
+    int32 pid = 1;
+    string name = 2;
+    int32 dim = 3;
+    repeated int64 shape = 4;
+    string dtype = 5;
+    int64 validIndexNum = 6;
+    map<string, string> initializerParams = 7;
+}
+
+message RPCVariable {
+    int32 pid = 1;
+    string name = 2;
+    int32 dim = 3;
+    repeated int64 shape = 4;
+    string dtype = 5;
+    int64 validIndexNum = 6;
+    map<string, string> initializerParams = 7;
+    map<string, string> updaterParams = 8;
+}
+
+message RPCEmbedding {
+    int32 pid = 1;
+    string name = 2;
+    int64 numFeats = 3;
+    int32 embeddingSize = 4;
+    string dtype = 5;
+    map<string, string> initializerParams = 6;
+    map<string, string> updaterParams = 7;
+}
+
+message CreateResp {
+    int32 matId = 1;
+}
+
+message LoadTensorLike {
+    int32 pid = 1;
+    int32 matId = 2;
+    string path = 3;
+    map<string, string> conf = 4;
+}
+
+message SaveTensorLike {
+    int32 pid = 1;
+    int32 matId = 2;
+    string path = 3;
+    string formatClassName = 4;
+}
+
+message PullRequest {
+    int32 pid = 1;
+    int32 matId = 3;
+    int32 epoch = 4;
+    int32 batch = 5;
+    bytes objectId = 6;
+}
+
+message PullResponse {
+    int32 pid = 1;
+    int32 matId = 3;
+    bytes objectId = 6;
+}
+
+message PushRequest {
+    int32 pid = 1;
+    int32 matId = 3;
+    int32 epoch = 4;
+    int32 batch = 5;
+    int32 batchSize = 6;
+    bytes objectId = 7;
+}
+
+message SyncRequest {
+    int32 pid = 1;
+    int64 clock = 2;
+}
+
+message VoidResponse {
+    Status ret = 1;
+    string msg = 2;
+}
+
+service ClientWorker {
+    rpc CreateTensor (RPCTensor) returns (CreateResp) {
+    }
+    rpc CreateVariable (RPCVariable) returns (CreateResp) {
+    }
+    rpc CreateEmbedding (RPCEmbedding) returns (CreateResp) {
+    }
+    rpc Init (TensorLike) returns (VoidResponse) {
+    }
+    rpc Load (LoadTensorLike) returns (VoidResponse) {
+    }
+    rpc Save (SaveTensorLike) returns (VoidResponse) {
+    }
+    rpc Pull (PullRequest) returns (PullResponse) {
+    }
+    rpc Push (PushRequest) returns (VoidResponse) {
+    }
+    rpc Release (TensorLike) returns (VoidResponse) {
+    }
+    rpc Update (TensorLike) returns (VoidResponse) {
+    }
+    rpc Sync (SyncRequest) returns (VoidResponse) {
+    }
+}

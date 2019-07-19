@@ -1,6 +1,7 @@
 package com.tencent.client.common
 
 import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
+import com.tencent.client.apiserver.{FuncId, HandlerId}
 import com.tencent.client.ps.common.EnvContext
 
 
@@ -9,15 +10,22 @@ object AsyncModel extends Enumeration {
   val BSP, ASP, SSP = Value
 }
 
+@HandlerId(1)
 trait Executor {
 
-  def start(): Unit
+  @FuncId(1)
+  def startPS(): Unit
 
-  def stop(): Unit
+  @FuncId(2)
+  def stopPS(): Unit
 
-  def context: EnvContext[_]
+  @FuncId(3)
+  def killPS(): Unit
 
-  def getPSAgent: PSAgent
+  @FuncId(3)
+  def startPSAgent(): PSAgent
+
+  def stopPSAgent(): PSAgent
 
   def isASP: Boolean
 
