@@ -1,4 +1,4 @@
-package com.tencent.client.common
+package com.tencent.angel.common
 
 import java.nio.{ByteBuffer, ByteOrder}
 
@@ -50,12 +50,12 @@ object Serializer {
         } else if (!isRowDense && isColDense) {
           (1, meta.shape.length - 1, m.getNumRows)
         } else if (!isRowDense && !isColDense && meta.shape.length == 2) {
-          var numEles = 1
+          var numEles = 0
           (0 until m.getNumRows).foreach { i =>
             numEles += m.getRow(i).getSize.toInt
           }
 
-          (1, 1, numEles)
+          (2, 0, numEles)
         } else {
           throw new Exception("data not supported!")
         }
@@ -150,7 +150,7 @@ object Serializer {
     }
 
     (0 until mat.getNumRows).foreach { i =>
-      mat.getCol(i) match {
+      mat.getRow(i) match {
         case v: IntDoubleVector =>
           v.getStorage.getValues.foreach(value => buf.putDouble(value))
         case v: IntFloatVector =>
@@ -365,12 +365,12 @@ object Serializer {
       }
     }
 
-    start += valBuf.position()
-    buf.position(start)
+    buf.position(valBuf.position())
   }
 
   def putVector(buf: ByteBuffer, vec: Vector, meta: Meta, head: DataHead): Unit = {
     assert(meta.shape.length == 2 && meta.shape(0) == 1)
+
 
     val oldOder = buf.order()
     buf.order(ByteOrder.LITTLE_ENDIAN)
@@ -390,7 +390,11 @@ object Serializer {
       case v if v.isSparse || v.isSorted => putSparseVector(buf, vec, dataHead)
     }
 
+
+
     buf.order(oldOder)
+
+
   }
 
   def getDataHeadFromVector(vec: Vector, meta: Meta): DataHead = {
@@ -399,54 +403,55 @@ object Serializer {
     val (sparseDim: Int, denseDim: Int, dtype: Int, length: Long) = vec match {
       case v: IntDoubleVector =>
         if (v.isDense) {
-          (-1, 1, DataHead.DT_DOUBLE, v.size() * 8)
+          (-1, 1, DataHead.DT_DOUBLE, v.size().toLong * 8)
         } else {
-          (1, 0, DataHead.DT_DOUBLE, v.size() * 16)
+          (1, 0, DataHead.DT_DOUBLE, v.size().toLong * 16)
         }
       case v: IntFloatVector =>
         if (v.isDense) {
-          (-1, 1, DataHead.DT_FLOAT, v.size() * 4)
+          (-1, 1, DataHead.DT_FLOAT, v.size().toLong * 4)
         } else {
-          (1, 0, DataHead.DT_FLOAT, v.size() * 12)
+          (1, 0, DataHead.DT_FLOAT, v.size().toLong * 12)
         }
       case v: IntLongVector =>
         if (v.isDense) {
-          (-1, 1, DataHead.DT_LONG, v.size() * 8)
+          (-1, 1, DataHead.DT_LONG, v.size().toLong * 8)
         } else {
-          (1, 0, DataHead.DT_LONG, v.size() * 16)
+          (1, 0, DataHead.DT_LONG, v.size().toLong * 16)
         }
       case v: IntIntVector =>
         if (v.isDense) {
-          (-1, 1, DataHead.DT_INT, v.size() * 4)
+          (-1, 1, DataHead.DT_INT, v.size().toLong * 4)
         } else {
-          (1, 0, DataHead.DT_INT, v.size() * 12)
+          (1, 0, DataHead.DT_INT, v.size().toLong * 12)
         }
       case v: LongDoubleVector =>
         if (v.isDense) {
-          (-1, 1, DataHead.DT_DOUBLE, v.size() * 8)
+          (-1, 1, DataHead.DT_DOUBLE, v.size().toLong * 8)
         } else {
-          (1, 0, DataHead.DT_DOUBLE, v.size() * 16)
+          println("OK")
+          (1, 0, DataHead.DT_DOUBLE, v.size().toLong * 16)
         }
       case v: LongFloatVector =>
         if (v.isDense) {
-          (-1, 1, DataHead.DT_FLOAT, v.size() * 4)
+          (-1, 1, DataHead.DT_FLOAT, v.size().toLong * 4)
         } else {
-          (1, 0, DataHead.DT_FLOAT, v.size() * 12)
+          (1, 0, DataHead.DT_FLOAT, v.size().toLong * 12)
         }
       case v: LongLongVector =>
         if (v.isDense) {
-          (-1, 1, DataHead.DT_LONG, v.size() * 8)
+          (-1, 1, DataHead.DT_LONG, v.size().toLong * 8)
         } else {
-          (1, 0, DataHead.DT_LONG, v.size() * 16)
+          (1, 0, DataHead.DT_LONG, v.size().toLong * 16)
         }
       case v: LongIntVector =>
         if (v.isDense) {
-          (-1, 1, DataHead.DT_INT, v.size() * 4)
+          (-1, 1, DataHead.DT_INT, v.size().toLong * 4)
         } else {
-          (1, 0, DataHead.DT_INT, v.size() * 12)
+          (1, 0, DataHead.DT_INT, v.size().toLong * 12)
         }
-      case v: IntDummyVector => (1, -1, DataHead.DT_FLOAT, v.size() * 8)
-      case v: LongDummyVector => (1, -1, DataHead.DT_FLOAT, v.size() * 8)
+      case v: IntDummyVector => (1, -1, DataHead.DT_FLOAT, v.size().toLong * 8)
+      case v: LongDummyVector => (1, -1, DataHead.DT_FLOAT, v.size().toLong * 8)
     }
 
     new DataHead(sparseDim, denseDim, meta.shape, nnz, dtype, length.toInt)
@@ -455,7 +460,8 @@ object Serializer {
   private def putDenseVector(buf: ByteBuffer, vec: Vector, dataHead: DataHead): Unit = {
     vec match {
       case v: IntDoubleVector =>
-        v.getStorage.getValues.foreach(value => buf.putDouble(value))
+        println("WO JIAN LE GUI?")
+        v.getStorage.getValues.foreach(value => { println(value); buf.putDouble(value)})
       case v: IntFloatVector =>
         v.getStorage.getValues.foreach(value => buf.putFloat(value))
       case v: IntLongVector =>
