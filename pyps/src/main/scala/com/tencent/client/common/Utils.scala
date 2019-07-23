@@ -1,4 +1,4 @@
-package com.tencent.client.common
+package com.tencent.angel.common
 
 import com.tencent.angel.ml.servingmath2.MFactory
 import com.tencent.angel.ml.servingmath2.matrix._

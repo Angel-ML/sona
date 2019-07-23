@@ -1,4 +1,4 @@
-package com.tencent.client.common
+package com.tencent.angel.common
 
 import java.nio.{ByteBuffer, ByteOrder}
 
@@ -26,20 +26,20 @@ class DataHead(val sparseDim: Int, val denseDim: Int, val shape: Array[Long], va
     val mkPos = buf.position()
     shape.foreach(sp => buf.putLong(sp))
     var i = buf.position()
-    if (i < mkPos + 64) { // padding
+    while (i < mkPos + 64) { // padding
       buf.put(0.asInstanceOf[Byte])
       i += 1
     }
-
     buf.putInt(nnz)
     buf.putInt(dtype)
     buf.putInt(length)
-
     i = buf.position()
-    if (i < start + DataHead.headLen) { // padding
+    while (i < start + DataHead.headLen) { // padding
       buf.put(0.asInstanceOf[Byte])
       i += 1
     }
+
+
 
     buf.order(oldOrder)
     this
@@ -60,7 +60,13 @@ object DataHead {
     val start = buf.position()
     val sparseDim = buf.getInt // pos = 4
     val denseDim = buf.getInt // pos = 4
-    val dim = sparseDim + denseDim
+    val dim = if (sparseDim == -1 && denseDim > 0) { // dense
+      denseDim
+    } else if (sparseDim > 0 && denseDim == -1) { // dummy
+      sparseDim
+    } else { // sparse
+      sparseDim + denseDim
+    }
 
     val shape = new Array[Long](dim)
     val mkPos = buf.position()
@@ -73,6 +79,7 @@ object DataHead {
 
     buf.position(start + headLen)
     buf.order(oldOrder)
+    println(sparseDim,denseDim,shape,nnz,dtype,length)
     new DataHead(sparseDim, denseDim, shape, nnz, dtype, length)
   }
 }

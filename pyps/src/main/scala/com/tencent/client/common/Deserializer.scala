@@ -1,4 +1,4 @@
-package com.tencent.client.common
+package com.tencent.angel.common
 
 import java.nio.{ByteBuffer, ByteOrder}
 import java.util
@@ -35,6 +35,7 @@ object Deserializer {
 
   def matrixFromBuffer(buf: ByteBuffer, meta: Meta): Matrix = {
     val dataHead = DataHead.fromBuffer(buf)
+    println(dataHead.denseDim, dataHead.dtype, dataHead.length, dataHead.shape)
     if (dataHead.shape.length >= 2) {
       assert(util.Arrays.equals(meta.shape, dataHead.shape))
       assert(checkValueType(dataHead, meta))
@@ -49,6 +50,7 @@ object Deserializer {
         throw new Exception("sparseDim or denseDim is invalidate!")
       }
     } else {
+      println("here we go//// ")
       null
     }
   }
@@ -206,8 +208,7 @@ object Deserializer {
       getDenseVector(matrixId, rowBuf.getLong.toInt, dim, dataHead, valBuf)
     }
 
-    start += valBuf.position()
-    buf.position(start)
+    buf.position(valBuf.position())
     Utils.vectorArray2Matrix(vectors)
   }
 
@@ -232,8 +233,9 @@ object Deserializer {
 
     var lastRowId: Long = -1L
     val csrRow = new ListBuffer[Int]()
+    val mkPos = rowBuf.position()
     (0 until dataHead.nnz).foreach { i =>
-      val rowId = buf.getLong()
+      val rowId = rowBuf.getLong()
       if (lastRowId != rowId) {
         lastRowId = rowId
         csrRow.append(i)
@@ -242,15 +244,16 @@ object Deserializer {
     csrRow.append(dataHead.nnz)
     val rowIdx = csrRow.toArray
 
-    val vectors: Array[Vector] = (0 until dataHead.nnz).toArray.map { i =>
+    rowBuf.position(mkPos)
+    val vectors: Array[Vector] = (0 until rowIdx.length-1).toArray.map { i =>
       val len = rowIdx(i + 1) - rowIdx(i)
-      val rowId = rowBuf.getLong(rowIdx(i)).toInt
+      val rowId = rowBuf.getLong().toInt
+      rowBuf.position(rowBuf.position() + (len-1) * 8)
 
       getSparseVector(matrixId, rowId, len, dataHead.shape(1), dataHead, meta, colBuf, valBuf)
     }
 
-    start += valBuf.position()
-    buf.position(start)
+    buf.position(valBuf.position())
     Utils.vectorArray2Matrix(vectors)
   }
 
@@ -291,7 +294,7 @@ object Deserializer {
 
   def vectorFromBuffer(buf: ByteBuffer, meta: Meta): Vector = {
     val dataHead = DataHead.fromBuffer(buf)
-    if (dataHead.shape.length > 1) {
+    if (dataHead.shape.length >= 1) {
       if (dataHead.sparseDim == -1 && dataHead.denseDim == 1) {
         denseVectorFromBuffer(buf, dataHead, meta)
       } else if (dataHead.sparseDim == 1 && dataHead.denseDim == 0) {
@@ -302,6 +305,7 @@ object Deserializer {
         throw new Exception("sparseDim or denseDim is invalidate!")
       }
     } else {
+      println(dataHead.shape.length)
       null
     }
   }
@@ -339,7 +343,6 @@ object Deserializer {
     assert(dataHead.sparseDim == 1 && dataHead.denseDim == 0)  // vector, sparse
 
     val matrixId = meta.getMatrixContext.getMatrixId
-
     val bytes = buf.array()
     var start: Int = buf.position()
     val colBuf = ByteBuffer.wrap(bytes, start, dataHead.nnz * 8)
@@ -357,7 +360,7 @@ object Deserializer {
   }
 
   private def denseVectorFromBuffer(buf: ByteBuffer, dataHead: DataHead, meta: Meta): Vector = {
-    assert(dataHead.sparseDim == 1 && dataHead.denseDim == 0)  // vector, sparse
+    assert(dataHead.sparseDim == -1 && dataHead.denseDim > 0)  // vector, sparse
     val oldOrder = buf.order()
     buf.order(ByteOrder.LITTLE_ENDIAN)
 
