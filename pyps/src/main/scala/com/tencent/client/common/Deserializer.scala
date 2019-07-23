@@ -1,4 +1,4 @@
-package com.tencent.angel.common
+package com.tencent.client.common
 
 import java.nio.{ByteBuffer, ByteOrder}
 import java.util
@@ -6,7 +6,6 @@ import java.util
 import com.tencent.angel.ml.servingmath2.{MFactory, VFactory}
 import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.vector._
-import com.tencent.client.common.{Meta, Utils}
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet
 

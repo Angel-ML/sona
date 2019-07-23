@@ -24,7 +24,7 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
   private val taskMap = new ConcurrentHashMap[JLong, Task]()
   private val plasma = new PlasmaClient("", "", 12)
 
-  private val masterStub = new MasterStub(masterHost, masterPort)
+  private val masterStub = new MStub(masterHost, masterPort)
   masterStub.registerWorker()
 
   val clientContext = new ClientContext(masterStub.workId, masterStub.conf)

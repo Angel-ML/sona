@@ -35,8 +35,8 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
   private val currentBatchSizeVector = new ConcurrentHashMap[Long, Int]() // taskId -> batchSize
 
 
-  private val timeOut = 60000
-  Executors.newSingleThreadExecutor().execute(new HeartBeat)
+  private val timeOut = 120000
+  // Executors.newSingleThreadExecutor().execute(new HeartBeat)
 
   override def registerWorker(request: RegisterWorkerReq, responseObserver: StreamObserver[RegisterWorkerResp]): Unit = synchronized {
     try {
@@ -56,10 +56,13 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
           .setWorkId(workerId)
           .setIsChief(isChief)
           .setAsyncModel(syncModel)
-          .putAllConf(conf)
-          .build()
 
-        responseObserver.onNext(resp)
+        if (conf != null) {
+          resp.putAllConf(conf)
+        }
+        logger.info(s"${location.toString} registered!")
+
+        responseObserver.onNext(resp.build())
         responseObserver.onCompleted()
       }
     } catch {
@@ -71,7 +74,7 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
   override def registerTask(request: RegisterTaskReq, responseObserver: StreamObserver[RegisterTaskResp]): Unit = synchronized {
     try {
       val workId = request.getWorkId
-      assert(activeWorker.contains(workId))
+      assert(activeWorker.containsKey(workId))
 
       val taskId: Long = nextTaskId.getAndIncrement()
       taskInWorker.put(taskId, workId)
@@ -100,9 +103,9 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
       } else {
         masterId = request.getWorkId
         masterLocation = new Location(request.getHost, request.getPort)
-        assert(request.getWorkId == 0)
+        assert(request.getWorkId == 1)
 
-        val resp = VoidResp.newBuilder().build()
+        val resp = VoidResp.newBuilder().setMsg("OK").build()
         responseObserver.onNext(resp)
         responseObserver.onCompleted()
       }
@@ -124,7 +127,7 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
         throw new Exception("angel master address is unknown !")
       }
 
-      if (!activeWorker.contains(request.getItemId)) {
+      if (!activeWorker.containsKey(request.getItemId)) {
         throw new Exception("unknown worker!")
       }
 
@@ -164,17 +167,16 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
   override def clock(request: ClockReq, responseObserver: StreamObserver[ClockResp]): Unit = {
     try {
       val taskId = request.getTaskId
-      assert(activeTask.contains(taskId))
+      assert(activeTask.containsKey(taskId))
 
       val batchSize = request.getBatchSize
-      if (batchSize > 0) {
-        currentBatchSizeVector.put(taskId, batchSize)
-      }
+      currentBatchSizeVector.put(taskId, batchSize)
 
       val taskClock = currentClockVector.get(taskId)
-      assert(taskClock < request.getClock)
-
+      assert(taskClock <= request.getClock)
       currentClockVector.put(taskId, request.getClock)
+
+      logger.info(s"{taskId: $taskId, lastClock: $taskClock, thisClock: ${request.getClock}, batch: $batchSize}")
 
       val resp = ClockResp.newBuilder()
         .setTaskId(taskId)
@@ -191,7 +193,16 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
   override def getClockMap(request: GetClockMapReq, responseObserver: StreamObserver[GetClockMapResp]): Unit = {
     try {
       val taskId = request.getTaskId
-      assert(activeTask.contains(taskId))
+      assert(activeTask.containsKey(taskId))
+
+      val iter = currentClockVector.entrySet().iterator()
+      val list = new mutable.ListBuffer[String]()
+      while (iter.hasNext) {
+        val entry = iter.next()
+        list.append(s" ${entry.getKey}:${entry.getValue} ")
+      }
+      logger.info(s"getClockMap: $taskId -> " + list.mkString("[", ",", "]"))
+
 
       val resp = GetClockMapResp.newBuilder()
         .setTaskId(taskId)
@@ -232,7 +243,7 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
   override def getGlobalBatchSize(request: VoidReq, responseObserver: StreamObserver[GetGlobalBatchResp]): Unit = {
     try {
       var batchSize = 0
-      assert (activeTask.contains(request.getItemId) || activeWorker.contains(request.getItemId))
+      assert(activeTask.containsKey(request.getItemId) || activeWorker.containsKey(request.getItemId))
       val iter = currentBatchSizeVector.values().iterator()
       while (iter.hasNext) {
         batchSize += iter.next()

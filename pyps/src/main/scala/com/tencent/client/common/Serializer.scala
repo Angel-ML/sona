@@ -1,11 +1,11 @@
-package com.tencent.angel.common
+package com.tencent.client.common
 
 import java.nio.{ByteBuffer, ByteOrder}
 
 import com.tencent.angel.ml.servingmath2.MFactory
 import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.vector._
-import com.tencent.client.common.Meta
+
 
 
 object Serializer {

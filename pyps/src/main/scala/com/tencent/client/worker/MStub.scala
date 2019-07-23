@@ -12,7 +12,7 @@ import org.apache.hadoop.conf.Configuration
 
 import scala.collection.mutable
 
-class MasterStub(host: String, port: Int) {
+class MStub(host: String, port: Int) {
   private val channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext.build
   private val blockingStub = AngelCleintMasterGrpc.newBlockingStub(channel)
   // private val asyncStub = AngelCleintMasterGrpc.newStub(channel)
@@ -130,5 +130,12 @@ class MasterStub(host: String, port: Int) {
     val req = HeartBeatReq.newBuilder().setWorkId(workId).build()
     val resp = blockingStub.heartBeat(req)
     resp.getCmd
+  }
+
+  def shutdown(): Unit = {
+    channel.shutdown()
+    while (!channel.isShutdown) {
+      Thread.sleep(100)
+    }
   }
 }

@@ -3,6 +3,7 @@ package com.tencent.client.master
 import io.grpc.ServerBuilder
 import java.io.IOException
 import java.util
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Logger
 
 import com.tencent.client.common.protos.AsyncModel

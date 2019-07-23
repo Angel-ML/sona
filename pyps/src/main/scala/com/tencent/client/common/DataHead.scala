@@ -1,4 +1,4 @@
-package com.tencent.angel.common
+package com.tencent.client.common
 
 import java.nio.{ByteBuffer, ByteOrder}
 

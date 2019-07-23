@@ -10,7 +10,7 @@ import scala.collection.mutable
 
 case class TaskInfo(taskId: Long, numTask: Int, clock: Map[Long, Int])
 
-class Task(masterStub: MasterStub, val isChief: Boolean) {
+class Task(masterStub: MStub, val isChief: Boolean) {
   private val logger = Logger.getLogger(classOf[Task].getSimpleName)
 
   var taskId: Long = 0
@@ -60,6 +60,7 @@ class Task(masterStub: MasterStub, val isChief: Boolean) {
 
     if (masterStub.asyncModel == AsyncModel.BSP) {
       while (clockMap.values.min < tmpClock) {
+        println(s"${Thread.currentThread().getId}: $taskId> minClock:${clockMap.values.min} -- thisClock:$tmpClock")
         Thread.sleep(100)
         clockMap = masterStub.getClockMap(taskId)
       }
