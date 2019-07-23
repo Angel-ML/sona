@@ -9,6 +9,7 @@ import com.tencent.angel.model.MatrixSaveContext
 import com.tencent.client.worker.ps.tensor.TensorMeta
 
 
+
 abstract class Meta(val name: String, val dtype: String, val dim: Int, val shape:Array[Long], val validIndexNum: Long) {
     val rowType: RowType = Utils.getRowType(dtype)
     protected val matrixContext: MatrixContext

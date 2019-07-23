@@ -1,9 +1,10 @@
 package com.tencent.client.worker.ps.tensor
 
+import com.tencent.client.common.Meta
 import com.tencent.angel.matrix.MatrixContext
 import com.tencent.angel.model.MatrixLoadContext
 import com.tencent.angel.model.MatrixSaveContext
-import com.tencent.client.common.Meta
+
 
 
 class TensorMeta(name: String, dtype: String, dim: Int, shape: Array[Long], validIndexNum: Long)
