@@ -20,6 +20,10 @@ public enum Command
    * <code>STOPWORKER = 2;</code>
    */
   STOPWORKER(2),
+  /**
+   * <code>NOTHING = 3;</code>
+   */
+  NOTHING(3),
   UNRECOGNIZED(-1),
   ;
 
@@ -35,6 +39,10 @@ public enum Command
    * <code>STOPWORKER = 2;</code>
    */
   public static final int STOPWORKER_VALUE = 2;
+  /**
+   * <code>NOTHING = 3;</code>
+   */
+  public static final int NOTHING_VALUE = 3;
 
 
   public final int getNumber() {
@@ -58,6 +66,7 @@ public enum Command
       case 0: return STOPANGEL;
       case 1: return STOPPSAGENT;
       case 2: return STOPWORKER;
+      case 3: return NOTHING;
       default: return null;
     }
   }

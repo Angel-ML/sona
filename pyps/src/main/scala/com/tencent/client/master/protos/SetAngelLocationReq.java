@@ -18,7 +18,7 @@ private static final long serialVersionUID = 0L;
   private SetAngelLocationReq() {
     workId_ = 0L;
     host_ = "";
-    post_ = 0;
+    port_ = 0;
   }
 
   @java.lang.Override
@@ -65,7 +65,7 @@ private static final long serialVersionUID = 0L;
           }
           case 24: {
 
-            post_ = input.readInt32();
+            port_ = input.readInt32();
             break;
           }
         }
@@ -135,13 +135,13 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int POST_FIELD_NUMBER = 3;
-  private int post_;
+  public static final int PORT_FIELD_NUMBER = 3;
+  private int port_;
   /**
-   * <code>int32 post = 3;</code>
+   * <code>int32 port = 3;</code>
    */
-  public int getPost() {
-    return post_;
+  public int getPort() {
+    return port_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -162,8 +162,8 @@ private static final long serialVersionUID = 0L;
     if (!getHostBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, host_);
     }
-    if (post_ != 0) {
-      output.writeInt32(3, post_);
+    if (port_ != 0) {
+      output.writeInt32(3, port_);
     }
     unknownFields.writeTo(output);
   }
@@ -180,9 +180,9 @@ private static final long serialVersionUID = 0L;
     if (!getHostBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, host_);
     }
-    if (post_ != 0) {
+    if (port_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, post_);
+        .computeInt32Size(3, port_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -204,8 +204,8 @@ private static final long serialVersionUID = 0L;
         == other.getWorkId());
     result = result && getHost()
         .equals(other.getHost());
-    result = result && (getPost()
-        == other.getPost());
+    result = result && (getPort()
+        == other.getPort());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -222,8 +222,8 @@ private static final long serialVersionUID = 0L;
         getWorkId());
     hash = (37 * hash) + HOST_FIELD_NUMBER;
     hash = (53 * hash) + getHost().hashCode();
-    hash = (37 * hash) + POST_FIELD_NUMBER;
-    hash = (53 * hash) + getPost();
+    hash = (37 * hash) + PORT_FIELD_NUMBER;
+    hash = (53 * hash) + getPort();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -357,7 +357,7 @@ private static final long serialVersionUID = 0L;
 
       host_ = "";
 
-      post_ = 0;
+      port_ = 0;
 
       return this;
     }
@@ -383,7 +383,7 @@ private static final long serialVersionUID = 0L;
       com.tencent.client.master.protos.SetAngelLocationReq result = new com.tencent.client.master.protos.SetAngelLocationReq(this);
       result.workId_ = workId_;
       result.host_ = host_;
-      result.post_ = post_;
+      result.port_ = port_;
       onBuilt();
       return result;
     }
@@ -432,8 +432,8 @@ private static final long serialVersionUID = 0L;
         host_ = other.host_;
         onChanged();
       }
-      if (other.getPost() != 0) {
-        setPost(other.getPost());
+      if (other.getPort() != 0) {
+        setPort(other.getPort());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -557,28 +557,28 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int post_ ;
+    private int port_ ;
     /**
-     * <code>int32 post = 3;</code>
+     * <code>int32 port = 3;</code>
      */
-    public int getPost() {
-      return post_;
+    public int getPort() {
+      return port_;
     }
     /**
-     * <code>int32 post = 3;</code>
+     * <code>int32 port = 3;</code>
      */
-    public Builder setPost(int value) {
+    public Builder setPort(int value) {
       
-      post_ = value;
+      port_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 post = 3;</code>
+     * <code>int32 port = 3;</code>
      */
-    public Builder clearPost() {
+    public Builder clearPort() {
       
-      post_ = 0;
+      port_ = 0;
       onChanged();
       return this;
     }

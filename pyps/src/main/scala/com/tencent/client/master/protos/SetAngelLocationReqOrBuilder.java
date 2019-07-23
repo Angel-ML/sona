@@ -23,7 +23,7 @@ public interface SetAngelLocationReqOrBuilder extends
       getHostBytes();
 
   /**
-   * <code>int32 post = 3;</code>
+   * <code>int32 port = 3;</code>
    */
-  int getPost();
+  int getPort();
 }

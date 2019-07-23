@@ -10,13 +10,13 @@ option java_outer_classname = "ClientWorkerProto";
 import "common.proto";
 
 message TensorLike {
-    int32 pid = 1;
+    int64 taskId = 1;
     string name = 2;
     int32 matId = 3;
 }
 
 message RPCTensor {
-    int32 pid = 1;
+    int64 taskId = 1;
     string name = 2;
     int32 dim = 3;
     repeated int64 shape = 4;
@@ -26,7 +26,7 @@ message RPCTensor {
 }
 
 message RPCVariable {
-    int32 pid = 1;
+    int64 taskId = 1;
     string name = 2;
     int32 dim = 3;
     repeated int64 shape = 4;
@@ -37,7 +37,7 @@ message RPCVariable {
 }
 
 message RPCEmbedding {
-    int32 pid = 1;
+    int64 taskId = 1;
     string name = 2;
     int64 numFeats = 3;
     int32 embeddingSize = 4;
@@ -47,25 +47,26 @@ message RPCEmbedding {
 }
 
 message CreateResp {
-    int32 matId = 1;
+    int64 taskId = 1;
+    int32 matId = 2;
 }
 
 message LoadTensorLike {
-    int32 pid = 1;
+    int64 taskId = 1;
     int32 matId = 2;
     string path = 3;
     map<string, string> conf = 4;
 }
 
 message SaveTensorLike {
-    int32 pid = 1;
+    int64 taskId = 1;
     int32 matId = 2;
     string path = 3;
     string formatClassName = 4;
 }
 
 message PullRequest {
-    int32 pid = 1;
+    int64 taskId = 1;
     int32 matId = 3;
     int32 epoch = 4;
     int32 batch = 5;
@@ -73,13 +74,13 @@ message PullRequest {
 }
 
 message PullResponse {
-    int32 pid = 1;
+    int64 taskId = 1;
     int32 matId = 3;
     bytes objectId = 6;
 }
 
 message PushRequest {
-    int32 pid = 1;
+    int64 taskId = 1;
     int32 matId = 3;
     int32 epoch = 4;
     int32 batch = 5;
@@ -88,14 +89,10 @@ message PushRequest {
 }
 
 message SyncRequest {
-    int32 pid = 1;
+    int64 taskId = 1;
     int64 clock = 2;
 }
 
-message VoidResponse {
-    Status ret = 1;
-    string msg = 2;
-}
 
 service ClientWorker {
     rpc CreateTensor (RPCTensor) returns (CreateResp) {
@@ -104,20 +101,22 @@ service ClientWorker {
     }
     rpc CreateEmbedding (RPCEmbedding) returns (CreateResp) {
     }
-    rpc Init (TensorLike) returns (VoidResponse) {
+    rpc Init (TensorLike) returns (VoidResp) {
     }
-    rpc Load (LoadTensorLike) returns (VoidResponse) {
+    rpc Load (LoadTensorLike) returns (VoidResp) {
     }
-    rpc Save (SaveTensorLike) returns (VoidResponse) {
+    rpc Save (SaveTensorLike) returns (VoidResp) {
     }
     rpc Pull (PullRequest) returns (PullResponse) {
     }
-    rpc Push (PushRequest) returns (VoidResponse) {
+    rpc Push (PushRequest) returns (VoidResp) {
     }
-    rpc Release (TensorLike) returns (VoidResponse) {
+    rpc Release (TensorLike) returns (VoidResp) {
     }
-    rpc Update (TensorLike) returns (VoidResponse) {
+    rpc Update (TensorLike) returns (VoidResp) {
     }
-    rpc Sync (SyncRequest) returns (VoidResponse) {
+    rpc Sync (SyncRequest) returns (VoidResp) {
+    }
+    rpc CompleteTask (CompleteTaskReq) returns (VoidResp) {
     }
 }

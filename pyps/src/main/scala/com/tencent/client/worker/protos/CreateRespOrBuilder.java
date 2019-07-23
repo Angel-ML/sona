@@ -8,7 +8,12 @@ public interface CreateRespOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 matId = 1;</code>
+   * <code>int64 taskId = 1;</code>
+   */
+  long getTaskId();
+
+  /**
+   * <code>int32 matId = 2;</code>
    */
   int getMatId();
 }

@@ -99,11 +99,6 @@ public final class ClientWorkerProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ClientMaster_SyncRequest_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ClientMaster_VoidResponse_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ClientMaster_VoidResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -114,69 +109,67 @@ public final class ClientWorkerProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\023client_worker.proto\022\014ClientMaster\032\014com" +
-      "mon.proto\"6\n\nTensorLike\022\013\n\003pid\030\001 \001(\005\022\014\n\004" +
-      "name\030\002 \001(\t\022\r\n\005matId\030\003 \001(\005\"\355\001\n\tRPCTensor\022" +
-      "\013\n\003pid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\013\n\003dim\030\003 \001(\005\022" +
-      "\r\n\005shape\030\004 \003(\003\022\r\n\005dtype\030\005 \001(\t\022\025\n\rvalidIn" +
-      "dexNum\030\006 \001(\003\022I\n\021initializerParams\030\007 \003(\0132" +
-      "..ClientMaster.RPCTensor.InitializerPara" +
-      "msEntry\0328\n\026InitializerParamsEntry\022\013\n\003key" +
-      "\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\354\002\n\013RPCVariabl" +
-      "e\022\013\n\003pid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\013\n\003dim\030\003 \001(" +
-      "\005\022\r\n\005shape\030\004 \003(\003\022\r\n\005dtype\030\005 \001(\t\022\025\n\rvalid" +
-      "IndexNum\030\006 \001(\003\022K\n\021initializerParams\030\007 \003(" +
-      "\01320.ClientMaster.RPCVariable.Initializer" +
-      "ParamsEntry\022C\n\rupdaterParams\030\010 \003(\0132,.Cli" +
-      "entMaster.RPCVariable.UpdaterParamsEntry" +
-      "\0328\n\026InitializerParamsEntry\022\013\n\003key\030\001 \001(\t\022" +
-      "\r\n\005value\030\002 \001(\t:\0028\001\0324\n\022UpdaterParamsEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\345\002\n\014RPC" +
-      "Embedding\022\013\n\003pid\030\001 \001(\005\022\014\n\004name\030\002 \001(\t\022\020\n\010" +
-      "numFeats\030\003 \001(\003\022\025\n\rembeddingSize\030\004 \001(\005\022\r\n" +
-      "\005dtype\030\005 \001(\t\022L\n\021initializerParams\030\006 \003(\0132" +
-      "1.ClientMaster.RPCEmbedding.InitializerP" +
-      "aramsEntry\022D\n\rupdaterParams\030\007 \003(\0132-.Clie" +
-      "ntMaster.RPCEmbedding.UpdaterParamsEntry" +
-      "\0328\n\026InitializerParamsEntry\022\013\n\003key\030\001 \001(\t\022" +
-      "\r\n\005value\030\002 \001(\t:\0028\001\0324\n\022UpdaterParamsEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\033\n\nCrea" +
-      "teResp\022\r\n\005matId\030\001 \001(\005\"\235\001\n\016LoadTensorLike" +
-      "\022\013\n\003pid\030\001 \001(\005\022\r\n\005matId\030\002 \001(\005\022\014\n\004path\030\003 \001" +
-      "(\t\0224\n\004conf\030\004 \003(\0132&.ClientMaster.LoadTens" +
-      "orLike.ConfEntry\032+\n\tConfEntry\022\013\n\003key\030\001 \001" +
-      "(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"S\n\016SaveTensorLike\022" +
-      "\013\n\003pid\030\001 \001(\005\022\r\n\005matId\030\002 \001(\005\022\014\n\004path\030\003 \001(" +
-      "\t\022\027\n\017formatClassName\030\004 \001(\t\"Y\n\013PullReques" +
-      "t\022\013\n\003pid\030\001 \001(\005\022\r\n\005matId\030\003 \001(\005\022\r\n\005epoch\030\004" +
-      " \001(\005\022\r\n\005batch\030\005 \001(\005\022\020\n\010objectId\030\006 \001(\014\"<\n" +
-      "\014PullResponse\022\013\n\003pid\030\001 \001(\005\022\r\n\005matId\030\003 \001(" +
-      "\005\022\020\n\010objectId\030\006 \001(\014\"l\n\013PushRequest\022\013\n\003pi" +
-      "d\030\001 \001(\005\022\r\n\005matId\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005\022\r\n" +
-      "\005batch\030\005 \001(\005\022\021\n\tbatchSize\030\006 \001(\005\022\020\n\010objec" +
-      "tId\030\007 \001(\014\")\n\013SyncRequest\022\013\n\003pid\030\001 \001(\005\022\r\n" +
-      "\005clock\030\002 \001(\003\"1\n\014VoidResponse\022\024\n\003ret\030\001 \001(" +
-      "\0162\007.Status\022\013\n\003msg\030\002 \001(\t2\367\005\n\014ClientWorker" +
-      "\022C\n\014CreateTensor\022\027.ClientMaster.RPCTenso" +
-      "r\032\030.ClientMaster.CreateResp\"\000\022G\n\016CreateV" +
-      "ariable\022\031.ClientMaster.RPCVariable\032\030.Cli" +
-      "entMaster.CreateResp\"\000\022I\n\017CreateEmbeddin" +
-      "g\022\032.ClientMaster.RPCEmbedding\032\030.ClientMa" +
-      "ster.CreateResp\"\000\022>\n\004Init\022\030.ClientMaster" +
-      ".TensorLike\032\032.ClientMaster.VoidResponse\"" +
-      "\000\022B\n\004Load\022\034.ClientMaster.LoadTensorLike\032" +
-      "\032.ClientMaster.VoidResponse\"\000\022B\n\004Save\022\034." +
-      "ClientMaster.SaveTensorLike\032\032.ClientMast" +
-      "er.VoidResponse\"\000\022?\n\004Pull\022\031.ClientMaster" +
-      ".PullRequest\032\032.ClientMaster.PullResponse" +
-      "\"\000\022?\n\004Push\022\031.ClientMaster.PushRequest\032\032." +
-      "ClientMaster.VoidResponse\"\000\022A\n\007Release\022\030" +
-      ".ClientMaster.TensorLike\032\032.ClientMaster." +
-      "VoidResponse\"\000\022@\n\006Update\022\030.ClientMaster." +
-      "TensorLike\032\032.ClientMaster.VoidResponse\"\000" +
-      "\022?\n\004Sync\022\031.ClientMaster.SyncRequest\032\032.Cl" +
-      "ientMaster.VoidResponse\"\000B:\n com.tencent" +
-      ".client.worker.protosB\021ClientWorkerProto" +
-      "P\001\210\001\001b\006proto3"
+      "mon.proto\"9\n\nTensorLike\022\016\n\006taskId\030\001 \001(\003\022" +
+      "\014\n\004name\030\002 \001(\t\022\r\n\005matId\030\003 \001(\005\"\360\001\n\tRPCTens" +
+      "or\022\016\n\006taskId\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\022\013\n\003dim\030" +
+      "\003 \001(\005\022\r\n\005shape\030\004 \003(\003\022\r\n\005dtype\030\005 \001(\t\022\025\n\rv" +
+      "alidIndexNum\030\006 \001(\003\022I\n\021initializerParams\030" +
+      "\007 \003(\0132..ClientMaster.RPCTensor.Initializ" +
+      "erParamsEntry\0328\n\026InitializerParamsEntry\022" +
+      "\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\357\002\n\013RPCV" +
+      "ariable\022\016\n\006taskId\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\022\013\n" +
+      "\003dim\030\003 \001(\005\022\r\n\005shape\030\004 \003(\003\022\r\n\005dtype\030\005 \001(\t" +
+      "\022\025\n\rvalidIndexNum\030\006 \001(\003\022K\n\021initializerPa" +
+      "rams\030\007 \003(\01320.ClientMaster.RPCVariable.In" +
+      "itializerParamsEntry\022C\n\rupdaterParams\030\010 " +
+      "\003(\0132,.ClientMaster.RPCVariable.UpdaterPa" +
+      "ramsEntry\0328\n\026InitializerParamsEntry\022\013\n\003k" +
+      "ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\0324\n\022UpdaterPa" +
+      "ramsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028" +
+      "\001\"\350\002\n\014RPCEmbedding\022\016\n\006taskId\030\001 \001(\003\022\014\n\004na" +
+      "me\030\002 \001(\t\022\020\n\010numFeats\030\003 \001(\003\022\025\n\rembeddingS" +
+      "ize\030\004 \001(\005\022\r\n\005dtype\030\005 \001(\t\022L\n\021initializerP" +
+      "arams\030\006 \003(\01321.ClientMaster.RPCEmbedding." +
+      "InitializerParamsEntry\022D\n\rupdaterParams\030" +
+      "\007 \003(\0132-.ClientMaster.RPCEmbedding.Update" +
+      "rParamsEntry\0328\n\026InitializerParamsEntry\022\013" +
+      "\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\0324\n\022Update" +
+      "rParamsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t" +
+      ":\0028\001\"+\n\nCreateResp\022\016\n\006taskId\030\001 \001(\003\022\r\n\005ma" +
+      "tId\030\002 \001(\005\"\240\001\n\016LoadTensorLike\022\016\n\006taskId\030\001" +
+      " \001(\003\022\r\n\005matId\030\002 \001(\005\022\014\n\004path\030\003 \001(\t\0224\n\004con" +
+      "f\030\004 \003(\0132&.ClientMaster.LoadTensorLike.Co" +
+      "nfEntry\032+\n\tConfEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005val" +
+      "ue\030\002 \001(\t:\0028\001\"V\n\016SaveTensorLike\022\016\n\006taskId" +
+      "\030\001 \001(\003\022\r\n\005matId\030\002 \001(\005\022\014\n\004path\030\003 \001(\t\022\027\n\017f" +
+      "ormatClassName\030\004 \001(\t\"\\\n\013PullRequest\022\016\n\006t" +
+      "askId\030\001 \001(\003\022\r\n\005matId\030\003 \001(\005\022\r\n\005epoch\030\004 \001(" +
+      "\005\022\r\n\005batch\030\005 \001(\005\022\020\n\010objectId\030\006 \001(\014\"?\n\014Pu" +
+      "llResponse\022\016\n\006taskId\030\001 \001(\003\022\r\n\005matId\030\003 \001(" +
+      "\005\022\020\n\010objectId\030\006 \001(\014\"o\n\013PushRequest\022\016\n\006ta" +
+      "skId\030\001 \001(\003\022\r\n\005matId\030\003 \001(\005\022\r\n\005epoch\030\004 \001(\005" +
+      "\022\r\n\005batch\030\005 \001(\005\022\021\n\tbatchSize\030\006 \001(\005\022\020\n\010ob" +
+      "jectId\030\007 \001(\014\",\n\013SyncRequest\022\016\n\006taskId\030\001 " +
+      "\001(\003\022\r\n\005clock\030\002 \001(\0032\257\005\n\014ClientWorker\022C\n\014C" +
+      "reateTensor\022\027.ClientMaster.RPCTensor\032\030.C" +
+      "lientMaster.CreateResp\"\000\022G\n\016CreateVariab" +
+      "le\022\031.ClientMaster.RPCVariable\032\030.ClientMa" +
+      "ster.CreateResp\"\000\022I\n\017CreateEmbedding\022\032.C" +
+      "lientMaster.RPCEmbedding\032\030.ClientMaster." +
+      "CreateResp\"\000\022-\n\004Init\022\030.ClientMaster.Tens" +
+      "orLike\032\t.VoidResp\"\000\0221\n\004Load\022\034.ClientMast" +
+      "er.LoadTensorLike\032\t.VoidResp\"\000\0221\n\004Save\022\034" +
+      ".ClientMaster.SaveTensorLike\032\t.VoidResp\"" +
+      "\000\022?\n\004Pull\022\031.ClientMaster.PullRequest\032\032.C" +
+      "lientMaster.PullResponse\"\000\022.\n\004Push\022\031.Cli" +
+      "entMaster.PushRequest\032\t.VoidResp\"\000\0220\n\007Re" +
+      "lease\022\030.ClientMaster.TensorLike\032\t.VoidRe" +
+      "sp\"\000\022/\n\006Update\022\030.ClientMaster.TensorLike" +
+      "\032\t.VoidResp\"\000\022.\n\004Sync\022\031.ClientMaster.Syn" +
+      "cRequest\032\t.VoidResp\"\000\022-\n\014CompleteTask\022\020." +
+      "CompleteTaskReq\032\t.VoidResp\"\000B:\n com.tenc" +
+      "ent.client.worker.protosB\021ClientWorkerPr" +
+      "otoP\001\210\001\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -196,13 +189,13 @@ public final class ClientWorkerProto {
     internal_static_ClientMaster_TensorLike_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_TensorLike_descriptor,
-        new java.lang.String[] { "Pid", "Name", "MatId", });
+        new java.lang.String[] { "TaskId", "Name", "MatId", });
     internal_static_ClientMaster_RPCTensor_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_ClientMaster_RPCTensor_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_RPCTensor_descriptor,
-        new java.lang.String[] { "Pid", "Name", "Dim", "Shape", "Dtype", "ValidIndexNum", "InitializerParams", });
+        new java.lang.String[] { "TaskId", "Name", "Dim", "Shape", "Dtype", "ValidIndexNum", "InitializerParams", });
     internal_static_ClientMaster_RPCTensor_InitializerParamsEntry_descriptor =
       internal_static_ClientMaster_RPCTensor_descriptor.getNestedTypes().get(0);
     internal_static_ClientMaster_RPCTensor_InitializerParamsEntry_fieldAccessorTable = new
@@ -214,7 +207,7 @@ public final class ClientWorkerProto {
     internal_static_ClientMaster_RPCVariable_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_RPCVariable_descriptor,
-        new java.lang.String[] { "Pid", "Name", "Dim", "Shape", "Dtype", "ValidIndexNum", "InitializerParams", "UpdaterParams", });
+        new java.lang.String[] { "TaskId", "Name", "Dim", "Shape", "Dtype", "ValidIndexNum", "InitializerParams", "UpdaterParams", });
     internal_static_ClientMaster_RPCVariable_InitializerParamsEntry_descriptor =
       internal_static_ClientMaster_RPCVariable_descriptor.getNestedTypes().get(0);
     internal_static_ClientMaster_RPCVariable_InitializerParamsEntry_fieldAccessorTable = new
@@ -232,7 +225,7 @@ public final class ClientWorkerProto {
     internal_static_ClientMaster_RPCEmbedding_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_RPCEmbedding_descriptor,
-        new java.lang.String[] { "Pid", "Name", "NumFeats", "EmbeddingSize", "Dtype", "InitializerParams", "UpdaterParams", });
+        new java.lang.String[] { "TaskId", "Name", "NumFeats", "EmbeddingSize", "Dtype", "InitializerParams", "UpdaterParams", });
     internal_static_ClientMaster_RPCEmbedding_InitializerParamsEntry_descriptor =
       internal_static_ClientMaster_RPCEmbedding_descriptor.getNestedTypes().get(0);
     internal_static_ClientMaster_RPCEmbedding_InitializerParamsEntry_fieldAccessorTable = new
@@ -250,13 +243,13 @@ public final class ClientWorkerProto {
     internal_static_ClientMaster_CreateResp_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_CreateResp_descriptor,
-        new java.lang.String[] { "MatId", });
+        new java.lang.String[] { "TaskId", "MatId", });
     internal_static_ClientMaster_LoadTensorLike_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_ClientMaster_LoadTensorLike_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_LoadTensorLike_descriptor,
-        new java.lang.String[] { "Pid", "MatId", "Path", "Conf", });
+        new java.lang.String[] { "TaskId", "MatId", "Path", "Conf", });
     internal_static_ClientMaster_LoadTensorLike_ConfEntry_descriptor =
       internal_static_ClientMaster_LoadTensorLike_descriptor.getNestedTypes().get(0);
     internal_static_ClientMaster_LoadTensorLike_ConfEntry_fieldAccessorTable = new
@@ -268,37 +261,31 @@ public final class ClientWorkerProto {
     internal_static_ClientMaster_SaveTensorLike_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_SaveTensorLike_descriptor,
-        new java.lang.String[] { "Pid", "MatId", "Path", "FormatClassName", });
+        new java.lang.String[] { "TaskId", "MatId", "Path", "FormatClassName", });
     internal_static_ClientMaster_PullRequest_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_ClientMaster_PullRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_PullRequest_descriptor,
-        new java.lang.String[] { "Pid", "MatId", "Epoch", "Batch", "ObjectId", });
+        new java.lang.String[] { "TaskId", "MatId", "Epoch", "Batch", "ObjectId", });
     internal_static_ClientMaster_PullResponse_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_ClientMaster_PullResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_PullResponse_descriptor,
-        new java.lang.String[] { "Pid", "MatId", "ObjectId", });
+        new java.lang.String[] { "TaskId", "MatId", "ObjectId", });
     internal_static_ClientMaster_PushRequest_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_ClientMaster_PushRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_PushRequest_descriptor,
-        new java.lang.String[] { "Pid", "MatId", "Epoch", "Batch", "BatchSize", "ObjectId", });
+        new java.lang.String[] { "TaskId", "MatId", "Epoch", "Batch", "BatchSize", "ObjectId", });
     internal_static_ClientMaster_SyncRequest_descriptor =
       getDescriptor().getMessageTypes().get(10);
     internal_static_ClientMaster_SyncRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_SyncRequest_descriptor,
-        new java.lang.String[] { "Pid", "Clock", });
-    internal_static_ClientMaster_VoidResponse_descriptor =
-      getDescriptor().getMessageTypes().get(11);
-    internal_static_ClientMaster_VoidResponse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ClientMaster_VoidResponse_descriptor,
-        new java.lang.String[] { "Ret", "Msg", });
+        new java.lang.String[] { "TaskId", "Clock", });
     com.tencent.client.common.protos.MWComProto.getDescriptor();
   }
 

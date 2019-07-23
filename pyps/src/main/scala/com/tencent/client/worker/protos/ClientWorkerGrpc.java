@@ -124,21 +124,21 @@ public final class ClientWorkerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getInitMethod;
+      com.tencent.client.common.protos.VoidResp> getInitMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Init",
       requestType = com.tencent.client.worker.protos.TensorLike.class,
-      responseType = com.tencent.client.worker.protos.VoidResponse.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getInitMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike, com.tencent.client.worker.protos.VoidResponse> getInitMethod;
+      com.tencent.client.common.protos.VoidResp> getInitMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike, com.tencent.client.common.protos.VoidResp> getInitMethod;
     if ((getInitMethod = ClientWorkerGrpc.getInitMethod) == null) {
       synchronized (ClientWorkerGrpc.class) {
         if ((getInitMethod = ClientWorkerGrpc.getInitMethod) == null) {
           ClientWorkerGrpc.getInitMethod = getInitMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.TensorLike, com.tencent.client.worker.protos.VoidResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.TensorLike, com.tencent.client.common.protos.VoidResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.ClientWorker", "Init"))
@@ -146,7 +146,7 @@ public final class ClientWorkerGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.worker.protos.TensorLike.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
                   .setSchemaDescriptor(new ClientWorkerMethodDescriptorSupplier("Init"))
                   .build();
           }
@@ -156,21 +156,21 @@ public final class ClientWorkerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.tencent.client.worker.protos.LoadTensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getLoadMethod;
+      com.tencent.client.common.protos.VoidResp> getLoadMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Load",
       requestType = com.tencent.client.worker.protos.LoadTensorLike.class,
-      responseType = com.tencent.client.worker.protos.VoidResponse.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.tencent.client.worker.protos.LoadTensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getLoadMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.LoadTensorLike, com.tencent.client.worker.protos.VoidResponse> getLoadMethod;
+      com.tencent.client.common.protos.VoidResp> getLoadMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.LoadTensorLike, com.tencent.client.common.protos.VoidResp> getLoadMethod;
     if ((getLoadMethod = ClientWorkerGrpc.getLoadMethod) == null) {
       synchronized (ClientWorkerGrpc.class) {
         if ((getLoadMethod = ClientWorkerGrpc.getLoadMethod) == null) {
           ClientWorkerGrpc.getLoadMethod = getLoadMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.LoadTensorLike, com.tencent.client.worker.protos.VoidResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.LoadTensorLike, com.tencent.client.common.protos.VoidResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.ClientWorker", "Load"))
@@ -178,7 +178,7 @@ public final class ClientWorkerGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.worker.protos.LoadTensorLike.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
                   .setSchemaDescriptor(new ClientWorkerMethodDescriptorSupplier("Load"))
                   .build();
           }
@@ -188,21 +188,21 @@ public final class ClientWorkerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.tencent.client.worker.protos.SaveTensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getSaveMethod;
+      com.tencent.client.common.protos.VoidResp> getSaveMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Save",
       requestType = com.tencent.client.worker.protos.SaveTensorLike.class,
-      responseType = com.tencent.client.worker.protos.VoidResponse.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.tencent.client.worker.protos.SaveTensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getSaveMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.SaveTensorLike, com.tencent.client.worker.protos.VoidResponse> getSaveMethod;
+      com.tencent.client.common.protos.VoidResp> getSaveMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.SaveTensorLike, com.tencent.client.common.protos.VoidResp> getSaveMethod;
     if ((getSaveMethod = ClientWorkerGrpc.getSaveMethod) == null) {
       synchronized (ClientWorkerGrpc.class) {
         if ((getSaveMethod = ClientWorkerGrpc.getSaveMethod) == null) {
           ClientWorkerGrpc.getSaveMethod = getSaveMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.SaveTensorLike, com.tencent.client.worker.protos.VoidResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.SaveTensorLike, com.tencent.client.common.protos.VoidResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.ClientWorker", "Save"))
@@ -210,7 +210,7 @@ public final class ClientWorkerGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.worker.protos.SaveTensorLike.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
                   .setSchemaDescriptor(new ClientWorkerMethodDescriptorSupplier("Save"))
                   .build();
           }
@@ -252,21 +252,21 @@ public final class ClientWorkerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.tencent.client.worker.protos.PushRequest,
-      com.tencent.client.worker.protos.VoidResponse> getPushMethod;
+      com.tencent.client.common.protos.VoidResp> getPushMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Push",
       requestType = com.tencent.client.worker.protos.PushRequest.class,
-      responseType = com.tencent.client.worker.protos.VoidResponse.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.tencent.client.worker.protos.PushRequest,
-      com.tencent.client.worker.protos.VoidResponse> getPushMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.PushRequest, com.tencent.client.worker.protos.VoidResponse> getPushMethod;
+      com.tencent.client.common.protos.VoidResp> getPushMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.PushRequest, com.tencent.client.common.protos.VoidResp> getPushMethod;
     if ((getPushMethod = ClientWorkerGrpc.getPushMethod) == null) {
       synchronized (ClientWorkerGrpc.class) {
         if ((getPushMethod = ClientWorkerGrpc.getPushMethod) == null) {
           ClientWorkerGrpc.getPushMethod = getPushMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.PushRequest, com.tencent.client.worker.protos.VoidResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.PushRequest, com.tencent.client.common.protos.VoidResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.ClientWorker", "Push"))
@@ -274,7 +274,7 @@ public final class ClientWorkerGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.worker.protos.PushRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
                   .setSchemaDescriptor(new ClientWorkerMethodDescriptorSupplier("Push"))
                   .build();
           }
@@ -284,21 +284,21 @@ public final class ClientWorkerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getReleaseMethod;
+      com.tencent.client.common.protos.VoidResp> getReleaseMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Release",
       requestType = com.tencent.client.worker.protos.TensorLike.class,
-      responseType = com.tencent.client.worker.protos.VoidResponse.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getReleaseMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike, com.tencent.client.worker.protos.VoidResponse> getReleaseMethod;
+      com.tencent.client.common.protos.VoidResp> getReleaseMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike, com.tencent.client.common.protos.VoidResp> getReleaseMethod;
     if ((getReleaseMethod = ClientWorkerGrpc.getReleaseMethod) == null) {
       synchronized (ClientWorkerGrpc.class) {
         if ((getReleaseMethod = ClientWorkerGrpc.getReleaseMethod) == null) {
           ClientWorkerGrpc.getReleaseMethod = getReleaseMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.TensorLike, com.tencent.client.worker.protos.VoidResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.TensorLike, com.tencent.client.common.protos.VoidResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.ClientWorker", "Release"))
@@ -306,7 +306,7 @@ public final class ClientWorkerGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.worker.protos.TensorLike.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
                   .setSchemaDescriptor(new ClientWorkerMethodDescriptorSupplier("Release"))
                   .build();
           }
@@ -316,21 +316,21 @@ public final class ClientWorkerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getUpdateMethod;
+      com.tencent.client.common.protos.VoidResp> getUpdateMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Update",
       requestType = com.tencent.client.worker.protos.TensorLike.class,
-      responseType = com.tencent.client.worker.protos.VoidResponse.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike,
-      com.tencent.client.worker.protos.VoidResponse> getUpdateMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike, com.tencent.client.worker.protos.VoidResponse> getUpdateMethod;
+      com.tencent.client.common.protos.VoidResp> getUpdateMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.TensorLike, com.tencent.client.common.protos.VoidResp> getUpdateMethod;
     if ((getUpdateMethod = ClientWorkerGrpc.getUpdateMethod) == null) {
       synchronized (ClientWorkerGrpc.class) {
         if ((getUpdateMethod = ClientWorkerGrpc.getUpdateMethod) == null) {
           ClientWorkerGrpc.getUpdateMethod = getUpdateMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.TensorLike, com.tencent.client.worker.protos.VoidResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.TensorLike, com.tencent.client.common.protos.VoidResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.ClientWorker", "Update"))
@@ -338,7 +338,7 @@ public final class ClientWorkerGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.worker.protos.TensorLike.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
                   .setSchemaDescriptor(new ClientWorkerMethodDescriptorSupplier("Update"))
                   .build();
           }
@@ -348,21 +348,21 @@ public final class ClientWorkerGrpc {
   }
 
   private static volatile io.grpc.MethodDescriptor<com.tencent.client.worker.protos.SyncRequest,
-      com.tencent.client.worker.protos.VoidResponse> getSyncMethod;
+      com.tencent.client.common.protos.VoidResp> getSyncMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "Sync",
       requestType = com.tencent.client.worker.protos.SyncRequest.class,
-      responseType = com.tencent.client.worker.protos.VoidResponse.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.tencent.client.worker.protos.SyncRequest,
-      com.tencent.client.worker.protos.VoidResponse> getSyncMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.SyncRequest, com.tencent.client.worker.protos.VoidResponse> getSyncMethod;
+      com.tencent.client.common.protos.VoidResp> getSyncMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.worker.protos.SyncRequest, com.tencent.client.common.protos.VoidResp> getSyncMethod;
     if ((getSyncMethod = ClientWorkerGrpc.getSyncMethod) == null) {
       synchronized (ClientWorkerGrpc.class) {
         if ((getSyncMethod = ClientWorkerGrpc.getSyncMethod) == null) {
           ClientWorkerGrpc.getSyncMethod = getSyncMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.SyncRequest, com.tencent.client.worker.protos.VoidResponse>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.worker.protos.SyncRequest, com.tencent.client.common.protos.VoidResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.ClientWorker", "Sync"))
@@ -370,13 +370,45 @@ public final class ClientWorkerGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.worker.protos.SyncRequest.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
                   .setSchemaDescriptor(new ClientWorkerMethodDescriptorSupplier("Sync"))
                   .build();
           }
         }
      }
      return getSyncMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.tencent.client.common.protos.CompleteTaskReq,
+      com.tencent.client.common.protos.VoidResp> getCompleteTaskMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CompleteTask",
+      requestType = com.tencent.client.common.protos.CompleteTaskReq.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.tencent.client.common.protos.CompleteTaskReq,
+      com.tencent.client.common.protos.VoidResp> getCompleteTaskMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.common.protos.CompleteTaskReq, com.tencent.client.common.protos.VoidResp> getCompleteTaskMethod;
+    if ((getCompleteTaskMethod = ClientWorkerGrpc.getCompleteTaskMethod) == null) {
+      synchronized (ClientWorkerGrpc.class) {
+        if ((getCompleteTaskMethod = ClientWorkerGrpc.getCompleteTaskMethod) == null) {
+          ClientWorkerGrpc.getCompleteTaskMethod = getCompleteTaskMethod = 
+              io.grpc.MethodDescriptor.<com.tencent.client.common.protos.CompleteTaskReq, com.tencent.client.common.protos.VoidResp>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "ClientMaster.ClientWorker", "CompleteTask"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.common.protos.CompleteTaskReq.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
+                  .setSchemaDescriptor(new ClientWorkerMethodDescriptorSupplier("CompleteTask"))
+                  .build();
+          }
+        }
+     }
+     return getCompleteTaskMethod;
   }
 
   /**
@@ -430,21 +462,21 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void init(com.tencent.client.worker.protos.TensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnimplementedUnaryCall(getInitMethod(), responseObserver);
     }
 
     /**
      */
     public void load(com.tencent.client.worker.protos.LoadTensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnimplementedUnaryCall(getLoadMethod(), responseObserver);
     }
 
     /**
      */
     public void save(com.tencent.client.worker.protos.SaveTensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnimplementedUnaryCall(getSaveMethod(), responseObserver);
     }
 
@@ -458,29 +490,36 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void push(com.tencent.client.worker.protos.PushRequest request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnimplementedUnaryCall(getPushMethod(), responseObserver);
     }
 
     /**
      */
     public void release(com.tencent.client.worker.protos.TensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnimplementedUnaryCall(getReleaseMethod(), responseObserver);
     }
 
     /**
      */
     public void update(com.tencent.client.worker.protos.TensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnimplementedUnaryCall(getUpdateMethod(), responseObserver);
     }
 
     /**
      */
     public void sync(com.tencent.client.worker.protos.SyncRequest request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnimplementedUnaryCall(getSyncMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void completeTask(com.tencent.client.common.protos.CompleteTaskReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
+      asyncUnimplementedUnaryCall(getCompleteTaskMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
@@ -511,21 +550,21 @@ public final class ClientWorkerGrpc {
             asyncUnaryCall(
               new MethodHandlers<
                 com.tencent.client.worker.protos.TensorLike,
-                com.tencent.client.worker.protos.VoidResponse>(
+                com.tencent.client.common.protos.VoidResp>(
                   this, METHODID_INIT)))
           .addMethod(
             getLoadMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.tencent.client.worker.protos.LoadTensorLike,
-                com.tencent.client.worker.protos.VoidResponse>(
+                com.tencent.client.common.protos.VoidResp>(
                   this, METHODID_LOAD)))
           .addMethod(
             getSaveMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.tencent.client.worker.protos.SaveTensorLike,
-                com.tencent.client.worker.protos.VoidResponse>(
+                com.tencent.client.common.protos.VoidResp>(
                   this, METHODID_SAVE)))
           .addMethod(
             getPullMethod(),
@@ -539,29 +578,36 @@ public final class ClientWorkerGrpc {
             asyncUnaryCall(
               new MethodHandlers<
                 com.tencent.client.worker.protos.PushRequest,
-                com.tencent.client.worker.protos.VoidResponse>(
+                com.tencent.client.common.protos.VoidResp>(
                   this, METHODID_PUSH)))
           .addMethod(
             getReleaseMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.tencent.client.worker.protos.TensorLike,
-                com.tencent.client.worker.protos.VoidResponse>(
+                com.tencent.client.common.protos.VoidResp>(
                   this, METHODID_RELEASE)))
           .addMethod(
             getUpdateMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.tencent.client.worker.protos.TensorLike,
-                com.tencent.client.worker.protos.VoidResponse>(
+                com.tencent.client.common.protos.VoidResp>(
                   this, METHODID_UPDATE)))
           .addMethod(
             getSyncMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.tencent.client.worker.protos.SyncRequest,
-                com.tencent.client.worker.protos.VoidResponse>(
+                com.tencent.client.common.protos.VoidResp>(
                   this, METHODID_SYNC)))
+          .addMethod(
+            getCompleteTaskMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.tencent.client.common.protos.CompleteTaskReq,
+                com.tencent.client.common.protos.VoidResp>(
+                  this, METHODID_COMPLETE_TASK)))
           .build();
     }
   }
@@ -611,7 +657,7 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void init(com.tencent.client.worker.protos.TensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getInitMethod(), getCallOptions()), request, responseObserver);
     }
@@ -619,7 +665,7 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void load(com.tencent.client.worker.protos.LoadTensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getLoadMethod(), getCallOptions()), request, responseObserver);
     }
@@ -627,7 +673,7 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void save(com.tencent.client.worker.protos.SaveTensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getSaveMethod(), getCallOptions()), request, responseObserver);
     }
@@ -643,7 +689,7 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void push(com.tencent.client.worker.protos.PushRequest request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getPushMethod(), getCallOptions()), request, responseObserver);
     }
@@ -651,7 +697,7 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void release(com.tencent.client.worker.protos.TensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getReleaseMethod(), getCallOptions()), request, responseObserver);
     }
@@ -659,7 +705,7 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void update(com.tencent.client.worker.protos.TensorLike request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getUpdateMethod(), getCallOptions()), request, responseObserver);
     }
@@ -667,9 +713,17 @@ public final class ClientWorkerGrpc {
     /**
      */
     public void sync(com.tencent.client.worker.protos.SyncRequest request,
-        io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getSyncMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void completeTask(com.tencent.client.common.protos.CompleteTaskReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getCompleteTaskMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -714,21 +768,21 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.tencent.client.worker.protos.VoidResponse init(com.tencent.client.worker.protos.TensorLike request) {
+    public com.tencent.client.common.protos.VoidResp init(com.tencent.client.worker.protos.TensorLike request) {
       return blockingUnaryCall(
           getChannel(), getInitMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.tencent.client.worker.protos.VoidResponse load(com.tencent.client.worker.protos.LoadTensorLike request) {
+    public com.tencent.client.common.protos.VoidResp load(com.tencent.client.worker.protos.LoadTensorLike request) {
       return blockingUnaryCall(
           getChannel(), getLoadMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.tencent.client.worker.protos.VoidResponse save(com.tencent.client.worker.protos.SaveTensorLike request) {
+    public com.tencent.client.common.protos.VoidResp save(com.tencent.client.worker.protos.SaveTensorLike request) {
       return blockingUnaryCall(
           getChannel(), getSaveMethod(), getCallOptions(), request);
     }
@@ -742,30 +796,37 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.tencent.client.worker.protos.VoidResponse push(com.tencent.client.worker.protos.PushRequest request) {
+    public com.tencent.client.common.protos.VoidResp push(com.tencent.client.worker.protos.PushRequest request) {
       return blockingUnaryCall(
           getChannel(), getPushMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.tencent.client.worker.protos.VoidResponse release(com.tencent.client.worker.protos.TensorLike request) {
+    public com.tencent.client.common.protos.VoidResp release(com.tencent.client.worker.protos.TensorLike request) {
       return blockingUnaryCall(
           getChannel(), getReleaseMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.tencent.client.worker.protos.VoidResponse update(com.tencent.client.worker.protos.TensorLike request) {
+    public com.tencent.client.common.protos.VoidResp update(com.tencent.client.worker.protos.TensorLike request) {
       return blockingUnaryCall(
           getChannel(), getUpdateMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.tencent.client.worker.protos.VoidResponse sync(com.tencent.client.worker.protos.SyncRequest request) {
+    public com.tencent.client.common.protos.VoidResp sync(com.tencent.client.worker.protos.SyncRequest request) {
       return blockingUnaryCall(
           getChannel(), getSyncMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.tencent.client.common.protos.VoidResp completeTask(com.tencent.client.common.protos.CompleteTaskReq request) {
+      return blockingUnaryCall(
+          getChannel(), getCompleteTaskMethod(), getCallOptions(), request);
     }
   }
 
@@ -813,7 +874,7 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.worker.protos.VoidResponse> init(
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> init(
         com.tencent.client.worker.protos.TensorLike request) {
       return futureUnaryCall(
           getChannel().newCall(getInitMethod(), getCallOptions()), request);
@@ -821,7 +882,7 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.worker.protos.VoidResponse> load(
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> load(
         com.tencent.client.worker.protos.LoadTensorLike request) {
       return futureUnaryCall(
           getChannel().newCall(getLoadMethod(), getCallOptions()), request);
@@ -829,7 +890,7 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.worker.protos.VoidResponse> save(
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> save(
         com.tencent.client.worker.protos.SaveTensorLike request) {
       return futureUnaryCall(
           getChannel().newCall(getSaveMethod(), getCallOptions()), request);
@@ -845,7 +906,7 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.worker.protos.VoidResponse> push(
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> push(
         com.tencent.client.worker.protos.PushRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getPushMethod(), getCallOptions()), request);
@@ -853,7 +914,7 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.worker.protos.VoidResponse> release(
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> release(
         com.tencent.client.worker.protos.TensorLike request) {
       return futureUnaryCall(
           getChannel().newCall(getReleaseMethod(), getCallOptions()), request);
@@ -861,7 +922,7 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.worker.protos.VoidResponse> update(
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> update(
         com.tencent.client.worker.protos.TensorLike request) {
       return futureUnaryCall(
           getChannel().newCall(getUpdateMethod(), getCallOptions()), request);
@@ -869,10 +930,18 @@ public final class ClientWorkerGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.worker.protos.VoidResponse> sync(
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> sync(
         com.tencent.client.worker.protos.SyncRequest request) {
       return futureUnaryCall(
           getChannel().newCall(getSyncMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> completeTask(
+        com.tencent.client.common.protos.CompleteTaskReq request) {
+      return futureUnaryCall(
+          getChannel().newCall(getCompleteTaskMethod(), getCallOptions()), request);
     }
   }
 
@@ -887,6 +956,7 @@ public final class ClientWorkerGrpc {
   private static final int METHODID_RELEASE = 8;
   private static final int METHODID_UPDATE = 9;
   private static final int METHODID_SYNC = 10;
+  private static final int METHODID_COMPLETE_TASK = 11;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -919,15 +989,15 @@ public final class ClientWorkerGrpc {
           break;
         case METHODID_INIT:
           serviceImpl.init((com.tencent.client.worker.protos.TensorLike) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         case METHODID_LOAD:
           serviceImpl.load((com.tencent.client.worker.protos.LoadTensorLike) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         case METHODID_SAVE:
           serviceImpl.save((com.tencent.client.worker.protos.SaveTensorLike) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         case METHODID_PULL:
           serviceImpl.pull((com.tencent.client.worker.protos.PullRequest) request,
@@ -935,19 +1005,23 @@ public final class ClientWorkerGrpc {
           break;
         case METHODID_PUSH:
           serviceImpl.push((com.tencent.client.worker.protos.PushRequest) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         case METHODID_RELEASE:
           serviceImpl.release((com.tencent.client.worker.protos.TensorLike) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         case METHODID_UPDATE:
           serviceImpl.update((com.tencent.client.worker.protos.TensorLike) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         case METHODID_SYNC:
           serviceImpl.sync((com.tencent.client.worker.protos.SyncRequest) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.worker.protos.VoidResponse>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
+          break;
+        case METHODID_COMPLETE_TASK:
+          serviceImpl.completeTask((com.tencent.client.common.protos.CompleteTaskReq) request,
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -1021,6 +1095,7 @@ public final class ClientWorkerGrpc {
               .addMethod(getReleaseMethod())
               .addMethod(getUpdateMethod())
               .addMethod(getSyncMethod())
+              .addMethod(getCompleteTaskMethod())
               .build();
         }
       }

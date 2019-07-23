@@ -4,7 +4,13 @@ import com.tencent.angel.ml.servingmath2.MFactory
 import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.utils.RowType
 import com.tencent.angel.ml.servingmath2.vector._
+import java.util
+import java.lang.{Long => JLong}
 
+import org.apache.hadoop.conf.Configuration
+
+import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 object Utils {
   def getRowType(dtype: String): RowType = {
@@ -70,5 +76,32 @@ object Utils {
     mat.setMatrixId(vec.getMatrixId)
 
     mat
+  }
+
+  def toArray(arr: util.List[JLong]): Array[Long] = {
+    (0 until arr.size()).toArray.map{i =>
+      val ele: Long = arr.get(i)
+
+      ele
+    }
+  }
+
+  def toMap(map: util.Map[String, String]): Map[String, String] = {
+    val iter = map.entrySet().iterator()
+    val list = new mutable.ListBuffer[(String, String)]()
+    while(iter.hasNext) {
+      val entry = iter.next()
+      list.append(entry.getKey -> entry.getValue)
+    }
+
+    list.toMap
+  }
+
+  def fillConf(params:  util.Map[String, String], conf: Configuration): Unit = {
+    val iter = params.entrySet().iterator()
+    while(iter.hasNext) {
+      val entry = iter.next()
+      conf.set(entry.getKey, entry.getValue)
+    }
   }
 }

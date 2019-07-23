@@ -14,6 +14,21 @@ public final class MWComProto {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_CompleteTaskReq_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_CompleteTaskReq_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_VoidReq_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_VoidReq_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_VoidResp_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_VoidResp_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -23,10 +38,12 @@ public final class MWComProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\014common.proto*\'\n\nAsyncModel\022\007\n\003BSP\020\000\022\007\n" +
-      "\003SSP\020\001\022\007\n\003ASP\020\002*\033\n\006Status\022\006\n\002OK\020\000\022\t\n\005ERR" +
-      "OR\020\001B3\n com.tencent.client.common.protos" +
-      "B\nMWComProtoP\001\210\001\001b\006proto3"
+      "\n\014common.proto\"5\n\017CompleteTaskReq\022\016\n\006tas" +
+      "kId\030\001 \001(\003\022\022\n\ntimestamps\030\002 \001(\003\"\031\n\007VoidReq" +
+      "\022\016\n\006itemId\030\001 \001(\003\"\027\n\010VoidResp\022\013\n\003msg\030\001 \001(" +
+      "\t*\'\n\nAsyncModel\022\007\n\003BSP\020\000\022\007\n\003SSP\020\001\022\007\n\003ASP" +
+      "\020\002B3\n com.tencent.client.common.protosB\n" +
+      "MWComProtoP\001\210\001\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -40,6 +57,24 @@ public final class MWComProto {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
+    internal_static_CompleteTaskReq_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_CompleteTaskReq_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_CompleteTaskReq_descriptor,
+        new java.lang.String[] { "TaskId", "Timestamps", });
+    internal_static_VoidReq_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_VoidReq_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_VoidReq_descriptor,
+        new java.lang.String[] { "ItemId", });
+    internal_static_VoidResp_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_VoidResp_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_VoidResp_descriptor,
+        new java.lang.String[] { "Msg", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

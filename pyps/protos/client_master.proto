@@ -13,75 +13,94 @@ enum Command {
     STOPANGEL = 0;
     STOPPSAGENT = 1;
     STOPWORKER = 2;
+    NOTHING = 3;
 }
 
-message RegisterReq {
+message RegisterWorkerReq {
     string host = 1;
     int32 port = 2;
 }
 
-message RegisterResp {
-    Status ret = 1;
+message RegisterWorkerResp {
     int64 workId = 2;
     bool isChief = 3;
-    int32 numTask = 4;
     AsyncModel asyncModel = 5;
-    map<string, string> conf = 56;
-    string msg = 6;
+    map<string, string> conf = 6;
+    string msg = 7;
+}
+
+message RegisterTaskReq {
+    int64 workId = 2;
+    int64 timestamp = 3;
+}
+
+message RegisterTaskResp {
+    int64 taskId = 2;
+    int32 numTask = 4;
+    map<int64, int32> clock = 3;
 }
 
 message SetAngelLocationReq {
     int64 workId = 1;
     string host = 2;
-    int32 post = 3;
-}
-
-message SetAngelLocationResp {
-    Status ret = 1;
-    string msg = 2;
-}
-
-message GetAngelLocationReq {
-    int64 workId = 1;
+    int32 port = 3;
 }
 
 message GetAngelLocationResp {
-    Status ret = 1;
     string host = 2;
-    int32 post = 3;
+    int32 port = 3;
     string msg = 4;
 }
 
 message HeartBeatReq {
     int64 workId = 1;
-    int64 timestamps = 2;
 }
 
 message HeartBeatResp {
-    Status ret = 1;
-    string msg = 2;
     Command cmd = 3;
 }
 
-message SyncReq {
-    int64 workId = 1;
+message ClockReq {
+    int64 taskId = 1;
     int32 clock = 2;
+    int32 batchSize = 3;
 }
 
-message SyncResp {
-    Status ret = 1;
-    string msg = 2;
+message ClockResp {
+    int64 taskId = 1;
+    map<int64, int32> clockMap = 2;
+}
+
+message GetClockMapReq {
+    int64 taskId = 1;
+}
+
+message GetClockMapResp {
+    int64 taskId = 1;
+    map<int64, int32> clockMap = 2;
+}
+
+message GetGlobalBatchResp {
+    int32 batchSize = 1;
 }
 
 service AngelCleintMaster {
-    rpc Register (RegisterReq) returns (RegisterResp) {
+    rpc RegisterWorker (RegisterWorkerReq) returns (RegisterWorkerResp) {
     }
-    rpc SetAngelLocation (SetAngelLocationReq) returns (SetAngelLocationResp) {
+    rpc RegisterTask (RegisterTaskReq) returns (RegisterTaskResp) {
     }
-    rpc GetAngelLocation (GetAngelLocationReq) returns (GetAngelLocationResp) {
+    rpc SetAngelLocation (SetAngelLocationReq) returns (VoidResp) {
+    }
+    rpc GetAngelLocation (VoidReq) returns (GetAngelLocationResp) {
     }
     rpc HeartBeat (HeartBeatReq) returns (HeartBeatResp) {
     }
-    rpc Sync (SyncReq) returns (SyncResp) {
+    rpc Clock (ClockReq) returns (ClockResp) {
+    }
+    rpc GetClockMap (GetClockMapReq) returns (GetClockMapResp) {
+    }
+    rpc GetGlobalBatchSize (VoidReq) returns (GetGlobalBatchResp) {
+    }
+    rpc CompleteTask (CompleteTaskReq) returns (VoidResp) {
     }
 }

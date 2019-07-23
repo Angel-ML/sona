@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private HeartBeatReq() {
     workId_ = 0L;
-    timestamps_ = 0L;
   }
 
   @java.lang.Override
@@ -56,11 +55,6 @@ private static final long serialVersionUID = 0L;
             workId_ = input.readInt64();
             break;
           }
-          case 16: {
-
-            timestamps_ = input.readInt64();
-            break;
-          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -94,15 +88,6 @@ private static final long serialVersionUID = 0L;
     return workId_;
   }
 
-  public static final int TIMESTAMPS_FIELD_NUMBER = 2;
-  private long timestamps_;
-  /**
-   * <code>int64 timestamps = 2;</code>
-   */
-  public long getTimestamps() {
-    return timestamps_;
-  }
-
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -118,9 +103,6 @@ private static final long serialVersionUID = 0L;
     if (workId_ != 0L) {
       output.writeInt64(1, workId_);
     }
-    if (timestamps_ != 0L) {
-      output.writeInt64(2, timestamps_);
-    }
     unknownFields.writeTo(output);
   }
 
@@ -132,10 +114,6 @@ private static final long serialVersionUID = 0L;
     if (workId_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(1, workId_);
-    }
-    if (timestamps_ != 0L) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(2, timestamps_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -155,8 +133,6 @@ private static final long serialVersionUID = 0L;
     boolean result = true;
     result = result && (getWorkId()
         == other.getWorkId());
-    result = result && (getTimestamps()
-        == other.getTimestamps());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -171,9 +147,6 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + WORKID_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getWorkId());
-    hash = (37 * hash) + TIMESTAMPS_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getTimestamps());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -305,8 +278,6 @@ private static final long serialVersionUID = 0L;
       super.clear();
       workId_ = 0L;
 
-      timestamps_ = 0L;
-
       return this;
     }
 
@@ -330,7 +301,6 @@ private static final long serialVersionUID = 0L;
     public com.tencent.client.master.protos.HeartBeatReq buildPartial() {
       com.tencent.client.master.protos.HeartBeatReq result = new com.tencent.client.master.protos.HeartBeatReq(this);
       result.workId_ = workId_;
-      result.timestamps_ = timestamps_;
       onBuilt();
       return result;
     }
@@ -374,9 +344,6 @@ private static final long serialVersionUID = 0L;
       if (other == com.tencent.client.master.protos.HeartBeatReq.getDefaultInstance()) return this;
       if (other.getWorkId() != 0L) {
         setWorkId(other.getWorkId());
-      }
-      if (other.getTimestamps() != 0L) {
-        setTimestamps(other.getTimestamps());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -427,32 +394,6 @@ private static final long serialVersionUID = 0L;
     public Builder clearWorkId() {
       
       workId_ = 0L;
-      onChanged();
-      return this;
-    }
-
-    private long timestamps_ ;
-    /**
-     * <code>int64 timestamps = 2;</code>
-     */
-    public long getTimestamps() {
-      return timestamps_;
-    }
-    /**
-     * <code>int64 timestamps = 2;</code>
-     */
-    public Builder setTimestamps(long value) {
-      
-      timestamps_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>int64 timestamps = 2;</code>
-     */
-    public Builder clearTimestamps() {
-      
-      timestamps_ = 0L;
       onChanged();
       return this;
     }

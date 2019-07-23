@@ -11,8 +11,16 @@ enum AsyncModel {
     ASP = 2;
 }
 
-enum Status {
-    OK = 0;
-    ERROR = 1;
+message CompleteTaskReq {
+    int64 taskId = 1;
+    int64 timestamps = 2;
+}
+
+message VoidReq {
+    int64 itemId = 1;
+}
+
+message VoidResp {
+    string msg = 1;
 }
 

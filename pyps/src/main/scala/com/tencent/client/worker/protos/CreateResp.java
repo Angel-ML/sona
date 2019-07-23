@@ -16,6 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private CreateResp() {
+    taskId_ = 0L;
     matId_ = 0;
   }
 
@@ -52,6 +53,11 @@ private static final long serialVersionUID = 0L;
           }
           case 8: {
 
+            taskId_ = input.readInt64();
+            break;
+          }
+          case 16: {
+
             matId_ = input.readInt32();
             break;
           }
@@ -79,10 +85,19 @@ private static final long serialVersionUID = 0L;
             com.tencent.client.worker.protos.CreateResp.class, com.tencent.client.worker.protos.CreateResp.Builder.class);
   }
 
-  public static final int MATID_FIELD_NUMBER = 1;
+  public static final int TASKID_FIELD_NUMBER = 1;
+  private long taskId_;
+  /**
+   * <code>int64 taskId = 1;</code>
+   */
+  public long getTaskId() {
+    return taskId_;
+  }
+
+  public static final int MATID_FIELD_NUMBER = 2;
   private int matId_;
   /**
-   * <code>int32 matId = 1;</code>
+   * <code>int32 matId = 2;</code>
    */
   public int getMatId() {
     return matId_;
@@ -100,8 +115,11 @@ private static final long serialVersionUID = 0L;
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (taskId_ != 0L) {
+      output.writeInt64(1, taskId_);
+    }
     if (matId_ != 0) {
-      output.writeInt32(1, matId_);
+      output.writeInt32(2, matId_);
     }
     unknownFields.writeTo(output);
   }
@@ -111,9 +129,13 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (taskId_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(1, taskId_);
+    }
     if (matId_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, matId_);
+        .computeInt32Size(2, matId_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -131,6 +153,8 @@ private static final long serialVersionUID = 0L;
     com.tencent.client.worker.protos.CreateResp other = (com.tencent.client.worker.protos.CreateResp) obj;
 
     boolean result = true;
+    result = result && (getTaskId()
+        == other.getTaskId());
     result = result && (getMatId()
         == other.getMatId());
     result = result && unknownFields.equals(other.unknownFields);
@@ -144,6 +168,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + TASKID_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getTaskId());
     hash = (37 * hash) + MATID_FIELD_NUMBER;
     hash = (53 * hash) + getMatId();
     hash = (29 * hash) + unknownFields.hashCode();
@@ -275,6 +302,8 @@ private static final long serialVersionUID = 0L;
     }
     public Builder clear() {
       super.clear();
+      taskId_ = 0L;
+
       matId_ = 0;
 
       return this;
@@ -299,6 +328,7 @@ private static final long serialVersionUID = 0L;
 
     public com.tencent.client.worker.protos.CreateResp buildPartial() {
       com.tencent.client.worker.protos.CreateResp result = new com.tencent.client.worker.protos.CreateResp(this);
+      result.taskId_ = taskId_;
       result.matId_ = matId_;
       onBuilt();
       return result;
@@ -341,6 +371,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.tencent.client.worker.protos.CreateResp other) {
       if (other == com.tencent.client.worker.protos.CreateResp.getDefaultInstance()) return this;
+      if (other.getTaskId() != 0L) {
+        setTaskId(other.getTaskId());
+      }
       if (other.getMatId() != 0) {
         setMatId(other.getMatId());
       }
@@ -371,15 +404,41 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private long taskId_ ;
+    /**
+     * <code>int64 taskId = 1;</code>
+     */
+    public long getTaskId() {
+      return taskId_;
+    }
+    /**
+     * <code>int64 taskId = 1;</code>
+     */
+    public Builder setTaskId(long value) {
+      
+      taskId_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 taskId = 1;</code>
+     */
+    public Builder clearTaskId() {
+      
+      taskId_ = 0L;
+      onChanged();
+      return this;
+    }
+
     private int matId_ ;
     /**
-     * <code>int32 matId = 1;</code>
+     * <code>int32 matId = 2;</code>
      */
     public int getMatId() {
       return matId_;
     }
     /**
-     * <code>int32 matId = 1;</code>
+     * <code>int32 matId = 2;</code>
      */
     public Builder setMatId(int value) {
       
@@ -388,7 +447,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>int32 matId = 1;</code>
+     * <code>int32 matId = 2;</code>
      */
     public Builder clearMatId() {
       

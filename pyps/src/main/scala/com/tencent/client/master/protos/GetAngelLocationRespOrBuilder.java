@@ -8,15 +8,6 @@ public interface GetAngelLocationRespOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.Status ret = 1;</code>
-   */
-  int getRetValue();
-  /**
-   * <code>.Status ret = 1;</code>
-   */
-  com.tencent.client.common.protos.Status getRet();
-
-  /**
    * <code>string host = 2;</code>
    */
   java.lang.String getHost();
@@ -27,9 +18,9 @@ public interface GetAngelLocationRespOrBuilder extends
       getHostBytes();
 
   /**
-   * <code>int32 post = 3;</code>
+   * <code>int32 port = 3;</code>
    */
-  int getPost();
+  int getPort();
 
   /**
    * <code>string msg = 4;</code>

@@ -5,8 +5,8 @@ import java.io.IOException
 import java.util
 import java.util.logging.Logger
 
-import com.tencent.client.common.AsyncModel
-import com.tencent.client.common.AsyncModel.AsyncModel
+import com.tencent.client.common.protos.AsyncModel
+
 
 
 class Master(val port: Int, val numTask: Int, val syncModel: AsyncModel, val conf: util.Map[String, String]) {

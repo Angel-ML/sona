@@ -16,7 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private SyncRequest() {
-    pid_ = 0;
+    taskId_ = 0L;
     clock_ = 0L;
   }
 
@@ -53,7 +53,7 @@ private static final long serialVersionUID = 0L;
           }
           case 8: {
 
-            pid_ = input.readInt32();
+            taskId_ = input.readInt64();
             break;
           }
           case 16: {
@@ -85,13 +85,13 @@ private static final long serialVersionUID = 0L;
             com.tencent.client.worker.protos.SyncRequest.class, com.tencent.client.worker.protos.SyncRequest.Builder.class);
   }
 
-  public static final int PID_FIELD_NUMBER = 1;
-  private int pid_;
+  public static final int TASKID_FIELD_NUMBER = 1;
+  private long taskId_;
   /**
-   * <code>int32 pid = 1;</code>
+   * <code>int64 taskId = 1;</code>
    */
-  public int getPid() {
-    return pid_;
+  public long getTaskId() {
+    return taskId_;
   }
 
   public static final int CLOCK_FIELD_NUMBER = 2;
@@ -115,8 +115,8 @@ private static final long serialVersionUID = 0L;
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (pid_ != 0) {
-      output.writeInt32(1, pid_);
+    if (taskId_ != 0L) {
+      output.writeInt64(1, taskId_);
     }
     if (clock_ != 0L) {
       output.writeInt64(2, clock_);
@@ -129,9 +129,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (pid_ != 0) {
+    if (taskId_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, pid_);
+        .computeInt64Size(1, taskId_);
     }
     if (clock_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -153,8 +153,8 @@ private static final long serialVersionUID = 0L;
     com.tencent.client.worker.protos.SyncRequest other = (com.tencent.client.worker.protos.SyncRequest) obj;
 
     boolean result = true;
-    result = result && (getPid()
-        == other.getPid());
+    result = result && (getTaskId()
+        == other.getTaskId());
     result = result && (getClock()
         == other.getClock());
     result = result && unknownFields.equals(other.unknownFields);
@@ -168,8 +168,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + PID_FIELD_NUMBER;
-    hash = (53 * hash) + getPid();
+    hash = (37 * hash) + TASKID_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getTaskId());
     hash = (37 * hash) + CLOCK_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getClock());
@@ -302,7 +303,7 @@ private static final long serialVersionUID = 0L;
     }
     public Builder clear() {
       super.clear();
-      pid_ = 0;
+      taskId_ = 0L;
 
       clock_ = 0L;
 
@@ -328,7 +329,7 @@ private static final long serialVersionUID = 0L;
 
     public com.tencent.client.worker.protos.SyncRequest buildPartial() {
       com.tencent.client.worker.protos.SyncRequest result = new com.tencent.client.worker.protos.SyncRequest(this);
-      result.pid_ = pid_;
+      result.taskId_ = taskId_;
       result.clock_ = clock_;
       onBuilt();
       return result;
@@ -371,8 +372,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.tencent.client.worker.protos.SyncRequest other) {
       if (other == com.tencent.client.worker.protos.SyncRequest.getDefaultInstance()) return this;
-      if (other.getPid() != 0) {
-        setPid(other.getPid());
+      if (other.getTaskId() != 0L) {
+        setTaskId(other.getTaskId());
       }
       if (other.getClock() != 0L) {
         setClock(other.getClock());
@@ -404,28 +405,28 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int pid_ ;
+    private long taskId_ ;
     /**
-     * <code>int32 pid = 1;</code>
+     * <code>int64 taskId = 1;</code>
      */
-    public int getPid() {
-      return pid_;
+    public long getTaskId() {
+      return taskId_;
     }
     /**
-     * <code>int32 pid = 1;</code>
+     * <code>int64 taskId = 1;</code>
      */
-    public Builder setPid(int value) {
+    public Builder setTaskId(long value) {
       
-      pid_ = value;
+      taskId_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 pid = 1;</code>
+     * <code>int64 taskId = 1;</code>
      */
-    public Builder clearPid() {
+    public Builder clearTaskId() {
       
-      pid_ = 0;
+      taskId_ = 0L;
       onChanged();
       return this;
     }

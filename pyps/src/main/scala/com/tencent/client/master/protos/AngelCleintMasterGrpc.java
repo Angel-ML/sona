@@ -27,54 +27,86 @@ public final class AngelCleintMasterGrpc {
   public static final String SERVICE_NAME = "ClientMaster.AngelCleintMaster";
 
   // Static method descriptors that strictly reflect the proto.
-  private static volatile io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterReq,
-      com.tencent.client.master.protos.RegisterResp> getRegisterMethod;
+  private static volatile io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterWorkerReq,
+      com.tencent.client.master.protos.RegisterWorkerResp> getRegisterWorkerMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "Register",
-      requestType = com.tencent.client.master.protos.RegisterReq.class,
-      responseType = com.tencent.client.master.protos.RegisterResp.class,
+      fullMethodName = SERVICE_NAME + '/' + "RegisterWorker",
+      requestType = com.tencent.client.master.protos.RegisterWorkerReq.class,
+      responseType = com.tencent.client.master.protos.RegisterWorkerResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterReq,
-      com.tencent.client.master.protos.RegisterResp> getRegisterMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterReq, com.tencent.client.master.protos.RegisterResp> getRegisterMethod;
-    if ((getRegisterMethod = AngelCleintMasterGrpc.getRegisterMethod) == null) {
+  public static io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterWorkerReq,
+      com.tencent.client.master.protos.RegisterWorkerResp> getRegisterWorkerMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterWorkerReq, com.tencent.client.master.protos.RegisterWorkerResp> getRegisterWorkerMethod;
+    if ((getRegisterWorkerMethod = AngelCleintMasterGrpc.getRegisterWorkerMethod) == null) {
       synchronized (AngelCleintMasterGrpc.class) {
-        if ((getRegisterMethod = AngelCleintMasterGrpc.getRegisterMethod) == null) {
-          AngelCleintMasterGrpc.getRegisterMethod = getRegisterMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.RegisterReq, com.tencent.client.master.protos.RegisterResp>newBuilder()
+        if ((getRegisterWorkerMethod = AngelCleintMasterGrpc.getRegisterWorkerMethod) == null) {
+          AngelCleintMasterGrpc.getRegisterWorkerMethod = getRegisterWorkerMethod = 
+              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.RegisterWorkerReq, com.tencent.client.master.protos.RegisterWorkerResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
-                  "ClientMaster.AngelCleintMaster", "Register"))
+                  "ClientMaster.AngelCleintMaster", "RegisterWorker"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.master.protos.RegisterReq.getDefaultInstance()))
+                  com.tencent.client.master.protos.RegisterWorkerReq.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.master.protos.RegisterResp.getDefaultInstance()))
-                  .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("Register"))
+                  com.tencent.client.master.protos.RegisterWorkerResp.getDefaultInstance()))
+                  .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("RegisterWorker"))
                   .build();
           }
         }
      }
-     return getRegisterMethod;
+     return getRegisterWorkerMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterTaskReq,
+      com.tencent.client.master.protos.RegisterTaskResp> getRegisterTaskMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "RegisterTask",
+      requestType = com.tencent.client.master.protos.RegisterTaskReq.class,
+      responseType = com.tencent.client.master.protos.RegisterTaskResp.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterTaskReq,
+      com.tencent.client.master.protos.RegisterTaskResp> getRegisterTaskMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.master.protos.RegisterTaskReq, com.tencent.client.master.protos.RegisterTaskResp> getRegisterTaskMethod;
+    if ((getRegisterTaskMethod = AngelCleintMasterGrpc.getRegisterTaskMethod) == null) {
+      synchronized (AngelCleintMasterGrpc.class) {
+        if ((getRegisterTaskMethod = AngelCleintMasterGrpc.getRegisterTaskMethod) == null) {
+          AngelCleintMasterGrpc.getRegisterTaskMethod = getRegisterTaskMethod = 
+              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.RegisterTaskReq, com.tencent.client.master.protos.RegisterTaskResp>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "ClientMaster.AngelCleintMaster", "RegisterTask"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.master.protos.RegisterTaskReq.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.master.protos.RegisterTaskResp.getDefaultInstance()))
+                  .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("RegisterTask"))
+                  .build();
+          }
+        }
+     }
+     return getRegisterTaskMethod;
   }
 
   private static volatile io.grpc.MethodDescriptor<com.tencent.client.master.protos.SetAngelLocationReq,
-      com.tencent.client.master.protos.SetAngelLocationResp> getSetAngelLocationMethod;
+      com.tencent.client.common.protos.VoidResp> getSetAngelLocationMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "SetAngelLocation",
       requestType = com.tencent.client.master.protos.SetAngelLocationReq.class,
-      responseType = com.tencent.client.master.protos.SetAngelLocationResp.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
   public static io.grpc.MethodDescriptor<com.tencent.client.master.protos.SetAngelLocationReq,
-      com.tencent.client.master.protos.SetAngelLocationResp> getSetAngelLocationMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.master.protos.SetAngelLocationReq, com.tencent.client.master.protos.SetAngelLocationResp> getSetAngelLocationMethod;
+      com.tencent.client.common.protos.VoidResp> getSetAngelLocationMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.master.protos.SetAngelLocationReq, com.tencent.client.common.protos.VoidResp> getSetAngelLocationMethod;
     if ((getSetAngelLocationMethod = AngelCleintMasterGrpc.getSetAngelLocationMethod) == null) {
       synchronized (AngelCleintMasterGrpc.class) {
         if ((getSetAngelLocationMethod = AngelCleintMasterGrpc.getSetAngelLocationMethod) == null) {
           AngelCleintMasterGrpc.getSetAngelLocationMethod = getSetAngelLocationMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.SetAngelLocationReq, com.tencent.client.master.protos.SetAngelLocationResp>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.SetAngelLocationReq, com.tencent.client.common.protos.VoidResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.AngelCleintMaster", "SetAngelLocation"))
@@ -82,7 +114,7 @@ public final class AngelCleintMasterGrpc {
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.master.protos.SetAngelLocationReq.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.master.protos.SetAngelLocationResp.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
                   .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("SetAngelLocation"))
                   .build();
           }
@@ -91,28 +123,28 @@ public final class AngelCleintMasterGrpc {
      return getSetAngelLocationMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<com.tencent.client.master.protos.GetAngelLocationReq,
+  private static volatile io.grpc.MethodDescriptor<com.tencent.client.common.protos.VoidReq,
       com.tencent.client.master.protos.GetAngelLocationResp> getGetAngelLocationMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "GetAngelLocation",
-      requestType = com.tencent.client.master.protos.GetAngelLocationReq.class,
+      requestType = com.tencent.client.common.protos.VoidReq.class,
       responseType = com.tencent.client.master.protos.GetAngelLocationResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.tencent.client.master.protos.GetAngelLocationReq,
+  public static io.grpc.MethodDescriptor<com.tencent.client.common.protos.VoidReq,
       com.tencent.client.master.protos.GetAngelLocationResp> getGetAngelLocationMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.master.protos.GetAngelLocationReq, com.tencent.client.master.protos.GetAngelLocationResp> getGetAngelLocationMethod;
+    io.grpc.MethodDescriptor<com.tencent.client.common.protos.VoidReq, com.tencent.client.master.protos.GetAngelLocationResp> getGetAngelLocationMethod;
     if ((getGetAngelLocationMethod = AngelCleintMasterGrpc.getGetAngelLocationMethod) == null) {
       synchronized (AngelCleintMasterGrpc.class) {
         if ((getGetAngelLocationMethod = AngelCleintMasterGrpc.getGetAngelLocationMethod) == null) {
           AngelCleintMasterGrpc.getGetAngelLocationMethod = getGetAngelLocationMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.GetAngelLocationReq, com.tencent.client.master.protos.GetAngelLocationResp>newBuilder()
+              io.grpc.MethodDescriptor.<com.tencent.client.common.protos.VoidReq, com.tencent.client.master.protos.GetAngelLocationResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
                   "ClientMaster.AngelCleintMaster", "GetAngelLocation"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.master.protos.GetAngelLocationReq.getDefaultInstance()))
+                  com.tencent.client.common.protos.VoidReq.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   com.tencent.client.master.protos.GetAngelLocationResp.getDefaultInstance()))
                   .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("GetAngelLocation"))
@@ -155,36 +187,132 @@ public final class AngelCleintMasterGrpc {
      return getHeartBeatMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<com.tencent.client.master.protos.SyncReq,
-      com.tencent.client.master.protos.SyncResp> getSyncMethod;
+  private static volatile io.grpc.MethodDescriptor<com.tencent.client.master.protos.ClockReq,
+      com.tencent.client.master.protos.ClockResp> getClockMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
-      fullMethodName = SERVICE_NAME + '/' + "Sync",
-      requestType = com.tencent.client.master.protos.SyncReq.class,
-      responseType = com.tencent.client.master.protos.SyncResp.class,
+      fullMethodName = SERVICE_NAME + '/' + "Clock",
+      requestType = com.tencent.client.master.protos.ClockReq.class,
+      responseType = com.tencent.client.master.protos.ClockResp.class,
       methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<com.tencent.client.master.protos.SyncReq,
-      com.tencent.client.master.protos.SyncResp> getSyncMethod() {
-    io.grpc.MethodDescriptor<com.tencent.client.master.protos.SyncReq, com.tencent.client.master.protos.SyncResp> getSyncMethod;
-    if ((getSyncMethod = AngelCleintMasterGrpc.getSyncMethod) == null) {
+  public static io.grpc.MethodDescriptor<com.tencent.client.master.protos.ClockReq,
+      com.tencent.client.master.protos.ClockResp> getClockMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.master.protos.ClockReq, com.tencent.client.master.protos.ClockResp> getClockMethod;
+    if ((getClockMethod = AngelCleintMasterGrpc.getClockMethod) == null) {
       synchronized (AngelCleintMasterGrpc.class) {
-        if ((getSyncMethod = AngelCleintMasterGrpc.getSyncMethod) == null) {
-          AngelCleintMasterGrpc.getSyncMethod = getSyncMethod = 
-              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.SyncReq, com.tencent.client.master.protos.SyncResp>newBuilder()
+        if ((getClockMethod = AngelCleintMasterGrpc.getClockMethod) == null) {
+          AngelCleintMasterGrpc.getClockMethod = getClockMethod = 
+              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.ClockReq, com.tencent.client.master.protos.ClockResp>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
               .setFullMethodName(generateFullMethodName(
-                  "ClientMaster.AngelCleintMaster", "Sync"))
+                  "ClientMaster.AngelCleintMaster", "Clock"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.master.protos.SyncReq.getDefaultInstance()))
+                  com.tencent.client.master.protos.ClockReq.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  com.tencent.client.master.protos.SyncResp.getDefaultInstance()))
-                  .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("Sync"))
+                  com.tencent.client.master.protos.ClockResp.getDefaultInstance()))
+                  .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("Clock"))
                   .build();
           }
         }
      }
-     return getSyncMethod;
+     return getClockMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.tencent.client.master.protos.GetClockMapReq,
+      com.tencent.client.master.protos.GetClockMapResp> getGetClockMapMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetClockMap",
+      requestType = com.tencent.client.master.protos.GetClockMapReq.class,
+      responseType = com.tencent.client.master.protos.GetClockMapResp.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.tencent.client.master.protos.GetClockMapReq,
+      com.tencent.client.master.protos.GetClockMapResp> getGetClockMapMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.master.protos.GetClockMapReq, com.tencent.client.master.protos.GetClockMapResp> getGetClockMapMethod;
+    if ((getGetClockMapMethod = AngelCleintMasterGrpc.getGetClockMapMethod) == null) {
+      synchronized (AngelCleintMasterGrpc.class) {
+        if ((getGetClockMapMethod = AngelCleintMasterGrpc.getGetClockMapMethod) == null) {
+          AngelCleintMasterGrpc.getGetClockMapMethod = getGetClockMapMethod = 
+              io.grpc.MethodDescriptor.<com.tencent.client.master.protos.GetClockMapReq, com.tencent.client.master.protos.GetClockMapResp>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "ClientMaster.AngelCleintMaster", "GetClockMap"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.master.protos.GetClockMapReq.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.master.protos.GetClockMapResp.getDefaultInstance()))
+                  .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("GetClockMap"))
+                  .build();
+          }
+        }
+     }
+     return getGetClockMapMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.tencent.client.common.protos.VoidReq,
+      com.tencent.client.master.protos.GetGlobalBatchResp> getGetGlobalBatchSizeMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetGlobalBatchSize",
+      requestType = com.tencent.client.common.protos.VoidReq.class,
+      responseType = com.tencent.client.master.protos.GetGlobalBatchResp.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.tencent.client.common.protos.VoidReq,
+      com.tencent.client.master.protos.GetGlobalBatchResp> getGetGlobalBatchSizeMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.common.protos.VoidReq, com.tencent.client.master.protos.GetGlobalBatchResp> getGetGlobalBatchSizeMethod;
+    if ((getGetGlobalBatchSizeMethod = AngelCleintMasterGrpc.getGetGlobalBatchSizeMethod) == null) {
+      synchronized (AngelCleintMasterGrpc.class) {
+        if ((getGetGlobalBatchSizeMethod = AngelCleintMasterGrpc.getGetGlobalBatchSizeMethod) == null) {
+          AngelCleintMasterGrpc.getGetGlobalBatchSizeMethod = getGetGlobalBatchSizeMethod = 
+              io.grpc.MethodDescriptor.<com.tencent.client.common.protos.VoidReq, com.tencent.client.master.protos.GetGlobalBatchResp>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "ClientMaster.AngelCleintMaster", "GetGlobalBatchSize"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.common.protos.VoidReq.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.master.protos.GetGlobalBatchResp.getDefaultInstance()))
+                  .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("GetGlobalBatchSize"))
+                  .build();
+          }
+        }
+     }
+     return getGetGlobalBatchSizeMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<com.tencent.client.common.protos.CompleteTaskReq,
+      com.tencent.client.common.protos.VoidResp> getCompleteTaskMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CompleteTask",
+      requestType = com.tencent.client.common.protos.CompleteTaskReq.class,
+      responseType = com.tencent.client.common.protos.VoidResp.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.tencent.client.common.protos.CompleteTaskReq,
+      com.tencent.client.common.protos.VoidResp> getCompleteTaskMethod() {
+    io.grpc.MethodDescriptor<com.tencent.client.common.protos.CompleteTaskReq, com.tencent.client.common.protos.VoidResp> getCompleteTaskMethod;
+    if ((getCompleteTaskMethod = AngelCleintMasterGrpc.getCompleteTaskMethod) == null) {
+      synchronized (AngelCleintMasterGrpc.class) {
+        if ((getCompleteTaskMethod = AngelCleintMasterGrpc.getCompleteTaskMethod) == null) {
+          AngelCleintMasterGrpc.getCompleteTaskMethod = getCompleteTaskMethod = 
+              io.grpc.MethodDescriptor.<com.tencent.client.common.protos.CompleteTaskReq, com.tencent.client.common.protos.VoidResp>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(
+                  "ClientMaster.AngelCleintMaster", "CompleteTask"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.common.protos.CompleteTaskReq.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.tencent.client.common.protos.VoidResp.getDefaultInstance()))
+                  .setSchemaDescriptor(new AngelCleintMasterMethodDescriptorSupplier("CompleteTask"))
+                  .build();
+          }
+        }
+     }
+     return getCompleteTaskMethod;
   }
 
   /**
@@ -216,21 +344,28 @@ public final class AngelCleintMasterGrpc {
 
     /**
      */
-    public void register(com.tencent.client.master.protos.RegisterReq request,
-        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterResp> responseObserver) {
-      asyncUnimplementedUnaryCall(getRegisterMethod(), responseObserver);
+    public void registerWorker(com.tencent.client.master.protos.RegisterWorkerReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterWorkerResp> responseObserver) {
+      asyncUnimplementedUnaryCall(getRegisterWorkerMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void registerTask(com.tencent.client.master.protos.RegisterTaskReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterTaskResp> responseObserver) {
+      asyncUnimplementedUnaryCall(getRegisterTaskMethod(), responseObserver);
     }
 
     /**
      */
     public void setAngelLocation(com.tencent.client.master.protos.SetAngelLocationReq request,
-        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.SetAngelLocationResp> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnimplementedUnaryCall(getSetAngelLocationMethod(), responseObserver);
     }
 
     /**
      */
-    public void getAngelLocation(com.tencent.client.master.protos.GetAngelLocationReq request,
+    public void getAngelLocation(com.tencent.client.common.protos.VoidReq request,
         io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetAngelLocationResp> responseObserver) {
       asyncUnimplementedUnaryCall(getGetAngelLocationMethod(), responseObserver);
     }
@@ -244,32 +379,60 @@ public final class AngelCleintMasterGrpc {
 
     /**
      */
-    public void sync(com.tencent.client.master.protos.SyncReq request,
-        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.SyncResp> responseObserver) {
-      asyncUnimplementedUnaryCall(getSyncMethod(), responseObserver);
+    public void clock(com.tencent.client.master.protos.ClockReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.ClockResp> responseObserver) {
+      asyncUnimplementedUnaryCall(getClockMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void getClockMap(com.tencent.client.master.protos.GetClockMapReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetClockMapResp> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetClockMapMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void getGlobalBatchSize(com.tencent.client.common.protos.VoidReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetGlobalBatchResp> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetGlobalBatchSizeMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void completeTask(com.tencent.client.common.protos.CompleteTaskReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
+      asyncUnimplementedUnaryCall(getCompleteTaskMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
-            getRegisterMethod(),
+            getRegisterWorkerMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.tencent.client.master.protos.RegisterReq,
-                com.tencent.client.master.protos.RegisterResp>(
-                  this, METHODID_REGISTER)))
+                com.tencent.client.master.protos.RegisterWorkerReq,
+                com.tencent.client.master.protos.RegisterWorkerResp>(
+                  this, METHODID_REGISTER_WORKER)))
+          .addMethod(
+            getRegisterTaskMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.tencent.client.master.protos.RegisterTaskReq,
+                com.tencent.client.master.protos.RegisterTaskResp>(
+                  this, METHODID_REGISTER_TASK)))
           .addMethod(
             getSetAngelLocationMethod(),
             asyncUnaryCall(
               new MethodHandlers<
                 com.tencent.client.master.protos.SetAngelLocationReq,
-                com.tencent.client.master.protos.SetAngelLocationResp>(
+                com.tencent.client.common.protos.VoidResp>(
                   this, METHODID_SET_ANGEL_LOCATION)))
           .addMethod(
             getGetAngelLocationMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.tencent.client.master.protos.GetAngelLocationReq,
+                com.tencent.client.common.protos.VoidReq,
                 com.tencent.client.master.protos.GetAngelLocationResp>(
                   this, METHODID_GET_ANGEL_LOCATION)))
           .addMethod(
@@ -280,12 +443,33 @@ public final class AngelCleintMasterGrpc {
                 com.tencent.client.master.protos.HeartBeatResp>(
                   this, METHODID_HEART_BEAT)))
           .addMethod(
-            getSyncMethod(),
+            getClockMethod(),
             asyncUnaryCall(
               new MethodHandlers<
-                com.tencent.client.master.protos.SyncReq,
-                com.tencent.client.master.protos.SyncResp>(
-                  this, METHODID_SYNC)))
+                com.tencent.client.master.protos.ClockReq,
+                com.tencent.client.master.protos.ClockResp>(
+                  this, METHODID_CLOCK)))
+          .addMethod(
+            getGetClockMapMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.tencent.client.master.protos.GetClockMapReq,
+                com.tencent.client.master.protos.GetClockMapResp>(
+                  this, METHODID_GET_CLOCK_MAP)))
+          .addMethod(
+            getGetGlobalBatchSizeMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.tencent.client.common.protos.VoidReq,
+                com.tencent.client.master.protos.GetGlobalBatchResp>(
+                  this, METHODID_GET_GLOBAL_BATCH_SIZE)))
+          .addMethod(
+            getCompleteTaskMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.tencent.client.common.protos.CompleteTaskReq,
+                com.tencent.client.common.protos.VoidResp>(
+                  this, METHODID_COMPLETE_TASK)))
           .build();
     }
   }
@@ -310,23 +494,31 @@ public final class AngelCleintMasterGrpc {
 
     /**
      */
-    public void register(com.tencent.client.master.protos.RegisterReq request,
-        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterResp> responseObserver) {
+    public void registerWorker(com.tencent.client.master.protos.RegisterWorkerReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterWorkerResp> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(getRegisterMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getRegisterWorkerMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void registerTask(com.tencent.client.master.protos.RegisterTaskReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterTaskResp> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getRegisterTaskMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
     public void setAngelLocation(com.tencent.client.master.protos.SetAngelLocationReq request,
-        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.SetAngelLocationResp> responseObserver) {
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getSetAngelLocationMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
      */
-    public void getAngelLocation(com.tencent.client.master.protos.GetAngelLocationReq request,
+    public void getAngelLocation(com.tencent.client.common.protos.VoidReq request,
         io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetAngelLocationResp> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getGetAngelLocationMethod(), getCallOptions()), request, responseObserver);
@@ -342,10 +534,34 @@ public final class AngelCleintMasterGrpc {
 
     /**
      */
-    public void sync(com.tencent.client.master.protos.SyncReq request,
-        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.SyncResp> responseObserver) {
+    public void clock(com.tencent.client.master.protos.ClockReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.ClockResp> responseObserver) {
       asyncUnaryCall(
-          getChannel().newCall(getSyncMethod(), getCallOptions()), request, responseObserver);
+          getChannel().newCall(getClockMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void getClockMap(com.tencent.client.master.protos.GetClockMapReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetClockMapResp> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetClockMapMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void getGlobalBatchSize(com.tencent.client.common.protos.VoidReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetGlobalBatchResp> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getGetGlobalBatchSizeMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void completeTask(com.tencent.client.common.protos.CompleteTaskReq request,
+        io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getCompleteTaskMethod(), getCallOptions()), request, responseObserver);
     }
   }
 
@@ -369,21 +585,28 @@ public final class AngelCleintMasterGrpc {
 
     /**
      */
-    public com.tencent.client.master.protos.RegisterResp register(com.tencent.client.master.protos.RegisterReq request) {
+    public com.tencent.client.master.protos.RegisterWorkerResp registerWorker(com.tencent.client.master.protos.RegisterWorkerReq request) {
       return blockingUnaryCall(
-          getChannel(), getRegisterMethod(), getCallOptions(), request);
+          getChannel(), getRegisterWorkerMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.tencent.client.master.protos.SetAngelLocationResp setAngelLocation(com.tencent.client.master.protos.SetAngelLocationReq request) {
+    public com.tencent.client.master.protos.RegisterTaskResp registerTask(com.tencent.client.master.protos.RegisterTaskReq request) {
+      return blockingUnaryCall(
+          getChannel(), getRegisterTaskMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.tencent.client.common.protos.VoidResp setAngelLocation(com.tencent.client.master.protos.SetAngelLocationReq request) {
       return blockingUnaryCall(
           getChannel(), getSetAngelLocationMethod(), getCallOptions(), request);
     }
 
     /**
      */
-    public com.tencent.client.master.protos.GetAngelLocationResp getAngelLocation(com.tencent.client.master.protos.GetAngelLocationReq request) {
+    public com.tencent.client.master.protos.GetAngelLocationResp getAngelLocation(com.tencent.client.common.protos.VoidReq request) {
       return blockingUnaryCall(
           getChannel(), getGetAngelLocationMethod(), getCallOptions(), request);
     }
@@ -397,9 +620,30 @@ public final class AngelCleintMasterGrpc {
 
     /**
      */
-    public com.tencent.client.master.protos.SyncResp sync(com.tencent.client.master.protos.SyncReq request) {
+    public com.tencent.client.master.protos.ClockResp clock(com.tencent.client.master.protos.ClockReq request) {
       return blockingUnaryCall(
-          getChannel(), getSyncMethod(), getCallOptions(), request);
+          getChannel(), getClockMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.tencent.client.master.protos.GetClockMapResp getClockMap(com.tencent.client.master.protos.GetClockMapReq request) {
+      return blockingUnaryCall(
+          getChannel(), getGetClockMapMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.tencent.client.master.protos.GetGlobalBatchResp getGlobalBatchSize(com.tencent.client.common.protos.VoidReq request) {
+      return blockingUnaryCall(
+          getChannel(), getGetGlobalBatchSizeMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public com.tencent.client.common.protos.VoidResp completeTask(com.tencent.client.common.protos.CompleteTaskReq request) {
+      return blockingUnaryCall(
+          getChannel(), getCompleteTaskMethod(), getCallOptions(), request);
     }
   }
 
@@ -423,15 +667,23 @@ public final class AngelCleintMasterGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.RegisterResp> register(
-        com.tencent.client.master.protos.RegisterReq request) {
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.RegisterWorkerResp> registerWorker(
+        com.tencent.client.master.protos.RegisterWorkerReq request) {
       return futureUnaryCall(
-          getChannel().newCall(getRegisterMethod(), getCallOptions()), request);
+          getChannel().newCall(getRegisterWorkerMethod(), getCallOptions()), request);
     }
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.SetAngelLocationResp> setAngelLocation(
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.RegisterTaskResp> registerTask(
+        com.tencent.client.master.protos.RegisterTaskReq request) {
+      return futureUnaryCall(
+          getChannel().newCall(getRegisterTaskMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> setAngelLocation(
         com.tencent.client.master.protos.SetAngelLocationReq request) {
       return futureUnaryCall(
           getChannel().newCall(getSetAngelLocationMethod(), getCallOptions()), request);
@@ -440,7 +692,7 @@ public final class AngelCleintMasterGrpc {
     /**
      */
     public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.GetAngelLocationResp> getAngelLocation(
-        com.tencent.client.master.protos.GetAngelLocationReq request) {
+        com.tencent.client.common.protos.VoidReq request) {
       return futureUnaryCall(
           getChannel().newCall(getGetAngelLocationMethod(), getCallOptions()), request);
     }
@@ -455,18 +707,46 @@ public final class AngelCleintMasterGrpc {
 
     /**
      */
-    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.SyncResp> sync(
-        com.tencent.client.master.protos.SyncReq request) {
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.ClockResp> clock(
+        com.tencent.client.master.protos.ClockReq request) {
       return futureUnaryCall(
-          getChannel().newCall(getSyncMethod(), getCallOptions()), request);
+          getChannel().newCall(getClockMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.GetClockMapResp> getClockMap(
+        com.tencent.client.master.protos.GetClockMapReq request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetClockMapMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.master.protos.GetGlobalBatchResp> getGlobalBatchSize(
+        com.tencent.client.common.protos.VoidReq request) {
+      return futureUnaryCall(
+          getChannel().newCall(getGetGlobalBatchSizeMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.tencent.client.common.protos.VoidResp> completeTask(
+        com.tencent.client.common.protos.CompleteTaskReq request) {
+      return futureUnaryCall(
+          getChannel().newCall(getCompleteTaskMethod(), getCallOptions()), request);
     }
   }
 
-  private static final int METHODID_REGISTER = 0;
-  private static final int METHODID_SET_ANGEL_LOCATION = 1;
-  private static final int METHODID_GET_ANGEL_LOCATION = 2;
-  private static final int METHODID_HEART_BEAT = 3;
-  private static final int METHODID_SYNC = 4;
+  private static final int METHODID_REGISTER_WORKER = 0;
+  private static final int METHODID_REGISTER_TASK = 1;
+  private static final int METHODID_SET_ANGEL_LOCATION = 2;
+  private static final int METHODID_GET_ANGEL_LOCATION = 3;
+  private static final int METHODID_HEART_BEAT = 4;
+  private static final int METHODID_CLOCK = 5;
+  private static final int METHODID_GET_CLOCK_MAP = 6;
+  private static final int METHODID_GET_GLOBAL_BATCH_SIZE = 7;
+  private static final int METHODID_COMPLETE_TASK = 8;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -485,25 +765,41 @@ public final class AngelCleintMasterGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
-        case METHODID_REGISTER:
-          serviceImpl.register((com.tencent.client.master.protos.RegisterReq) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterResp>) responseObserver);
+        case METHODID_REGISTER_WORKER:
+          serviceImpl.registerWorker((com.tencent.client.master.protos.RegisterWorkerReq) request,
+              (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterWorkerResp>) responseObserver);
+          break;
+        case METHODID_REGISTER_TASK:
+          serviceImpl.registerTask((com.tencent.client.master.protos.RegisterTaskReq) request,
+              (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.RegisterTaskResp>) responseObserver);
           break;
         case METHODID_SET_ANGEL_LOCATION:
           serviceImpl.setAngelLocation((com.tencent.client.master.protos.SetAngelLocationReq) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.SetAngelLocationResp>) responseObserver);
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         case METHODID_GET_ANGEL_LOCATION:
-          serviceImpl.getAngelLocation((com.tencent.client.master.protos.GetAngelLocationReq) request,
+          serviceImpl.getAngelLocation((com.tencent.client.common.protos.VoidReq) request,
               (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetAngelLocationResp>) responseObserver);
           break;
         case METHODID_HEART_BEAT:
           serviceImpl.heartBeat((com.tencent.client.master.protos.HeartBeatReq) request,
               (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.HeartBeatResp>) responseObserver);
           break;
-        case METHODID_SYNC:
-          serviceImpl.sync((com.tencent.client.master.protos.SyncReq) request,
-              (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.SyncResp>) responseObserver);
+        case METHODID_CLOCK:
+          serviceImpl.clock((com.tencent.client.master.protos.ClockReq) request,
+              (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.ClockResp>) responseObserver);
+          break;
+        case METHODID_GET_CLOCK_MAP:
+          serviceImpl.getClockMap((com.tencent.client.master.protos.GetClockMapReq) request,
+              (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetClockMapResp>) responseObserver);
+          break;
+        case METHODID_GET_GLOBAL_BATCH_SIZE:
+          serviceImpl.getGlobalBatchSize((com.tencent.client.common.protos.VoidReq) request,
+              (io.grpc.stub.StreamObserver<com.tencent.client.master.protos.GetGlobalBatchResp>) responseObserver);
+          break;
+        case METHODID_COMPLETE_TASK:
+          serviceImpl.completeTask((com.tencent.client.common.protos.CompleteTaskReq) request,
+              (io.grpc.stub.StreamObserver<com.tencent.client.common.protos.VoidResp>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -566,11 +862,15 @@ public final class AngelCleintMasterGrpc {
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new AngelCleintMasterFileDescriptorSupplier())
-              .addMethod(getRegisterMethod())
+              .addMethod(getRegisterWorkerMethod())
+              .addMethod(getRegisterTaskMethod())
               .addMethod(getSetAngelLocationMethod())
               .addMethod(getGetAngelLocationMethod())
               .addMethod(getHeartBeatMethod())
-              .addMethod(getSyncMethod())
+              .addMethod(getClockMethod())
+              .addMethod(getGetClockMapMethod())
+              .addMethod(getGetGlobalBatchSizeMethod())
+              .addMethod(getCompleteTaskMethod())
               .build();
         }
       }

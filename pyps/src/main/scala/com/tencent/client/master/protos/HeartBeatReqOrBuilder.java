@@ -11,9 +11,4 @@ public interface HeartBeatReqOrBuilder extends
    * <code>int64 workId = 1;</code>
    */
   long getWorkId();
-
-  /**
-   * <code>int64 timestamps = 2;</code>
-   */
-  long getTimestamps();
 }

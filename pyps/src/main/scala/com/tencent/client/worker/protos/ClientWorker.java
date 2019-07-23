@@ -36,28 +36,28 @@ public  abstract class ClientWorker
         com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.CreateResp> done);
 
     /**
-     * <code>rpc Init(.ClientMaster.TensorLike) returns (.ClientMaster.VoidResponse);</code>
+     * <code>rpc Init(.ClientMaster.TensorLike) returns (.VoidResp);</code>
      */
     public abstract void init(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
     /**
-     * <code>rpc Load(.ClientMaster.LoadTensorLike) returns (.ClientMaster.VoidResponse);</code>
+     * <code>rpc Load(.ClientMaster.LoadTensorLike) returns (.VoidResp);</code>
      */
     public abstract void load(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.LoadTensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
     /**
-     * <code>rpc Save(.ClientMaster.SaveTensorLike) returns (.ClientMaster.VoidResponse);</code>
+     * <code>rpc Save(.ClientMaster.SaveTensorLike) returns (.VoidResp);</code>
      */
     public abstract void save(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.SaveTensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
     /**
      * <code>rpc Pull(.ClientMaster.PullRequest) returns (.ClientMaster.PullResponse);</code>
@@ -68,36 +68,44 @@ public  abstract class ClientWorker
         com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.PullResponse> done);
 
     /**
-     * <code>rpc Push(.ClientMaster.PushRequest) returns (.ClientMaster.VoidResponse);</code>
+     * <code>rpc Push(.ClientMaster.PushRequest) returns (.VoidResp);</code>
      */
     public abstract void push(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.PushRequest request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
     /**
-     * <code>rpc Release(.ClientMaster.TensorLike) returns (.ClientMaster.VoidResponse);</code>
+     * <code>rpc Release(.ClientMaster.TensorLike) returns (.VoidResp);</code>
      */
     public abstract void release(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
     /**
-     * <code>rpc Update(.ClientMaster.TensorLike) returns (.ClientMaster.VoidResponse);</code>
+     * <code>rpc Update(.ClientMaster.TensorLike) returns (.VoidResp);</code>
      */
     public abstract void update(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
     /**
-     * <code>rpc Sync(.ClientMaster.SyncRequest) returns (.ClientMaster.VoidResponse);</code>
+     * <code>rpc Sync(.ClientMaster.SyncRequest) returns (.VoidResp);</code>
      */
     public abstract void sync(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.SyncRequest request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
+
+    /**
+     * <code>rpc CompleteTask(.CompleteTaskReq) returns (.VoidResp);</code>
+     */
+    public abstract void completeTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.CompleteTaskReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   }
 
@@ -132,7 +140,7 @@ public  abstract class ClientWorker
       public  void init(
           com.google.protobuf.RpcController controller,
           com.tencent.client.worker.protos.TensorLike request,
-          com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
         impl.init(controller, request, done);
       }
 
@@ -140,7 +148,7 @@ public  abstract class ClientWorker
       public  void load(
           com.google.protobuf.RpcController controller,
           com.tencent.client.worker.protos.LoadTensorLike request,
-          com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
         impl.load(controller, request, done);
       }
 
@@ -148,7 +156,7 @@ public  abstract class ClientWorker
       public  void save(
           com.google.protobuf.RpcController controller,
           com.tencent.client.worker.protos.SaveTensorLike request,
-          com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
         impl.save(controller, request, done);
       }
 
@@ -164,7 +172,7 @@ public  abstract class ClientWorker
       public  void push(
           com.google.protobuf.RpcController controller,
           com.tencent.client.worker.protos.PushRequest request,
-          com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
         impl.push(controller, request, done);
       }
 
@@ -172,7 +180,7 @@ public  abstract class ClientWorker
       public  void release(
           com.google.protobuf.RpcController controller,
           com.tencent.client.worker.protos.TensorLike request,
-          com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
         impl.release(controller, request, done);
       }
 
@@ -180,7 +188,7 @@ public  abstract class ClientWorker
       public  void update(
           com.google.protobuf.RpcController controller,
           com.tencent.client.worker.protos.TensorLike request,
-          com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
         impl.update(controller, request, done);
       }
 
@@ -188,8 +196,16 @@ public  abstract class ClientWorker
       public  void sync(
           com.google.protobuf.RpcController controller,
           com.tencent.client.worker.protos.SyncRequest request,
-          com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
         impl.sync(controller, request, done);
+      }
+
+      @java.lang.Override
+      public  void completeTask(
+          com.google.protobuf.RpcController controller,
+          com.tencent.client.common.protos.CompleteTaskReq request,
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
+        impl.completeTask(controller, request, done);
       }
 
     };
@@ -236,6 +252,8 @@ public  abstract class ClientWorker
             return impl.update(controller, (com.tencent.client.worker.protos.TensorLike)request);
           case 10:
             return impl.sync(controller, (com.tencent.client.worker.protos.SyncRequest)request);
+          case 11:
+            return impl.completeTask(controller, (com.tencent.client.common.protos.CompleteTaskReq)request);
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -272,6 +290,8 @@ public  abstract class ClientWorker
             return com.tencent.client.worker.protos.TensorLike.getDefaultInstance();
           case 10:
             return com.tencent.client.worker.protos.SyncRequest.getDefaultInstance();
+          case 11:
+            return com.tencent.client.common.protos.CompleteTaskReq.getDefaultInstance();
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -293,21 +313,23 @@ public  abstract class ClientWorker
           case 2:
             return com.tencent.client.worker.protos.CreateResp.getDefaultInstance();
           case 3:
-            return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           case 4:
-            return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           case 5:
-            return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           case 6:
             return com.tencent.client.worker.protos.PullResponse.getDefaultInstance();
           case 7:
-            return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           case 8:
-            return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           case 9:
-            return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           case 10:
-            return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
+          case 11:
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -341,28 +363,28 @@ public  abstract class ClientWorker
       com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.CreateResp> done);
 
   /**
-   * <code>rpc Init(.ClientMaster.TensorLike) returns (.ClientMaster.VoidResponse);</code>
+   * <code>rpc Init(.ClientMaster.TensorLike) returns (.VoidResp);</code>
    */
   public abstract void init(
       com.google.protobuf.RpcController controller,
       com.tencent.client.worker.protos.TensorLike request,
-      com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   /**
-   * <code>rpc Load(.ClientMaster.LoadTensorLike) returns (.ClientMaster.VoidResponse);</code>
+   * <code>rpc Load(.ClientMaster.LoadTensorLike) returns (.VoidResp);</code>
    */
   public abstract void load(
       com.google.protobuf.RpcController controller,
       com.tencent.client.worker.protos.LoadTensorLike request,
-      com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   /**
-   * <code>rpc Save(.ClientMaster.SaveTensorLike) returns (.ClientMaster.VoidResponse);</code>
+   * <code>rpc Save(.ClientMaster.SaveTensorLike) returns (.VoidResp);</code>
    */
   public abstract void save(
       com.google.protobuf.RpcController controller,
       com.tencent.client.worker.protos.SaveTensorLike request,
-      com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   /**
    * <code>rpc Pull(.ClientMaster.PullRequest) returns (.ClientMaster.PullResponse);</code>
@@ -373,36 +395,44 @@ public  abstract class ClientWorker
       com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.PullResponse> done);
 
   /**
-   * <code>rpc Push(.ClientMaster.PushRequest) returns (.ClientMaster.VoidResponse);</code>
+   * <code>rpc Push(.ClientMaster.PushRequest) returns (.VoidResp);</code>
    */
   public abstract void push(
       com.google.protobuf.RpcController controller,
       com.tencent.client.worker.protos.PushRequest request,
-      com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   /**
-   * <code>rpc Release(.ClientMaster.TensorLike) returns (.ClientMaster.VoidResponse);</code>
+   * <code>rpc Release(.ClientMaster.TensorLike) returns (.VoidResp);</code>
    */
   public abstract void release(
       com.google.protobuf.RpcController controller,
       com.tencent.client.worker.protos.TensorLike request,
-      com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   /**
-   * <code>rpc Update(.ClientMaster.TensorLike) returns (.ClientMaster.VoidResponse);</code>
+   * <code>rpc Update(.ClientMaster.TensorLike) returns (.VoidResp);</code>
    */
   public abstract void update(
       com.google.protobuf.RpcController controller,
       com.tencent.client.worker.protos.TensorLike request,
-      com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   /**
-   * <code>rpc Sync(.ClientMaster.SyncRequest) returns (.ClientMaster.VoidResponse);</code>
+   * <code>rpc Sync(.ClientMaster.SyncRequest) returns (.VoidResp);</code>
    */
   public abstract void sync(
       com.google.protobuf.RpcController controller,
       com.tencent.client.worker.protos.SyncRequest request,
-      com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done);
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
+
+  /**
+   * <code>rpc CompleteTask(.CompleteTaskReq) returns (.VoidResp);</code>
+   */
+  public abstract void completeTask(
+      com.google.protobuf.RpcController controller,
+      com.tencent.client.common.protos.CompleteTaskReq request,
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   public static final
       com.google.protobuf.Descriptors.ServiceDescriptor
@@ -443,17 +473,17 @@ public  abstract class ClientWorker
         return;
       case 3:
         this.init(controller, (com.tencent.client.worker.protos.TensorLike)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.worker.protos.VoidResponse>specializeCallback(
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       case 4:
         this.load(controller, (com.tencent.client.worker.protos.LoadTensorLike)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.worker.protos.VoidResponse>specializeCallback(
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       case 5:
         this.save(controller, (com.tencent.client.worker.protos.SaveTensorLike)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.worker.protos.VoidResponse>specializeCallback(
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       case 6:
@@ -463,22 +493,27 @@ public  abstract class ClientWorker
         return;
       case 7:
         this.push(controller, (com.tencent.client.worker.protos.PushRequest)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.worker.protos.VoidResponse>specializeCallback(
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       case 8:
         this.release(controller, (com.tencent.client.worker.protos.TensorLike)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.worker.protos.VoidResponse>specializeCallback(
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       case 9:
         this.update(controller, (com.tencent.client.worker.protos.TensorLike)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.worker.protos.VoidResponse>specializeCallback(
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       case 10:
         this.sync(controller, (com.tencent.client.worker.protos.SyncRequest)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.worker.protos.VoidResponse>specializeCallback(
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
+            done));
+        return;
+      case 11:
+        this.completeTask(controller, (com.tencent.client.common.protos.CompleteTaskReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       default:
@@ -517,6 +552,8 @@ public  abstract class ClientWorker
         return com.tencent.client.worker.protos.TensorLike.getDefaultInstance();
       case 10:
         return com.tencent.client.worker.protos.SyncRequest.getDefaultInstance();
+      case 11:
+        return com.tencent.client.common.protos.CompleteTaskReq.getDefaultInstance();
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -538,21 +575,23 @@ public  abstract class ClientWorker
       case 2:
         return com.tencent.client.worker.protos.CreateResp.getDefaultInstance();
       case 3:
-        return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       case 4:
-        return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       case 5:
-        return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       case 6:
         return com.tencent.client.worker.protos.PullResponse.getDefaultInstance();
       case 7:
-        return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       case 8:
-        return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       case 9:
-        return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       case 10:
-        return com.tencent.client.worker.protos.VoidResponse.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
+      case 11:
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -622,46 +661,46 @@ public  abstract class ClientWorker
     public  void init(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
       channel.callMethod(
         getDescriptor().getMethods().get(3),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance(),
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.worker.protos.VoidResponse.class,
-          com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()));
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
 
     public  void load(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.LoadTensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
       channel.callMethod(
         getDescriptor().getMethods().get(4),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance(),
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.worker.protos.VoidResponse.class,
-          com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()));
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
 
     public  void save(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.SaveTensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
       channel.callMethod(
         getDescriptor().getMethods().get(5),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance(),
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.worker.protos.VoidResponse.class,
-          com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()));
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
 
     public  void pull(
@@ -682,61 +721,76 @@ public  abstract class ClientWorker
     public  void push(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.PushRequest request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
       channel.callMethod(
         getDescriptor().getMethods().get(7),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance(),
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.worker.protos.VoidResponse.class,
-          com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()));
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
 
     public  void release(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
       channel.callMethod(
         getDescriptor().getMethods().get(8),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance(),
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.worker.protos.VoidResponse.class,
-          com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()));
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
 
     public  void update(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
       channel.callMethod(
         getDescriptor().getMethods().get(9),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance(),
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.worker.protos.VoidResponse.class,
-          com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()));
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
 
     public  void sync(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.SyncRequest request,
-        com.google.protobuf.RpcCallback<com.tencent.client.worker.protos.VoidResponse> done) {
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
       channel.callMethod(
         getDescriptor().getMethods().get(10),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance(),
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.worker.protos.VoidResponse.class,
-          com.tencent.client.worker.protos.VoidResponse.getDefaultInstance()));
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
+    }
+
+    public  void completeTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.CompleteTaskReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
+      channel.callMethod(
+        getDescriptor().getMethods().get(11),
+        controller,
+        request,
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
+        com.google.protobuf.RpcUtil.generalizeCallback(
+          done,
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
   }
 
@@ -761,17 +815,17 @@ public  abstract class ClientWorker
         com.tencent.client.worker.protos.RPCEmbedding request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.worker.protos.VoidResponse init(
+    public com.tencent.client.common.protos.VoidResp init(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.worker.protos.VoidResponse load(
+    public com.tencent.client.common.protos.VoidResp load(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.LoadTensorLike request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.worker.protos.VoidResponse save(
+    public com.tencent.client.common.protos.VoidResp save(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.SaveTensorLike request)
         throws com.google.protobuf.ServiceException;
@@ -781,24 +835,29 @@ public  abstract class ClientWorker
         com.tencent.client.worker.protos.PullRequest request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.worker.protos.VoidResponse push(
+    public com.tencent.client.common.protos.VoidResp push(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.PushRequest request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.worker.protos.VoidResponse release(
+    public com.tencent.client.common.protos.VoidResp release(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.worker.protos.VoidResponse update(
+    public com.tencent.client.common.protos.VoidResp update(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.worker.protos.VoidResponse sync(
+    public com.tencent.client.common.protos.VoidResp sync(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.SyncRequest request)
+        throws com.google.protobuf.ServiceException;
+
+    public com.tencent.client.common.protos.VoidResp completeTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.CompleteTaskReq request)
         throws com.google.protobuf.ServiceException;
   }
 
@@ -845,39 +904,39 @@ public  abstract class ClientWorker
     }
 
 
-    public com.tencent.client.worker.protos.VoidResponse init(
+    public com.tencent.client.common.protos.VoidResp init(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.worker.protos.VoidResponse) channel.callBlockingMethod(
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(3),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance());
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
 
-    public com.tencent.client.worker.protos.VoidResponse load(
+    public com.tencent.client.common.protos.VoidResp load(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.LoadTensorLike request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.worker.protos.VoidResponse) channel.callBlockingMethod(
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(4),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance());
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
 
-    public com.tencent.client.worker.protos.VoidResponse save(
+    public com.tencent.client.common.protos.VoidResp save(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.SaveTensorLike request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.worker.protos.VoidResponse) channel.callBlockingMethod(
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(5),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance());
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
 
@@ -893,51 +952,63 @@ public  abstract class ClientWorker
     }
 
 
-    public com.tencent.client.worker.protos.VoidResponse push(
+    public com.tencent.client.common.protos.VoidResp push(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.PushRequest request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.worker.protos.VoidResponse) channel.callBlockingMethod(
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(7),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance());
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
 
-    public com.tencent.client.worker.protos.VoidResponse release(
+    public com.tencent.client.common.protos.VoidResp release(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.worker.protos.VoidResponse) channel.callBlockingMethod(
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(8),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance());
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
 
-    public com.tencent.client.worker.protos.VoidResponse update(
+    public com.tencent.client.common.protos.VoidResp update(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.TensorLike request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.worker.protos.VoidResponse) channel.callBlockingMethod(
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(9),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance());
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
 
-    public com.tencent.client.worker.protos.VoidResponse sync(
+    public com.tencent.client.common.protos.VoidResp sync(
         com.google.protobuf.RpcController controller,
         com.tencent.client.worker.protos.SyncRequest request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.worker.protos.VoidResponse) channel.callBlockingMethod(
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(10),
         controller,
         request,
-        com.tencent.client.worker.protos.VoidResponse.getDefaultInstance());
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
+    }
+
+
+    public com.tencent.client.common.protos.VoidResp completeTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.CompleteTaskReq request)
+        throws com.google.protobuf.ServiceException {
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
+        getDescriptor().getMethods().get(11),
+        controller,
+        request,
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
   }

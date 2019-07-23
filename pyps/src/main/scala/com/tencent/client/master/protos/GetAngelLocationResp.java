@@ -16,9 +16,8 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private GetAngelLocationResp() {
-    ret_ = 0;
     host_ = "";
-    post_ = 0;
+    port_ = 0;
     msg_ = "";
   }
 
@@ -53,12 +52,6 @@ private static final long serialVersionUID = 0L;
             }
             break;
           }
-          case 8: {
-            int rawValue = input.readEnum();
-
-            ret_ = rawValue;
-            break;
-          }
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
 
@@ -67,7 +60,7 @@ private static final long serialVersionUID = 0L;
           }
           case 24: {
 
-            post_ = input.readInt32();
+            port_ = input.readInt32();
             break;
           }
           case 34: {
@@ -98,22 +91,6 @@ private static final long serialVersionUID = 0L;
     return com.tencent.client.master.protos.ClientMasterProto.internal_static_ClientMaster_GetAngelLocationResp_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.tencent.client.master.protos.GetAngelLocationResp.class, com.tencent.client.master.protos.GetAngelLocationResp.Builder.class);
-  }
-
-  public static final int RET_FIELD_NUMBER = 1;
-  private int ret_;
-  /**
-   * <code>.Status ret = 1;</code>
-   */
-  public int getRetValue() {
-    return ret_;
-  }
-  /**
-   * <code>.Status ret = 1;</code>
-   */
-  public com.tencent.client.common.protos.Status getRet() {
-    com.tencent.client.common.protos.Status result = com.tencent.client.common.protos.Status.valueOf(ret_);
-    return result == null ? com.tencent.client.common.protos.Status.UNRECOGNIZED : result;
   }
 
   public static final int HOST_FIELD_NUMBER = 2;
@@ -150,13 +127,13 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int POST_FIELD_NUMBER = 3;
-  private int post_;
+  public static final int PORT_FIELD_NUMBER = 3;
+  private int port_;
   /**
-   * <code>int32 post = 3;</code>
+   * <code>int32 port = 3;</code>
    */
-  public int getPost() {
-    return post_;
+  public int getPort() {
+    return port_;
   }
 
   public static final int MSG_FIELD_NUMBER = 4;
@@ -205,14 +182,11 @@ private static final long serialVersionUID = 0L;
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (ret_ != com.tencent.client.common.protos.Status.OK.getNumber()) {
-      output.writeEnum(1, ret_);
-    }
     if (!getHostBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, host_);
     }
-    if (post_ != 0) {
-      output.writeInt32(3, post_);
+    if (port_ != 0) {
+      output.writeInt32(3, port_);
     }
     if (!getMsgBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, msg_);
@@ -225,16 +199,12 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (ret_ != com.tencent.client.common.protos.Status.OK.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, ret_);
-    }
     if (!getHostBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, host_);
     }
-    if (post_ != 0) {
+    if (port_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, post_);
+        .computeInt32Size(3, port_);
     }
     if (!getMsgBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, msg_);
@@ -255,11 +225,10 @@ private static final long serialVersionUID = 0L;
     com.tencent.client.master.protos.GetAngelLocationResp other = (com.tencent.client.master.protos.GetAngelLocationResp) obj;
 
     boolean result = true;
-    result = result && ret_ == other.ret_;
     result = result && getHost()
         .equals(other.getHost());
-    result = result && (getPost()
-        == other.getPost());
+    result = result && (getPort()
+        == other.getPort());
     result = result && getMsg()
         .equals(other.getMsg());
     result = result && unknownFields.equals(other.unknownFields);
@@ -273,12 +242,10 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + RET_FIELD_NUMBER;
-    hash = (53 * hash) + ret_;
     hash = (37 * hash) + HOST_FIELD_NUMBER;
     hash = (53 * hash) + getHost().hashCode();
-    hash = (37 * hash) + POST_FIELD_NUMBER;
-    hash = (53 * hash) + getPost();
+    hash = (37 * hash) + PORT_FIELD_NUMBER;
+    hash = (53 * hash) + getPort();
     hash = (37 * hash) + MSG_FIELD_NUMBER;
     hash = (53 * hash) + getMsg().hashCode();
     hash = (29 * hash) + unknownFields.hashCode();
@@ -410,11 +377,9 @@ private static final long serialVersionUID = 0L;
     }
     public Builder clear() {
       super.clear();
-      ret_ = 0;
-
       host_ = "";
 
-      post_ = 0;
+      port_ = 0;
 
       msg_ = "";
 
@@ -440,9 +405,8 @@ private static final long serialVersionUID = 0L;
 
     public com.tencent.client.master.protos.GetAngelLocationResp buildPartial() {
       com.tencent.client.master.protos.GetAngelLocationResp result = new com.tencent.client.master.protos.GetAngelLocationResp(this);
-      result.ret_ = ret_;
       result.host_ = host_;
-      result.post_ = post_;
+      result.port_ = port_;
       result.msg_ = msg_;
       onBuilt();
       return result;
@@ -485,15 +449,12 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.tencent.client.master.protos.GetAngelLocationResp other) {
       if (other == com.tencent.client.master.protos.GetAngelLocationResp.getDefaultInstance()) return this;
-      if (other.ret_ != 0) {
-        setRetValue(other.getRetValue());
-      }
       if (!other.getHost().isEmpty()) {
         host_ = other.host_;
         onChanged();
       }
-      if (other.getPost() != 0) {
-        setPost(other.getPost());
+      if (other.getPort() != 0) {
+        setPort(other.getPort());
       }
       if (!other.getMsg().isEmpty()) {
         msg_ = other.msg_;
@@ -523,50 +484,6 @@ private static final long serialVersionUID = 0L;
           mergeFrom(parsedMessage);
         }
       }
-      return this;
-    }
-
-    private int ret_ = 0;
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public int getRetValue() {
-      return ret_;
-    }
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public Builder setRetValue(int value) {
-      ret_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public com.tencent.client.common.protos.Status getRet() {
-      com.tencent.client.common.protos.Status result = com.tencent.client.common.protos.Status.valueOf(ret_);
-      return result == null ? com.tencent.client.common.protos.Status.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public Builder setRet(com.tencent.client.common.protos.Status value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      ret_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public Builder clearRet() {
-      
-      ret_ = 0;
-      onChanged();
       return this;
     }
 
@@ -639,28 +556,28 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int post_ ;
+    private int port_ ;
     /**
-     * <code>int32 post = 3;</code>
+     * <code>int32 port = 3;</code>
      */
-    public int getPost() {
-      return post_;
+    public int getPort() {
+      return port_;
     }
     /**
-     * <code>int32 post = 3;</code>
+     * <code>int32 port = 3;</code>
      */
-    public Builder setPost(int value) {
+    public Builder setPort(int value) {
       
-      post_ = value;
+      port_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 post = 3;</code>
+     * <code>int32 port = 3;</code>
      */
-    public Builder clearPost() {
+    public Builder clearPort() {
       
-      post_ = 0;
+      port_ = 0;
       onChanged();
       return this;
     }

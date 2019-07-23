@@ -16,8 +16,6 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private HeartBeatResp() {
-    ret_ = 0;
-    msg_ = "";
     cmd_ = 0;
   }
 
@@ -52,18 +50,6 @@ private static final long serialVersionUID = 0L;
             }
             break;
           }
-          case 8: {
-            int rawValue = input.readEnum();
-
-            ret_ = rawValue;
-            break;
-          }
-          case 18: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            msg_ = s;
-            break;
-          }
           case 24: {
             int rawValue = input.readEnum();
 
@@ -94,56 +80,6 @@ private static final long serialVersionUID = 0L;
             com.tencent.client.master.protos.HeartBeatResp.class, com.tencent.client.master.protos.HeartBeatResp.Builder.class);
   }
 
-  public static final int RET_FIELD_NUMBER = 1;
-  private int ret_;
-  /**
-   * <code>.Status ret = 1;</code>
-   */
-  public int getRetValue() {
-    return ret_;
-  }
-  /**
-   * <code>.Status ret = 1;</code>
-   */
-  public com.tencent.client.common.protos.Status getRet() {
-    com.tencent.client.common.protos.Status result = com.tencent.client.common.protos.Status.valueOf(ret_);
-    return result == null ? com.tencent.client.common.protos.Status.UNRECOGNIZED : result;
-  }
-
-  public static final int MSG_FIELD_NUMBER = 2;
-  private volatile java.lang.Object msg_;
-  /**
-   * <code>string msg = 2;</code>
-   */
-  public java.lang.String getMsg() {
-    java.lang.Object ref = msg_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      msg_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string msg = 2;</code>
-   */
-  public com.google.protobuf.ByteString
-      getMsgBytes() {
-    java.lang.Object ref = msg_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      msg_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
-  }
-
   public static final int CMD_FIELD_NUMBER = 3;
   private int cmd_;
   /**
@@ -172,12 +108,6 @@ private static final long serialVersionUID = 0L;
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (ret_ != com.tencent.client.common.protos.Status.OK.getNumber()) {
-      output.writeEnum(1, ret_);
-    }
-    if (!getMsgBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, msg_);
-    }
     if (cmd_ != com.tencent.client.master.protos.Command.STOPANGEL.getNumber()) {
       output.writeEnum(3, cmd_);
     }
@@ -189,13 +119,6 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (ret_ != com.tencent.client.common.protos.Status.OK.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(1, ret_);
-    }
-    if (!getMsgBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, msg_);
-    }
     if (cmd_ != com.tencent.client.master.protos.Command.STOPANGEL.getNumber()) {
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, cmd_);
@@ -216,9 +139,6 @@ private static final long serialVersionUID = 0L;
     com.tencent.client.master.protos.HeartBeatResp other = (com.tencent.client.master.protos.HeartBeatResp) obj;
 
     boolean result = true;
-    result = result && ret_ == other.ret_;
-    result = result && getMsg()
-        .equals(other.getMsg());
     result = result && cmd_ == other.cmd_;
     result = result && unknownFields.equals(other.unknownFields);
     return result;
@@ -231,10 +151,6 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + RET_FIELD_NUMBER;
-    hash = (53 * hash) + ret_;
-    hash = (37 * hash) + MSG_FIELD_NUMBER;
-    hash = (53 * hash) + getMsg().hashCode();
     hash = (37 * hash) + CMD_FIELD_NUMBER;
     hash = (53 * hash) + cmd_;
     hash = (29 * hash) + unknownFields.hashCode();
@@ -366,10 +282,6 @@ private static final long serialVersionUID = 0L;
     }
     public Builder clear() {
       super.clear();
-      ret_ = 0;
-
-      msg_ = "";
-
       cmd_ = 0;
 
       return this;
@@ -394,8 +306,6 @@ private static final long serialVersionUID = 0L;
 
     public com.tencent.client.master.protos.HeartBeatResp buildPartial() {
       com.tencent.client.master.protos.HeartBeatResp result = new com.tencent.client.master.protos.HeartBeatResp(this);
-      result.ret_ = ret_;
-      result.msg_ = msg_;
       result.cmd_ = cmd_;
       onBuilt();
       return result;
@@ -438,13 +348,6 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.tencent.client.master.protos.HeartBeatResp other) {
       if (other == com.tencent.client.master.protos.HeartBeatResp.getDefaultInstance()) return this;
-      if (other.ret_ != 0) {
-        setRetValue(other.getRetValue());
-      }
-      if (!other.getMsg().isEmpty()) {
-        msg_ = other.msg_;
-        onChanged();
-      }
       if (other.cmd_ != 0) {
         setCmdValue(other.getCmdValue());
       }
@@ -472,119 +375,6 @@ private static final long serialVersionUID = 0L;
           mergeFrom(parsedMessage);
         }
       }
-      return this;
-    }
-
-    private int ret_ = 0;
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public int getRetValue() {
-      return ret_;
-    }
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public Builder setRetValue(int value) {
-      ret_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public com.tencent.client.common.protos.Status getRet() {
-      com.tencent.client.common.protos.Status result = com.tencent.client.common.protos.Status.valueOf(ret_);
-      return result == null ? com.tencent.client.common.protos.Status.UNRECOGNIZED : result;
-    }
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public Builder setRet(com.tencent.client.common.protos.Status value) {
-      if (value == null) {
-        throw new NullPointerException();
-      }
-      
-      ret_ = value.getNumber();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>.Status ret = 1;</code>
-     */
-    public Builder clearRet() {
-      
-      ret_ = 0;
-      onChanged();
-      return this;
-    }
-
-    private java.lang.Object msg_ = "";
-    /**
-     * <code>string msg = 2;</code>
-     */
-    public java.lang.String getMsg() {
-      java.lang.Object ref = msg_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        msg_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
-    }
-    /**
-     * <code>string msg = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getMsgBytes() {
-      java.lang.Object ref = msg_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        msg_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string msg = 2;</code>
-     */
-    public Builder setMsg(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      msg_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string msg = 2;</code>
-     */
-    public Builder clearMsg() {
-      
-      msg_ = getDefaultInstance().getMsg();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string msg = 2;</code>
-     */
-    public Builder setMsgBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      msg_ = value;
-      onChanged();
       return this;
     }
 

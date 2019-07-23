@@ -6,7 +6,7 @@ import com.tencent.angel.matrix.MatrixContext
 import com.tencent.angel.ml.servingmath2.utils.RowType
 import com.tencent.angel.model.MatrixLoadContext
 import com.tencent.angel.model.MatrixSaveContext
-import com.tencent.client.ps.tensor.TensorMeta
+import com.tencent.client.worker.ps.tensor.TensorMeta
 
 
 abstract class Meta(val name: String, val dtype: String, val dim: Int, val shape:Array[Long], val validIndexNum: Long) {

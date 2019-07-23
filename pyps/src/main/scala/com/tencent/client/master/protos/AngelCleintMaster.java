@@ -12,27 +12,35 @@ public  abstract class AngelCleintMaster
 
   public interface Interface {
     /**
-     * <code>rpc Register(.ClientMaster.RegisterReq) returns (.ClientMaster.RegisterResp);</code>
+     * <code>rpc RegisterWorker(.ClientMaster.RegisterWorkerReq) returns (.ClientMaster.RegisterWorkerResp);</code>
      */
-    public abstract void register(
+    public abstract void registerWorker(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.RegisterReq request,
-        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterResp> done);
+        com.tencent.client.master.protos.RegisterWorkerReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterWorkerResp> done);
 
     /**
-     * <code>rpc SetAngelLocation(.ClientMaster.SetAngelLocationReq) returns (.ClientMaster.SetAngelLocationResp);</code>
+     * <code>rpc RegisterTask(.ClientMaster.RegisterTaskReq) returns (.ClientMaster.RegisterTaskResp);</code>
+     */
+    public abstract void registerTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.master.protos.RegisterTaskReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterTaskResp> done);
+
+    /**
+     * <code>rpc SetAngelLocation(.ClientMaster.SetAngelLocationReq) returns (.VoidResp);</code>
      */
     public abstract void setAngelLocation(
         com.google.protobuf.RpcController controller,
         com.tencent.client.master.protos.SetAngelLocationReq request,
-        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.SetAngelLocationResp> done);
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
     /**
-     * <code>rpc GetAngelLocation(.ClientMaster.GetAngelLocationReq) returns (.ClientMaster.GetAngelLocationResp);</code>
+     * <code>rpc GetAngelLocation(.VoidReq) returns (.ClientMaster.GetAngelLocationResp);</code>
      */
     public abstract void getAngelLocation(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.GetAngelLocationReq request,
+        com.tencent.client.common.protos.VoidReq request,
         com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetAngelLocationResp> done);
 
     /**
@@ -44,12 +52,36 @@ public  abstract class AngelCleintMaster
         com.google.protobuf.RpcCallback<com.tencent.client.master.protos.HeartBeatResp> done);
 
     /**
-     * <code>rpc Sync(.ClientMaster.SyncReq) returns (.ClientMaster.SyncResp);</code>
+     * <code>rpc Clock(.ClientMaster.ClockReq) returns (.ClientMaster.ClockResp);</code>
      */
-    public abstract void sync(
+    public abstract void clock(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.SyncReq request,
-        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.SyncResp> done);
+        com.tencent.client.master.protos.ClockReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.ClockResp> done);
+
+    /**
+     * <code>rpc GetClockMap(.ClientMaster.GetClockMapReq) returns (.ClientMaster.GetClockMapResp);</code>
+     */
+    public abstract void getClockMap(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.master.protos.GetClockMapReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetClockMapResp> done);
+
+    /**
+     * <code>rpc GetGlobalBatchSize(.VoidReq) returns (.ClientMaster.GetGlobalBatchResp);</code>
+     */
+    public abstract void getGlobalBatchSize(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.VoidReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetGlobalBatchResp> done);
+
+    /**
+     * <code>rpc CompleteTask(.CompleteTaskReq) returns (.VoidResp);</code>
+     */
+    public abstract void completeTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.CompleteTaskReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   }
 
@@ -57,25 +89,33 @@ public  abstract class AngelCleintMaster
       final Interface impl) {
     return new AngelCleintMaster() {
       @java.lang.Override
-      public  void register(
+      public  void registerWorker(
           com.google.protobuf.RpcController controller,
-          com.tencent.client.master.protos.RegisterReq request,
-          com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterResp> done) {
-        impl.register(controller, request, done);
+          com.tencent.client.master.protos.RegisterWorkerReq request,
+          com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterWorkerResp> done) {
+        impl.registerWorker(controller, request, done);
+      }
+
+      @java.lang.Override
+      public  void registerTask(
+          com.google.protobuf.RpcController controller,
+          com.tencent.client.master.protos.RegisterTaskReq request,
+          com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterTaskResp> done) {
+        impl.registerTask(controller, request, done);
       }
 
       @java.lang.Override
       public  void setAngelLocation(
           com.google.protobuf.RpcController controller,
           com.tencent.client.master.protos.SetAngelLocationReq request,
-          com.google.protobuf.RpcCallback<com.tencent.client.master.protos.SetAngelLocationResp> done) {
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
         impl.setAngelLocation(controller, request, done);
       }
 
       @java.lang.Override
       public  void getAngelLocation(
           com.google.protobuf.RpcController controller,
-          com.tencent.client.master.protos.GetAngelLocationReq request,
+          com.tencent.client.common.protos.VoidReq request,
           com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetAngelLocationResp> done) {
         impl.getAngelLocation(controller, request, done);
       }
@@ -89,11 +129,35 @@ public  abstract class AngelCleintMaster
       }
 
       @java.lang.Override
-      public  void sync(
+      public  void clock(
           com.google.protobuf.RpcController controller,
-          com.tencent.client.master.protos.SyncReq request,
-          com.google.protobuf.RpcCallback<com.tencent.client.master.protos.SyncResp> done) {
-        impl.sync(controller, request, done);
+          com.tencent.client.master.protos.ClockReq request,
+          com.google.protobuf.RpcCallback<com.tencent.client.master.protos.ClockResp> done) {
+        impl.clock(controller, request, done);
+      }
+
+      @java.lang.Override
+      public  void getClockMap(
+          com.google.protobuf.RpcController controller,
+          com.tencent.client.master.protos.GetClockMapReq request,
+          com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetClockMapResp> done) {
+        impl.getClockMap(controller, request, done);
+      }
+
+      @java.lang.Override
+      public  void getGlobalBatchSize(
+          com.google.protobuf.RpcController controller,
+          com.tencent.client.common.protos.VoidReq request,
+          com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetGlobalBatchResp> done) {
+        impl.getGlobalBatchSize(controller, request, done);
+      }
+
+      @java.lang.Override
+      public  void completeTask(
+          com.google.protobuf.RpcController controller,
+          com.tencent.client.common.protos.CompleteTaskReq request,
+          com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
+        impl.completeTask(controller, request, done);
       }
 
     };
@@ -119,15 +183,23 @@ public  abstract class AngelCleintMaster
         }
         switch(method.getIndex()) {
           case 0:
-            return impl.register(controller, (com.tencent.client.master.protos.RegisterReq)request);
+            return impl.registerWorker(controller, (com.tencent.client.master.protos.RegisterWorkerReq)request);
           case 1:
-            return impl.setAngelLocation(controller, (com.tencent.client.master.protos.SetAngelLocationReq)request);
+            return impl.registerTask(controller, (com.tencent.client.master.protos.RegisterTaskReq)request);
           case 2:
-            return impl.getAngelLocation(controller, (com.tencent.client.master.protos.GetAngelLocationReq)request);
+            return impl.setAngelLocation(controller, (com.tencent.client.master.protos.SetAngelLocationReq)request);
           case 3:
-            return impl.heartBeat(controller, (com.tencent.client.master.protos.HeartBeatReq)request);
+            return impl.getAngelLocation(controller, (com.tencent.client.common.protos.VoidReq)request);
           case 4:
-            return impl.sync(controller, (com.tencent.client.master.protos.SyncReq)request);
+            return impl.heartBeat(controller, (com.tencent.client.master.protos.HeartBeatReq)request);
+          case 5:
+            return impl.clock(controller, (com.tencent.client.master.protos.ClockReq)request);
+          case 6:
+            return impl.getClockMap(controller, (com.tencent.client.master.protos.GetClockMapReq)request);
+          case 7:
+            return impl.getGlobalBatchSize(controller, (com.tencent.client.common.protos.VoidReq)request);
+          case 8:
+            return impl.completeTask(controller, (com.tencent.client.common.protos.CompleteTaskReq)request);
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -143,15 +215,23 @@ public  abstract class AngelCleintMaster
         }
         switch(method.getIndex()) {
           case 0:
-            return com.tencent.client.master.protos.RegisterReq.getDefaultInstance();
+            return com.tencent.client.master.protos.RegisterWorkerReq.getDefaultInstance();
           case 1:
-            return com.tencent.client.master.protos.SetAngelLocationReq.getDefaultInstance();
+            return com.tencent.client.master.protos.RegisterTaskReq.getDefaultInstance();
           case 2:
-            return com.tencent.client.master.protos.GetAngelLocationReq.getDefaultInstance();
+            return com.tencent.client.master.protos.SetAngelLocationReq.getDefaultInstance();
           case 3:
-            return com.tencent.client.master.protos.HeartBeatReq.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidReq.getDefaultInstance();
           case 4:
-            return com.tencent.client.master.protos.SyncReq.getDefaultInstance();
+            return com.tencent.client.master.protos.HeartBeatReq.getDefaultInstance();
+          case 5:
+            return com.tencent.client.master.protos.ClockReq.getDefaultInstance();
+          case 6:
+            return com.tencent.client.master.protos.GetClockMapReq.getDefaultInstance();
+          case 7:
+            return com.tencent.client.common.protos.VoidReq.getDefaultInstance();
+          case 8:
+            return com.tencent.client.common.protos.CompleteTaskReq.getDefaultInstance();
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -167,15 +247,23 @@ public  abstract class AngelCleintMaster
         }
         switch(method.getIndex()) {
           case 0:
-            return com.tencent.client.master.protos.RegisterResp.getDefaultInstance();
+            return com.tencent.client.master.protos.RegisterWorkerResp.getDefaultInstance();
           case 1:
-            return com.tencent.client.master.protos.SetAngelLocationResp.getDefaultInstance();
+            return com.tencent.client.master.protos.RegisterTaskResp.getDefaultInstance();
           case 2:
-            return com.tencent.client.master.protos.GetAngelLocationResp.getDefaultInstance();
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           case 3:
-            return com.tencent.client.master.protos.HeartBeatResp.getDefaultInstance();
+            return com.tencent.client.master.protos.GetAngelLocationResp.getDefaultInstance();
           case 4:
-            return com.tencent.client.master.protos.SyncResp.getDefaultInstance();
+            return com.tencent.client.master.protos.HeartBeatResp.getDefaultInstance();
+          case 5:
+            return com.tencent.client.master.protos.ClockResp.getDefaultInstance();
+          case 6:
+            return com.tencent.client.master.protos.GetClockMapResp.getDefaultInstance();
+          case 7:
+            return com.tencent.client.master.protos.GetGlobalBatchResp.getDefaultInstance();
+          case 8:
+            return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
           default:
             throw new java.lang.AssertionError("Can't get here.");
         }
@@ -185,27 +273,35 @@ public  abstract class AngelCleintMaster
   }
 
   /**
-   * <code>rpc Register(.ClientMaster.RegisterReq) returns (.ClientMaster.RegisterResp);</code>
+   * <code>rpc RegisterWorker(.ClientMaster.RegisterWorkerReq) returns (.ClientMaster.RegisterWorkerResp);</code>
    */
-  public abstract void register(
+  public abstract void registerWorker(
       com.google.protobuf.RpcController controller,
-      com.tencent.client.master.protos.RegisterReq request,
-      com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterResp> done);
+      com.tencent.client.master.protos.RegisterWorkerReq request,
+      com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterWorkerResp> done);
 
   /**
-   * <code>rpc SetAngelLocation(.ClientMaster.SetAngelLocationReq) returns (.ClientMaster.SetAngelLocationResp);</code>
+   * <code>rpc RegisterTask(.ClientMaster.RegisterTaskReq) returns (.ClientMaster.RegisterTaskResp);</code>
+   */
+  public abstract void registerTask(
+      com.google.protobuf.RpcController controller,
+      com.tencent.client.master.protos.RegisterTaskReq request,
+      com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterTaskResp> done);
+
+  /**
+   * <code>rpc SetAngelLocation(.ClientMaster.SetAngelLocationReq) returns (.VoidResp);</code>
    */
   public abstract void setAngelLocation(
       com.google.protobuf.RpcController controller,
       com.tencent.client.master.protos.SetAngelLocationReq request,
-      com.google.protobuf.RpcCallback<com.tencent.client.master.protos.SetAngelLocationResp> done);
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   /**
-   * <code>rpc GetAngelLocation(.ClientMaster.GetAngelLocationReq) returns (.ClientMaster.GetAngelLocationResp);</code>
+   * <code>rpc GetAngelLocation(.VoidReq) returns (.ClientMaster.GetAngelLocationResp);</code>
    */
   public abstract void getAngelLocation(
       com.google.protobuf.RpcController controller,
-      com.tencent.client.master.protos.GetAngelLocationReq request,
+      com.tencent.client.common.protos.VoidReq request,
       com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetAngelLocationResp> done);
 
   /**
@@ -217,12 +313,36 @@ public  abstract class AngelCleintMaster
       com.google.protobuf.RpcCallback<com.tencent.client.master.protos.HeartBeatResp> done);
 
   /**
-   * <code>rpc Sync(.ClientMaster.SyncReq) returns (.ClientMaster.SyncResp);</code>
+   * <code>rpc Clock(.ClientMaster.ClockReq) returns (.ClientMaster.ClockResp);</code>
    */
-  public abstract void sync(
+  public abstract void clock(
       com.google.protobuf.RpcController controller,
-      com.tencent.client.master.protos.SyncReq request,
-      com.google.protobuf.RpcCallback<com.tencent.client.master.protos.SyncResp> done);
+      com.tencent.client.master.protos.ClockReq request,
+      com.google.protobuf.RpcCallback<com.tencent.client.master.protos.ClockResp> done);
+
+  /**
+   * <code>rpc GetClockMap(.ClientMaster.GetClockMapReq) returns (.ClientMaster.GetClockMapResp);</code>
+   */
+  public abstract void getClockMap(
+      com.google.protobuf.RpcController controller,
+      com.tencent.client.master.protos.GetClockMapReq request,
+      com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetClockMapResp> done);
+
+  /**
+   * <code>rpc GetGlobalBatchSize(.VoidReq) returns (.ClientMaster.GetGlobalBatchResp);</code>
+   */
+  public abstract void getGlobalBatchSize(
+      com.google.protobuf.RpcController controller,
+      com.tencent.client.common.protos.VoidReq request,
+      com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetGlobalBatchResp> done);
+
+  /**
+   * <code>rpc CompleteTask(.CompleteTaskReq) returns (.VoidResp);</code>
+   */
+  public abstract void completeTask(
+      com.google.protobuf.RpcController controller,
+      com.tencent.client.common.protos.CompleteTaskReq request,
+      com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done);
 
   public static final
       com.google.protobuf.Descriptors.ServiceDescriptor
@@ -247,28 +367,48 @@ public  abstract class AngelCleintMaster
     }
     switch(method.getIndex()) {
       case 0:
-        this.register(controller, (com.tencent.client.master.protos.RegisterReq)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.RegisterResp>specializeCallback(
+        this.registerWorker(controller, (com.tencent.client.master.protos.RegisterWorkerReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.RegisterWorkerResp>specializeCallback(
             done));
         return;
       case 1:
-        this.setAngelLocation(controller, (com.tencent.client.master.protos.SetAngelLocationReq)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.SetAngelLocationResp>specializeCallback(
+        this.registerTask(controller, (com.tencent.client.master.protos.RegisterTaskReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.RegisterTaskResp>specializeCallback(
             done));
         return;
       case 2:
-        this.getAngelLocation(controller, (com.tencent.client.master.protos.GetAngelLocationReq)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.GetAngelLocationResp>specializeCallback(
+        this.setAngelLocation(controller, (com.tencent.client.master.protos.SetAngelLocationReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       case 3:
+        this.getAngelLocation(controller, (com.tencent.client.common.protos.VoidReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.GetAngelLocationResp>specializeCallback(
+            done));
+        return;
+      case 4:
         this.heartBeat(controller, (com.tencent.client.master.protos.HeartBeatReq)request,
           com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.HeartBeatResp>specializeCallback(
             done));
         return;
-      case 4:
-        this.sync(controller, (com.tencent.client.master.protos.SyncReq)request,
-          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.SyncResp>specializeCallback(
+      case 5:
+        this.clock(controller, (com.tencent.client.master.protos.ClockReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.ClockResp>specializeCallback(
+            done));
+        return;
+      case 6:
+        this.getClockMap(controller, (com.tencent.client.master.protos.GetClockMapReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.GetClockMapResp>specializeCallback(
+            done));
+        return;
+      case 7:
+        this.getGlobalBatchSize(controller, (com.tencent.client.common.protos.VoidReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.master.protos.GetGlobalBatchResp>specializeCallback(
+            done));
+        return;
+      case 8:
+        this.completeTask(controller, (com.tencent.client.common.protos.CompleteTaskReq)request,
+          com.google.protobuf.RpcUtil.<com.tencent.client.common.protos.VoidResp>specializeCallback(
             done));
         return;
       default:
@@ -286,15 +426,23 @@ public  abstract class AngelCleintMaster
     }
     switch(method.getIndex()) {
       case 0:
-        return com.tencent.client.master.protos.RegisterReq.getDefaultInstance();
+        return com.tencent.client.master.protos.RegisterWorkerReq.getDefaultInstance();
       case 1:
-        return com.tencent.client.master.protos.SetAngelLocationReq.getDefaultInstance();
+        return com.tencent.client.master.protos.RegisterTaskReq.getDefaultInstance();
       case 2:
-        return com.tencent.client.master.protos.GetAngelLocationReq.getDefaultInstance();
+        return com.tencent.client.master.protos.SetAngelLocationReq.getDefaultInstance();
       case 3:
-        return com.tencent.client.master.protos.HeartBeatReq.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidReq.getDefaultInstance();
       case 4:
-        return com.tencent.client.master.protos.SyncReq.getDefaultInstance();
+        return com.tencent.client.master.protos.HeartBeatReq.getDefaultInstance();
+      case 5:
+        return com.tencent.client.master.protos.ClockReq.getDefaultInstance();
+      case 6:
+        return com.tencent.client.master.protos.GetClockMapReq.getDefaultInstance();
+      case 7:
+        return com.tencent.client.common.protos.VoidReq.getDefaultInstance();
+      case 8:
+        return com.tencent.client.common.protos.CompleteTaskReq.getDefaultInstance();
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -310,15 +458,23 @@ public  abstract class AngelCleintMaster
     }
     switch(method.getIndex()) {
       case 0:
-        return com.tencent.client.master.protos.RegisterResp.getDefaultInstance();
+        return com.tencent.client.master.protos.RegisterWorkerResp.getDefaultInstance();
       case 1:
-        return com.tencent.client.master.protos.SetAngelLocationResp.getDefaultInstance();
+        return com.tencent.client.master.protos.RegisterTaskResp.getDefaultInstance();
       case 2:
-        return com.tencent.client.master.protos.GetAngelLocationResp.getDefaultInstance();
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       case 3:
-        return com.tencent.client.master.protos.HeartBeatResp.getDefaultInstance();
+        return com.tencent.client.master.protos.GetAngelLocationResp.getDefaultInstance();
       case 4:
-        return com.tencent.client.master.protos.SyncResp.getDefaultInstance();
+        return com.tencent.client.master.protos.HeartBeatResp.getDefaultInstance();
+      case 5:
+        return com.tencent.client.master.protos.ClockResp.getDefaultInstance();
+      case 6:
+        return com.tencent.client.master.protos.GetClockMapResp.getDefaultInstance();
+      case 7:
+        return com.tencent.client.master.protos.GetGlobalBatchResp.getDefaultInstance();
+      case 8:
+        return com.tencent.client.common.protos.VoidResp.getDefaultInstance();
       default:
         throw new java.lang.AssertionError("Can't get here.");
     }
@@ -340,42 +496,57 @@ public  abstract class AngelCleintMaster
       return channel;
     }
 
-    public  void register(
+    public  void registerWorker(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.RegisterReq request,
-        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterResp> done) {
+        com.tencent.client.master.protos.RegisterWorkerReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterWorkerResp> done) {
       channel.callMethod(
         getDescriptor().getMethods().get(0),
         controller,
         request,
-        com.tencent.client.master.protos.RegisterResp.getDefaultInstance(),
+        com.tencent.client.master.protos.RegisterWorkerResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.master.protos.RegisterResp.class,
-          com.tencent.client.master.protos.RegisterResp.getDefaultInstance()));
+          com.tencent.client.master.protos.RegisterWorkerResp.class,
+          com.tencent.client.master.protos.RegisterWorkerResp.getDefaultInstance()));
+    }
+
+    public  void registerTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.master.protos.RegisterTaskReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.RegisterTaskResp> done) {
+      channel.callMethod(
+        getDescriptor().getMethods().get(1),
+        controller,
+        request,
+        com.tencent.client.master.protos.RegisterTaskResp.getDefaultInstance(),
+        com.google.protobuf.RpcUtil.generalizeCallback(
+          done,
+          com.tencent.client.master.protos.RegisterTaskResp.class,
+          com.tencent.client.master.protos.RegisterTaskResp.getDefaultInstance()));
     }
 
     public  void setAngelLocation(
         com.google.protobuf.RpcController controller,
         com.tencent.client.master.protos.SetAngelLocationReq request,
-        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.SetAngelLocationResp> done) {
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
       channel.callMethod(
-        getDescriptor().getMethods().get(1),
+        getDescriptor().getMethods().get(2),
         controller,
         request,
-        com.tencent.client.master.protos.SetAngelLocationResp.getDefaultInstance(),
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.master.protos.SetAngelLocationResp.class,
-          com.tencent.client.master.protos.SetAngelLocationResp.getDefaultInstance()));
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
 
     public  void getAngelLocation(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.GetAngelLocationReq request,
+        com.tencent.client.common.protos.VoidReq request,
         com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetAngelLocationResp> done) {
       channel.callMethod(
-        getDescriptor().getMethods().get(2),
+        getDescriptor().getMethods().get(3),
         controller,
         request,
         com.tencent.client.master.protos.GetAngelLocationResp.getDefaultInstance(),
@@ -390,7 +561,7 @@ public  abstract class AngelCleintMaster
         com.tencent.client.master.protos.HeartBeatReq request,
         com.google.protobuf.RpcCallback<com.tencent.client.master.protos.HeartBeatResp> done) {
       channel.callMethod(
-        getDescriptor().getMethods().get(3),
+        getDescriptor().getMethods().get(4),
         controller,
         request,
         com.tencent.client.master.protos.HeartBeatResp.getDefaultInstance(),
@@ -400,19 +571,64 @@ public  abstract class AngelCleintMaster
           com.tencent.client.master.protos.HeartBeatResp.getDefaultInstance()));
     }
 
-    public  void sync(
+    public  void clock(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.SyncReq request,
-        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.SyncResp> done) {
+        com.tencent.client.master.protos.ClockReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.ClockResp> done) {
       channel.callMethod(
-        getDescriptor().getMethods().get(4),
+        getDescriptor().getMethods().get(5),
         controller,
         request,
-        com.tencent.client.master.protos.SyncResp.getDefaultInstance(),
+        com.tencent.client.master.protos.ClockResp.getDefaultInstance(),
         com.google.protobuf.RpcUtil.generalizeCallback(
           done,
-          com.tencent.client.master.protos.SyncResp.class,
-          com.tencent.client.master.protos.SyncResp.getDefaultInstance()));
+          com.tencent.client.master.protos.ClockResp.class,
+          com.tencent.client.master.protos.ClockResp.getDefaultInstance()));
+    }
+
+    public  void getClockMap(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.master.protos.GetClockMapReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetClockMapResp> done) {
+      channel.callMethod(
+        getDescriptor().getMethods().get(6),
+        controller,
+        request,
+        com.tencent.client.master.protos.GetClockMapResp.getDefaultInstance(),
+        com.google.protobuf.RpcUtil.generalizeCallback(
+          done,
+          com.tencent.client.master.protos.GetClockMapResp.class,
+          com.tencent.client.master.protos.GetClockMapResp.getDefaultInstance()));
+    }
+
+    public  void getGlobalBatchSize(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.VoidReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.master.protos.GetGlobalBatchResp> done) {
+      channel.callMethod(
+        getDescriptor().getMethods().get(7),
+        controller,
+        request,
+        com.tencent.client.master.protos.GetGlobalBatchResp.getDefaultInstance(),
+        com.google.protobuf.RpcUtil.generalizeCallback(
+          done,
+          com.tencent.client.master.protos.GetGlobalBatchResp.class,
+          com.tencent.client.master.protos.GetGlobalBatchResp.getDefaultInstance()));
+    }
+
+    public  void completeTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.CompleteTaskReq request,
+        com.google.protobuf.RpcCallback<com.tencent.client.common.protos.VoidResp> done) {
+      channel.callMethod(
+        getDescriptor().getMethods().get(8),
+        controller,
+        request,
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance(),
+        com.google.protobuf.RpcUtil.generalizeCallback(
+          done,
+          com.tencent.client.common.protos.VoidResp.class,
+          com.tencent.client.common.protos.VoidResp.getDefaultInstance()));
     }
   }
 
@@ -422,19 +638,24 @@ public  abstract class AngelCleintMaster
   }
 
   public interface BlockingInterface {
-    public com.tencent.client.master.protos.RegisterResp register(
+    public com.tencent.client.master.protos.RegisterWorkerResp registerWorker(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.RegisterReq request)
+        com.tencent.client.master.protos.RegisterWorkerReq request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.master.protos.SetAngelLocationResp setAngelLocation(
+    public com.tencent.client.master.protos.RegisterTaskResp registerTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.master.protos.RegisterTaskReq request)
+        throws com.google.protobuf.ServiceException;
+
+    public com.tencent.client.common.protos.VoidResp setAngelLocation(
         com.google.protobuf.RpcController controller,
         com.tencent.client.master.protos.SetAngelLocationReq request)
         throws com.google.protobuf.ServiceException;
 
     public com.tencent.client.master.protos.GetAngelLocationResp getAngelLocation(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.GetAngelLocationReq request)
+        com.tencent.client.common.protos.VoidReq request)
         throws com.google.protobuf.ServiceException;
 
     public com.tencent.client.master.protos.HeartBeatResp heartBeat(
@@ -442,9 +663,24 @@ public  abstract class AngelCleintMaster
         com.tencent.client.master.protos.HeartBeatReq request)
         throws com.google.protobuf.ServiceException;
 
-    public com.tencent.client.master.protos.SyncResp sync(
+    public com.tencent.client.master.protos.ClockResp clock(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.SyncReq request)
+        com.tencent.client.master.protos.ClockReq request)
+        throws com.google.protobuf.ServiceException;
+
+    public com.tencent.client.master.protos.GetClockMapResp getClockMap(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.master.protos.GetClockMapReq request)
+        throws com.google.protobuf.ServiceException;
+
+    public com.tencent.client.master.protos.GetGlobalBatchResp getGlobalBatchSize(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.VoidReq request)
+        throws com.google.protobuf.ServiceException;
+
+    public com.tencent.client.common.protos.VoidResp completeTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.CompleteTaskReq request)
         throws com.google.protobuf.ServiceException;
   }
 
@@ -455,36 +691,48 @@ public  abstract class AngelCleintMaster
 
     private final com.google.protobuf.BlockingRpcChannel channel;
 
-    public com.tencent.client.master.protos.RegisterResp register(
+    public com.tencent.client.master.protos.RegisterWorkerResp registerWorker(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.RegisterReq request)
+        com.tencent.client.master.protos.RegisterWorkerReq request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.master.protos.RegisterResp) channel.callBlockingMethod(
+      return (com.tencent.client.master.protos.RegisterWorkerResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(0),
         controller,
         request,
-        com.tencent.client.master.protos.RegisterResp.getDefaultInstance());
+        com.tencent.client.master.protos.RegisterWorkerResp.getDefaultInstance());
     }
 
 
-    public com.tencent.client.master.protos.SetAngelLocationResp setAngelLocation(
+    public com.tencent.client.master.protos.RegisterTaskResp registerTask(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.SetAngelLocationReq request)
+        com.tencent.client.master.protos.RegisterTaskReq request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.master.protos.SetAngelLocationResp) channel.callBlockingMethod(
+      return (com.tencent.client.master.protos.RegisterTaskResp) channel.callBlockingMethod(
         getDescriptor().getMethods().get(1),
         controller,
         request,
-        com.tencent.client.master.protos.SetAngelLocationResp.getDefaultInstance());
+        com.tencent.client.master.protos.RegisterTaskResp.getDefaultInstance());
+    }
+
+
+    public com.tencent.client.common.protos.VoidResp setAngelLocation(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.master.protos.SetAngelLocationReq request)
+        throws com.google.protobuf.ServiceException {
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
+        getDescriptor().getMethods().get(2),
+        controller,
+        request,
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
 
     public com.tencent.client.master.protos.GetAngelLocationResp getAngelLocation(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.GetAngelLocationReq request)
+        com.tencent.client.common.protos.VoidReq request)
         throws com.google.protobuf.ServiceException {
       return (com.tencent.client.master.protos.GetAngelLocationResp) channel.callBlockingMethod(
-        getDescriptor().getMethods().get(2),
+        getDescriptor().getMethods().get(3),
         controller,
         request,
         com.tencent.client.master.protos.GetAngelLocationResp.getDefaultInstance());
@@ -496,22 +744,58 @@ public  abstract class AngelCleintMaster
         com.tencent.client.master.protos.HeartBeatReq request)
         throws com.google.protobuf.ServiceException {
       return (com.tencent.client.master.protos.HeartBeatResp) channel.callBlockingMethod(
-        getDescriptor().getMethods().get(3),
+        getDescriptor().getMethods().get(4),
         controller,
         request,
         com.tencent.client.master.protos.HeartBeatResp.getDefaultInstance());
     }
 
 
-    public com.tencent.client.master.protos.SyncResp sync(
+    public com.tencent.client.master.protos.ClockResp clock(
         com.google.protobuf.RpcController controller,
-        com.tencent.client.master.protos.SyncReq request)
+        com.tencent.client.master.protos.ClockReq request)
         throws com.google.protobuf.ServiceException {
-      return (com.tencent.client.master.protos.SyncResp) channel.callBlockingMethod(
-        getDescriptor().getMethods().get(4),
+      return (com.tencent.client.master.protos.ClockResp) channel.callBlockingMethod(
+        getDescriptor().getMethods().get(5),
         controller,
         request,
-        com.tencent.client.master.protos.SyncResp.getDefaultInstance());
+        com.tencent.client.master.protos.ClockResp.getDefaultInstance());
+    }
+
+
+    public com.tencent.client.master.protos.GetClockMapResp getClockMap(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.master.protos.GetClockMapReq request)
+        throws com.google.protobuf.ServiceException {
+      return (com.tencent.client.master.protos.GetClockMapResp) channel.callBlockingMethod(
+        getDescriptor().getMethods().get(6),
+        controller,
+        request,
+        com.tencent.client.master.protos.GetClockMapResp.getDefaultInstance());
+    }
+
+
+    public com.tencent.client.master.protos.GetGlobalBatchResp getGlobalBatchSize(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.VoidReq request)
+        throws com.google.protobuf.ServiceException {
+      return (com.tencent.client.master.protos.GetGlobalBatchResp) channel.callBlockingMethod(
+        getDescriptor().getMethods().get(7),
+        controller,
+        request,
+        com.tencent.client.master.protos.GetGlobalBatchResp.getDefaultInstance());
+    }
+
+
+    public com.tencent.client.common.protos.VoidResp completeTask(
+        com.google.protobuf.RpcController controller,
+        com.tencent.client.common.protos.CompleteTaskReq request)
+        throws com.google.protobuf.ServiceException {
+      return (com.tencent.client.common.protos.VoidResp) channel.callBlockingMethod(
+        getDescriptor().getMethods().get(8),
+        controller,
+        request,
+        com.tencent.client.common.protos.VoidResp.getDefaultInstance());
     }
 
   }

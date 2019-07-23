@@ -8,9 +8,9 @@ public interface SyncRequestOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>int32 pid = 1;</code>
+   * <code>int64 taskId = 1;</code>
    */
-  int getPid();
+  long getTaskId();
 
   /**
    * <code>int64 clock = 2;</code>

@@ -16,7 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private RPCEmbedding() {
-    pid_ = 0;
+    taskId_ = 0L;
     name_ = "";
     numFeats_ = 0L;
     embeddingSize_ = 0;
@@ -56,7 +56,7 @@ private static final long serialVersionUID = 0L;
           }
           case 8: {
 
-            pid_ = input.readInt32();
+            taskId_ = input.readInt64();
             break;
           }
           case 18: {
@@ -145,13 +145,13 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
-  public static final int PID_FIELD_NUMBER = 1;
-  private int pid_;
+  public static final int TASKID_FIELD_NUMBER = 1;
+  private long taskId_;
   /**
-   * <code>int32 pid = 1;</code>
+   * <code>int64 taskId = 1;</code>
    */
-  public int getPid() {
-    return pid_;
+  public long getTaskId() {
+    return taskId_;
   }
 
   public static final int NAME_FIELD_NUMBER = 2;
@@ -404,8 +404,8 @@ private static final long serialVersionUID = 0L;
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (pid_ != 0) {
-      output.writeInt32(1, pid_);
+    if (taskId_ != 0L) {
+      output.writeInt64(1, taskId_);
     }
     if (!getNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
@@ -439,9 +439,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (pid_ != 0) {
+    if (taskId_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(1, pid_);
+        .computeInt64Size(1, taskId_);
     }
     if (!getNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
@@ -493,8 +493,8 @@ private static final long serialVersionUID = 0L;
     com.tencent.client.worker.protos.RPCEmbedding other = (com.tencent.client.worker.protos.RPCEmbedding) obj;
 
     boolean result = true;
-    result = result && (getPid()
-        == other.getPid());
+    result = result && (getTaskId()
+        == other.getTaskId());
     result = result && getName()
         .equals(other.getName());
     result = result && (getNumFeats()
@@ -518,8 +518,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + PID_FIELD_NUMBER;
-    hash = (53 * hash) + getPid();
+    hash = (37 * hash) + TASKID_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getTaskId());
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
     hash = (37 * hash) + NUMFEATS_FIELD_NUMBER;
@@ -692,7 +693,7 @@ private static final long serialVersionUID = 0L;
     }
     public Builder clear() {
       super.clear();
-      pid_ = 0;
+      taskId_ = 0L;
 
       name_ = "";
 
@@ -728,7 +729,7 @@ private static final long serialVersionUID = 0L;
       com.tencent.client.worker.protos.RPCEmbedding result = new com.tencent.client.worker.protos.RPCEmbedding(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      result.pid_ = pid_;
+      result.taskId_ = taskId_;
       result.name_ = name_;
       result.numFeats_ = numFeats_;
       result.embeddingSize_ = embeddingSize_;
@@ -779,8 +780,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.tencent.client.worker.protos.RPCEmbedding other) {
       if (other == com.tencent.client.worker.protos.RPCEmbedding.getDefaultInstance()) return this;
-      if (other.getPid() != 0) {
-        setPid(other.getPid());
+      if (other.getTaskId() != 0L) {
+        setTaskId(other.getTaskId());
       }
       if (!other.getName().isEmpty()) {
         name_ = other.name_;
@@ -828,28 +829,28 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private int pid_ ;
+    private long taskId_ ;
     /**
-     * <code>int32 pid = 1;</code>
+     * <code>int64 taskId = 1;</code>
      */
-    public int getPid() {
-      return pid_;
+    public long getTaskId() {
+      return taskId_;
     }
     /**
-     * <code>int32 pid = 1;</code>
+     * <code>int64 taskId = 1;</code>
      */
-    public Builder setPid(int value) {
+    public Builder setTaskId(long value) {
       
-      pid_ = value;
+      taskId_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 pid = 1;</code>
+     * <code>int64 taskId = 1;</code>
      */
-    public Builder clearPid() {
+    public Builder clearTaskId() {
       
-      pid_ = 0;
+      taskId_ = 0L;
       onChanged();
       return this;
     }
