@@ -3,10 +3,10 @@ package com.tencent.client.master
 import io.grpc.ServerBuilder
 import java.io.IOException
 import java.util
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.logging.Logger
 
 import com.tencent.client.common.protos.AsyncModel
+import scala.collection.JavaConversions._
 
 
 
@@ -44,7 +44,29 @@ object Master {
   private val logger = Logger.getLogger(Master.getClass.getSimpleName)
 
   def main(args: Array[String]): Unit = {
-    val server = new Master(8980, 5, AsyncModel.BSP, null)
+    val conf = Map(
+      "angel.output.path.deleteonexist" -> "true",
+      "angel.ps.class" -> "com.tencent.angel.ps.ParameterServer",
+      "angel.ps.memory.gb" -> "4",
+      "angel.job.libjars" -> "",
+      "angel.job.name" -> "AngelClassification-ps",
+      "angel.ps.number" -> "1",
+      "angel.deploy.mode" -> "LOCAL",
+      "angel.am.log.level" -> "INFO",
+      "angel.psagent.cache.sync.timeinterval.ms" -> "100000000",
+      "angel.ps.heartbeat.interval.ms" -> "200",
+      "angel.running.mode" -> "ANGEL_PS",
+      "angel.ps.total.cores" -> "1",
+      "angel.ps.cpu.vcores" -> "1",
+      "angel.ps.log.level" -> "INFO",
+      "angel.log.path" -> "file:///home/fitz/github/fitzwang/sona/pyps/logpath",
+      "angel.save.model.path" -> "file:///home/fitz/github/fitzwang/sona/pyps/modelpath",
+      "plasma.store.path" -> "/home/fitz/working/arrow/plasma_store_server",
+      "plasma.store.suffix" -> "/tmp/plasma/store",
+      "plasma.store.memoryGB" -> "1"
+    )
+
+    val server = new Master(8980, 5, AsyncModel.BSP, conf)
     server.start()
     server.blockUntilShutdown()
   }

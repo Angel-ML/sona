@@ -8,6 +8,11 @@ public interface RegisterWorkerRespOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
+   * <code>int32 ret = 1;</code>
+   */
+  int getRet();
+
+  /**
    * <code>int64 workId = 2;</code>
    */
   long getWorkId();
@@ -61,12 +66,7 @@ public interface RegisterWorkerRespOrBuilder extends
       java.lang.String key);
 
   /**
-   * <code>string msg = 7;</code>
+   * <code>int32 heartBeatInterval = 7;</code>
    */
-  java.lang.String getMsg();
-  /**
-   * <code>string msg = 7;</code>
-   */
-  com.google.protobuf.ByteString
-      getMsgBytes();
+  int getHeartBeatInterval();
 }

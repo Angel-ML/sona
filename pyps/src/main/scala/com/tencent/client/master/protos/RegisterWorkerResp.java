@@ -16,10 +16,11 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private RegisterWorkerResp() {
+    ret_ = 0;
     workId_ = 0L;
     isChief_ = false;
     asyncModel_ = 0;
-    msg_ = "";
+    heartBeatInterval_ = 0;
   }
 
   @java.lang.Override
@@ -53,6 +54,11 @@ private static final long serialVersionUID = 0L;
             }
             break;
           }
+          case 8: {
+
+            ret_ = input.readInt32();
+            break;
+          }
           case 16: {
 
             workId_ = input.readInt64();
@@ -70,10 +76,10 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 50: {
-            if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+            if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
               conf_ = com.google.protobuf.MapField.newMapField(
                   ConfDefaultEntryHolder.defaultEntry);
-              mutable_bitField0_ |= 0x00000008;
+              mutable_bitField0_ |= 0x00000010;
             }
             com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
             conf__ = input.readMessage(
@@ -82,10 +88,9 @@ private static final long serialVersionUID = 0L;
                 conf__.getKey(), conf__.getValue());
             break;
           }
-          case 58: {
-            java.lang.String s = input.readStringRequireUtf8();
+          case 56: {
 
-            msg_ = s;
+            heartBeatInterval_ = input.readInt32();
             break;
           }
         }
@@ -124,6 +129,15 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  public static final int RET_FIELD_NUMBER = 1;
+  private int ret_;
+  /**
+   * <code>int32 ret = 1;</code>
+   */
+  public int getRet() {
+    return ret_;
+  }
+
   public static final int WORKID_FIELD_NUMBER = 2;
   private long workId_;
   /**
@@ -234,38 +248,13 @@ private static final long serialVersionUID = 0L;
     return map.get(key);
   }
 
-  public static final int MSG_FIELD_NUMBER = 7;
-  private volatile java.lang.Object msg_;
+  public static final int HEARTBEATINTERVAL_FIELD_NUMBER = 7;
+  private int heartBeatInterval_;
   /**
-   * <code>string msg = 7;</code>
+   * <code>int32 heartBeatInterval = 7;</code>
    */
-  public java.lang.String getMsg() {
-    java.lang.Object ref = msg_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      msg_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string msg = 7;</code>
-   */
-  public com.google.protobuf.ByteString
-      getMsgBytes() {
-    java.lang.Object ref = msg_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      msg_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public int getHeartBeatInterval() {
+    return heartBeatInterval_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -280,6 +269,9 @@ private static final long serialVersionUID = 0L;
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    if (ret_ != 0) {
+      output.writeInt32(1, ret_);
+    }
     if (workId_ != 0L) {
       output.writeInt64(2, workId_);
     }
@@ -295,8 +287,8 @@ private static final long serialVersionUID = 0L;
         internalGetConf(),
         ConfDefaultEntryHolder.defaultEntry,
         6);
-    if (!getMsgBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 7, msg_);
+    if (heartBeatInterval_ != 0) {
+      output.writeInt32(7, heartBeatInterval_);
     }
     unknownFields.writeTo(output);
   }
@@ -306,6 +298,10 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
+    if (ret_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(1, ret_);
+    }
     if (workId_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt64Size(2, workId_);
@@ -328,8 +324,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, conf__);
     }
-    if (!getMsgBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, msg_);
+    if (heartBeatInterval_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(7, heartBeatInterval_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -347,6 +344,8 @@ private static final long serialVersionUID = 0L;
     com.tencent.client.master.protos.RegisterWorkerResp other = (com.tencent.client.master.protos.RegisterWorkerResp) obj;
 
     boolean result = true;
+    result = result && (getRet()
+        == other.getRet());
     result = result && (getWorkId()
         == other.getWorkId());
     result = result && (getIsChief()
@@ -354,8 +353,8 @@ private static final long serialVersionUID = 0L;
     result = result && asyncModel_ == other.asyncModel_;
     result = result && internalGetConf().equals(
         other.internalGetConf());
-    result = result && getMsg()
-        .equals(other.getMsg());
+    result = result && (getHeartBeatInterval()
+        == other.getHeartBeatInterval());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -367,6 +366,8 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
+    hash = (37 * hash) + RET_FIELD_NUMBER;
+    hash = (53 * hash) + getRet();
     hash = (37 * hash) + WORKID_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
         getWorkId());
@@ -379,8 +380,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + CONF_FIELD_NUMBER;
       hash = (53 * hash) + internalGetConf().hashCode();
     }
-    hash = (37 * hash) + MSG_FIELD_NUMBER;
-    hash = (53 * hash) + getMsg().hashCode();
+    hash = (37 * hash) + HEARTBEATINTERVAL_FIELD_NUMBER;
+    hash = (53 * hash) + getHeartBeatInterval();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -532,6 +533,8 @@ private static final long serialVersionUID = 0L;
     }
     public Builder clear() {
       super.clear();
+      ret_ = 0;
+
       workId_ = 0L;
 
       isChief_ = false;
@@ -539,7 +542,7 @@ private static final long serialVersionUID = 0L;
       asyncModel_ = 0;
 
       internalGetMutableConf().clear();
-      msg_ = "";
+      heartBeatInterval_ = 0;
 
       return this;
     }
@@ -565,12 +568,13 @@ private static final long serialVersionUID = 0L;
       com.tencent.client.master.protos.RegisterWorkerResp result = new com.tencent.client.master.protos.RegisterWorkerResp(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
+      result.ret_ = ret_;
       result.workId_ = workId_;
       result.isChief_ = isChief_;
       result.asyncModel_ = asyncModel_;
       result.conf_ = internalGetConf();
       result.conf_.makeImmutable();
-      result.msg_ = msg_;
+      result.heartBeatInterval_ = heartBeatInterval_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -613,6 +617,9 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.tencent.client.master.protos.RegisterWorkerResp other) {
       if (other == com.tencent.client.master.protos.RegisterWorkerResp.getDefaultInstance()) return this;
+      if (other.getRet() != 0) {
+        setRet(other.getRet());
+      }
       if (other.getWorkId() != 0L) {
         setWorkId(other.getWorkId());
       }
@@ -624,9 +631,8 @@ private static final long serialVersionUID = 0L;
       }
       internalGetMutableConf().mergeFrom(
           other.internalGetConf());
-      if (!other.getMsg().isEmpty()) {
-        msg_ = other.msg_;
-        onChanged();
+      if (other.getHeartBeatInterval() != 0) {
+        setHeartBeatInterval(other.getHeartBeatInterval());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -655,6 +661,32 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     private int bitField0_;
+
+    private int ret_ ;
+    /**
+     * <code>int32 ret = 1;</code>
+     */
+    public int getRet() {
+      return ret_;
+    }
+    /**
+     * <code>int32 ret = 1;</code>
+     */
+    public Builder setRet(int value) {
+      
+      ret_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 ret = 1;</code>
+     */
+    public Builder clearRet() {
+      
+      ret_ = 0;
+      onChanged();
+      return this;
+    }
 
     private long workId_ ;
     /**
@@ -875,71 +907,28 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object msg_ = "";
+    private int heartBeatInterval_ ;
     /**
-     * <code>string msg = 7;</code>
+     * <code>int32 heartBeatInterval = 7;</code>
      */
-    public java.lang.String getMsg() {
-      java.lang.Object ref = msg_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        msg_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    public int getHeartBeatInterval() {
+      return heartBeatInterval_;
     }
     /**
-     * <code>string msg = 7;</code>
+     * <code>int32 heartBeatInterval = 7;</code>
      */
-    public com.google.protobuf.ByteString
-        getMsgBytes() {
-      java.lang.Object ref = msg_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        msg_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string msg = 7;</code>
-     */
-    public Builder setMsg(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      msg_ = value;
+    public Builder setHeartBeatInterval(int value) {
+      
+      heartBeatInterval_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>string msg = 7;</code>
+     * <code>int32 heartBeatInterval = 7;</code>
      */
-    public Builder clearMsg() {
+    public Builder clearHeartBeatInterval() {
       
-      msg_ = getDefaultInstance().getMsg();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string msg = 7;</code>
-     */
-    public Builder setMsgBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      msg_ = value;
+      heartBeatInterval_ = 0;
       onChanged();
       return this;
     }

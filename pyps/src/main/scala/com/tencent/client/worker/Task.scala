@@ -2,15 +2,14 @@ package com.tencent.client.worker
 
 
 import java.util.logging.Logger
+
 import com.tencent.client.common.protos.AsyncModel
 import com.tencent.client.worker.ps.tensor.{Tensor, TensorLike}
 import com.tencent.client.worker.ps.variable.Variable
 
 import scala.collection.mutable
 
-case class TaskInfo(taskId: Long, numTask: Int, clock: Map[Long, Int])
-
-class Task(masterStub: MStub, val isChief: Boolean) {
+class Task(masterStub: MStub, workerInfo: WorkerInfo, val isChief: Boolean) {
   private val logger = Logger.getLogger(classOf[Task].getSimpleName)
 
   var taskId: Long = 0
@@ -58,13 +57,13 @@ class Task(masterStub: MStub, val isChief: Boolean) {
     val tmpClock = currClock + 1
     var clockMap = masterStub.clock(taskId, tmpClock, batchSize)
 
-    if (masterStub.asyncModel == AsyncModel.BSP) {
+    if (workerInfo.asyncModel == AsyncModel.BSP) {
       while (clockMap.values.min < tmpClock) {
         println(s"${Thread.currentThread().getId}: $taskId> minClock:${clockMap.values.min} -- thisClock:$tmpClock")
         Thread.sleep(100)
         clockMap = masterStub.getClockMap(taskId)
       }
-    } else if (masterStub.asyncModel == AsyncModel.SSP) {
+    } else if (workerInfo.asyncModel == AsyncModel.SSP) {
       while (clockMap.values.max - tmpClock < 4) {
         Thread.sleep(100)
         clockMap = masterStub.getClockMap(taskId)

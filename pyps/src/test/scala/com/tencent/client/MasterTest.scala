@@ -5,7 +5,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.{Executor, Executors}
 
 import com.tencent.angel.common.location.Location
-import com.tencent.client.worker.{MStub, Task}
+import com.tencent.client.common.protos.AsyncModel
+import com.tencent.client.worker.{MStub, Task, WorkerInfo}
 import org.scalatest.FunSuite
 
 class MasterTest extends FunSuite {
@@ -16,7 +17,8 @@ class MasterTest extends FunSuite {
   class CreateTask extends Runnable {
     override def run(): Unit = {
       val flag = numTasks.getAndIncrement()
-      val task = new Task(master, flag == 0)
+      val workerInfo = WorkerInfo(-1, true, AsyncModel.BSP, 120000, null)
+      val task = new Task(master, workerInfo, flag == 0)
       task.register()
 
       println(s"task ${task.taskId} is registered")

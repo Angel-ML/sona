@@ -6,50 +6,86 @@ import java.util.logging.Logger
 import com.tencent.client.worker.protos._
 import io.grpc.stub.StreamObserver
 import java.lang.{Long => JLong}
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.{ConcurrentHashMap, Executors}
 
 import com.google.protobuf.ByteString
-import com.tencent.client.common.{DataHead, Deserializer, Utils}
+import com.tencent.client.common._
 import com.tencent.client.worker.ps.tensor.Tensor
 import com.tencent.client.common.protos.VoidResp
+import com.tencent.client.master.protos.Command._
 import com.tencent.client.plasma.PlasmaClient
-import com.tencent.client.worker.ps.common.{ClientContext, MasterContext, WorkerContext}
+import com.tencent.client.worker.ps.common._
 import com.tencent.client.worker.ps.updater.Optimizer
-import com.tencent.client.worker.ps.variable.{Embedding, Initializer, NormalInitializer, Updater, Variable}
+import com.tencent.client.worker.ps.variable._
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.util.ShutdownHookManager
 
 
-class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrpc.ClientWorkerImplBase {
+
+@throws[Exception]
+class WorkerService(worker: Worker, masterHost: String, masterPort: Int) extends ClientWorkerGrpc.ClientWorkerImplBase {
   private val logger = Logger.getLogger(classOf[Worker].getSimpleName)
   private val taskMap = new ConcurrentHashMap[JLong, Task]()
-  private val plasma = new PlasmaClient("", "", 12)
 
+  logger.info("start to connect to master!")
   private val masterStub = new MStub(masterHost, masterPort)
-  masterStub.registerWorker()
+  logger.info("connected to master!")
 
-  val clientContext = new ClientContext(masterStub.workId, masterStub.conf)
-  if (masterStub.isChief) {
-    // start angel master
+  logger.info("start to registerWorker!")
+  private val workerInfo = masterStub.registerWorker()
+  logger.info(s"{workerId: ${workerInfo.workId}, isChief: ${workerInfo.isChief}, asyncModel: ${workerInfo.asyncModel}}")
+
+  logger.info("begin to init ClientContext")
+  val clientContext = new ClientContext(masterStub.workId, workerInfo.conf)
+  if (workerInfo.isChief) {
+    logger.info("start Angel master")
     clientContext.startAngel()
+    logger.info("Angel master started!")
     val masterLocation = clientContext.getMasterLocation
+    logger.info(s"Angel master Location : ${masterLocation.toString}")
+
+    logger.info("send Angel Master Location to Client Master!")
     masterStub.setAngelLocation(masterLocation)
+
+    logger.info("start Angel PSAgent!")
     clientContext.startPSAgent()
+    logger.info("Angel PSAgent started!")
   } else {
-    Thread.sleep(50000)
+    logger.info("sleep 10 second waiting for Angel Master to start!")
+    Thread.sleep(10000)
+
+    logger.info("get location of Angel Master form Client Master!")
     val masterLocation = masterStub.getAngelLocation
+    logger.info(s"Angel master Location : ${masterLocation.toString}")
+
+    logger.info("start Angel PSAgent!")
     clientContext.setMasterLocation(masterLocation)
     clientContext.startPSAgent()
+    logger.info("Angel PSAgent started!")
   }
 
-  private val masterContext = MasterContext(clientContext.getAngelClient, masterStub.asyncModel)
-  private val workerContext = WorkerContext(clientContext.getPSAgent, masterStub.asyncModel)
+  private val masterContext = MasterContext(clientContext.getAngelClient, workerInfo.asyncModel)
+  private val workerContext = WorkerContext(clientContext.getPSAgent, workerInfo.asyncModel)
 
-  private def getTask(taskId: Long): Task = {
+  Executors.newSingleThreadExecutor().execute(new HeartBeat)
+
+  // plasma client
+  private val plasmaCmd = workerInfo.conf.get(PlasmaClient.Plasma_Store_Path)
+  private val suffix = workerInfo.conf.get(PlasmaClient.Plasma_Store_Suffix)
+  private val memoryGB = workerInfo.conf.get(PlasmaClient.Plasma_Store_MemoryGB).toInt
+  PlasmaClient.startObjectStore(plasmaCmd, suffix, memoryGB)
+
+
+  private def getTask(taskId: Long) = {
     if (!taskMap.containsKey(taskId)) {
-      val isChief = taskMap.size() == 0 && masterStub.isChief
-      val taskTemp = new Task(masterStub, isChief)
+      val isChief = taskMap.size() == 0 && workerInfo.isChief
+      val taskTemp = new Task(masterStub, workerInfo, isChief)
+
       taskMap.put(taskId, taskTemp)
+      logger.info("begin to register task to Client Master")
       taskTemp.register()
+      logger.info(s"task info: {taskId: ${taskTemp.taskId}, isChief: $isChief}")
       taskTemp
     } else {
       taskMap.get(taskId)
@@ -81,13 +117,13 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
       val tensor = new Tensor(request.getName, request.getDim, Utils.toArray(request.getShapeList),
         request.getDtype, request.getValidIndexNum, initializer)
 
-      task.put(request.getName, tensor)
-
       if (task.isChief) {
         tensor.create(masterContext)
       } else {
         tensor.create(workerContext)
       }
+
+      task.put(request.getName, tensor)
 
       val matId = tensor.getMatClient.getMatrixId
       val createResp = CreateResp.newBuilder()
@@ -114,12 +150,13 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
       val variable = new Variable(request.getName, request.getDim, Utils.toArray(request.getShapeList),
         request.getDtype, request.getValidIndexNum, updater, initializer)
 
-      task.put(request.getName, variable)
       if (task.isChief) {
         variable.create(masterContext)
       } else {
         variable.create(workerContext)
       }
+
+      task.put(request.getName, variable)
 
       val matId = variable.getMatClient.getMatrixId
       val createResp = CreateResp.newBuilder()
@@ -150,12 +187,13 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
       val embedding = new Embedding(request.getName, request.getNumFeats, request.getEmbeddingSize,
         request.getDtype, updater, initializer)
 
-      task.put(request.getName, embedding)
       if (task.isChief) {
         embedding.create(masterContext)
       } else {
         embedding.create(workerContext)
       }
+
+      task.put(request.getName, embedding)
 
       val matId = embedding.getMatClient.getMatrixId
       val createResp = CreateResp.newBuilder()
@@ -239,7 +277,9 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
   }
 
   override def pull(request: PullRequest, responseObserver: StreamObserver[PullResponse]): Unit = {
+    var plasma: PlasmaClient = null
     try {
+      plasma = PlasmaClient.get
       val taskId = request.getTaskId
       val matId = request.getMatId
       val epoch = request.getEpoch
@@ -249,17 +289,19 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
       val tsLike = task.get(matId)
 
       val objectId = request.getObjectId
-      val pulled = if (objectId != null) {
+      val resObjId = PlasmaClient.getObjectId(matId, epoch, batch)
+      if (objectId != null) {
         val byteBuf = plasma.getBuffer(objectId.toByteArray, 3000)
         val dataHead = DataHead.fromBuffer(byteBuf)
         val indices = Deserializer.indicesFromBuffer(byteBuf, dataHead, tsLike.getMeta)
-        tsLike.pull(epoch, Utils.vector2Matrix(indices))
+        val pulled = tsLike.pull(epoch, Utils.vector2Matrix(indices))
+        plasma.put(resObjId, pulled, tsLike.getMeta)
       } else {
-        tsLike.pull(epoch, null)
+        if (!plasma.contains(resObjId)) {
+          val pulled = tsLike.pull(epoch, null)
+          plasma.put(resObjId, pulled, tsLike.getMeta)
+        }
       }
-
-      val resObjId = PlasmaClient.getObjectId(taskId, matId, epoch, batch)
-      plasma.put(resObjId, pulled, tsLike.getMeta)
 
       val resp = PullResponse.newBuilder()
         .setTaskId(taskId)
@@ -272,11 +314,17 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
     } catch {
       case e: Exception => responseObserver.onError(e)
       case ae: AssertionError => responseObserver.onError(ae)
+    } finally {
+      if (plasma != null) {
+        PlasmaClient.put(plasma)
+      }
     }
   }
 
   override def push(request: PushRequest, responseObserver: StreamObserver[VoidResp]): Unit = {
+    var plasma: PlasmaClient = null
     try {
+      plasma = PlasmaClient.get
       val taskId = request.getTaskId
       val matId = request.getMatId
       val epoch = request.getEpoch
@@ -298,6 +346,10 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
     } catch {
       case e: Exception => responseObserver.onError(e)
       case ae: AssertionError => responseObserver.onError(ae)
+    } finally {
+      if (plasma != null) {
+        PlasmaClient.put(plasma)
+      }
     }
   }
 
@@ -359,4 +411,29 @@ class WorkerService(masterHost: String, masterPort: Int) extends ClientWorkerGrp
       case ae: AssertionError => responseObserver.onError(ae)
     }
   }
+
+  private class HeartBeat extends Runnable {
+    override def run(): Unit = {
+      while (!Thread.currentThread().isInterrupted) {
+        val cmd = masterStub.sendHeartBeat
+
+        cmd match {
+          case STOPANGEL =>
+            clientContext.stopAngel()
+            PlasmaClient.killObjectStore()
+          case STOPPSAGENT =>
+            clientContext.stopPSAgent()
+            PlasmaClient.killObjectStore()
+          case STOPWORKER =>
+            masterStub.shutdown()
+            worker.stop()
+            PlasmaClient.killObjectStore()
+          case NOTHING | UNRECOGNIZED =>
+        }
+
+        Thread.sleep(workerInfo.heartBeatInterval)
+      }
+    }
+  }
+
 }

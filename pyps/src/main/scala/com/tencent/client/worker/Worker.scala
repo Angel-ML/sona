@@ -10,7 +10,7 @@ class Worker(val masterHost: String, val masterPort: Int, val workerPost: Int) {
   private val logger = Logger.getLogger(classOf[Worker].getSimpleName)
 
   private val serverBuilder = ServerBuilder.forPort(workerPost)
-  private val masterService = new WorkerService(masterHost, masterPort)
+  private val masterService = new WorkerService(this, masterHost, masterPort)
   private val server = serverBuilder.addService(masterService).build
 
   @throws[IOException]
@@ -40,8 +40,13 @@ object Worker {
   private val logger = Logger.getLogger(Worker.getClass.getSimpleName)
 
   def main(args: Array[String]): Unit = {
-    val server = new Worker("",8980, 123)
-    server.start()
-    server.blockUntilShutdown()
+    try {
+      val server = new Worker("localhost",8980, 9005)
+      server.start()
+      server.blockUntilShutdown()
+    } catch {
+      case e: Exception =>
+        e.printStackTrace()
+    }
   }
 }

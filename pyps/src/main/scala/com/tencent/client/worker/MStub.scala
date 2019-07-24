@@ -18,24 +18,26 @@ class MStub(host: String, port: Int) {
   // private val asyncStub = AngelCleintMasterGrpc.newStub(channel)
 
   var workId: Long = 0
-  var isChief: Boolean = false
-  var asyncModel: AsyncModel = AsyncModel.BSP
-  val conf: Configuration = new Configuration
 
-  def registerWorker(): Unit = {
+  @throws[Exception]
+  def registerWorker(): WorkerInfo = synchronized {
+    val host = InetAddress.getLocalHost.getHostAddress
     val registerWorkerReq = RegisterWorkerReq.newBuilder()
-      .setHost(InetAddress.getLocalHost.getHostAddress)
+      .setHost(host)
       .setPort(port)
       .build()
     val resp = blockingStub.registerWorker(registerWorkerReq)
+    if (resp.getRet == 0) {
+      throw new Exception(s"Worker[$host:$port] has registered! ")
+    }
+    val conf = new Configuration()
+    Utils.fillConf(resp.getConfMap, conf)
 
     workId = resp.getWorkId
-    isChief = resp.getIsChief
-    asyncModel = resp.getAsyncModel
-    Utils.fillConf(resp.getConfMap, conf)
+    WorkerInfo(workId, resp.getIsChief, resp.getAsyncModel, resp.getHeartBeatInterval, conf)
   }
 
-  def setAngelLocation(loc: Location): Unit = {
+  def setAngelLocation(loc: Location): Unit = synchronized {
     val req = SetAngelLocationReq.newBuilder()
       .setWorkId(workId)
       .setHost(loc.getIp)
@@ -45,13 +47,13 @@ class MStub(host: String, port: Int) {
     blockingStub.setAngelLocation(req)
   }
 
-  def getAngelLocation: Location = {
+  def getAngelLocation: Location = synchronized {
     val req = VoidReq.newBuilder().setItemId(workId).build()
     val resp = blockingStub.getAngelLocation(req)
     new Location(resp.getHost, resp.getPort)
   }
 
-  def registerTask: TaskInfo = {
+  def registerTask: TaskInfo = synchronized {
     val req = RegisterTaskReq.newBuilder()
       .setWorkId(workId)
       .setTimestamp(System.currentTimeMillis())
@@ -74,7 +76,7 @@ class MStub(host: String, port: Int) {
     TaskInfo(taskId, numTask, clock)
   }
 
-  def clock(taskId: Long, currClock: Int, batchSize: Int): Map[Long, Int] = {
+  def clock(taskId: Long, currClock: Int, batchSize: Int): Map[Long, Int] = synchronized {
     val clockReq = ClockReq.newBuilder()
       .setTaskId(taskId)
       .setClock(currClock)
@@ -94,7 +96,7 @@ class MStub(host: String, port: Int) {
     list.toMap
   }
 
-  def getClockMap(taskId: Long): Map[Long, Int] = {
+  def getClockMap(taskId: Long): Map[Long, Int] = synchronized {
     val clockMapReq = GetClockMapReq.newBuilder().setTaskId(taskId).build()
 
     val resp = blockingStub.getClockMap(clockMapReq)
@@ -111,7 +113,7 @@ class MStub(host: String, port: Int) {
     list.toMap
   }
 
-  def completeTask(taskId: Long): Unit = {
+  def completeTask(taskId: Long): Unit = synchronized {
     val req = CompleteTaskReq.newBuilder()
       .setTaskId(taskId)
       .setTimestamps(System.currentTimeMillis())
@@ -120,19 +122,19 @@ class MStub(host: String, port: Int) {
     blockingStub.completeTask(req)
   }
 
-  def getGlobalBatchSize: Int = {
+  def getGlobalBatchSize: Int = synchronized {
     val req = VoidReq.newBuilder().setItemId(workId).build()
     val resp = blockingStub.getGlobalBatchSize(req)
     resp.getBatchSize
   }
 
-  def sendHeartBeat: Command = {
+  def sendHeartBeat: Command = synchronized {
     val req = HeartBeatReq.newBuilder().setWorkId(workId).build()
     val resp = blockingStub.heartBeat(req)
     resp.getCmd
   }
 
-  def shutdown(): Unit = {
+  def shutdown(): Unit = synchronized {
     channel.shutdown()
     while (!channel.isShutdown) {
       Thread.sleep(100)

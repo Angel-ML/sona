@@ -110,53 +110,54 @@ public final class ClientMasterProto {
     java.lang.String[] descriptorData = {
       "\n\023client_master.proto\022\014ClientMaster\032\014com" +
       "mon.proto\"/\n\021RegisterWorkerReq\022\014\n\004host\030\001" +
-      " \001(\t\022\014\n\004port\030\002 \001(\005\"\312\001\n\022RegisterWorkerRes" +
-      "p\022\016\n\006workId\030\002 \001(\003\022\017\n\007isChief\030\003 \001(\010\022\037\n\nas" +
-      "yncModel\030\005 \001(\0162\013.AsyncModel\0228\n\004conf\030\006 \003(" +
-      "\0132*.ClientMaster.RegisterWorkerResp.Conf" +
-      "Entry\022\013\n\003msg\030\007 \001(\t\032+\n\tConfEntry\022\013\n\003key\030\001" +
-      " \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"4\n\017RegisterTaskR" +
-      "eq\022\016\n\006workId\030\002 \001(\003\022\021\n\ttimestamp\030\003 \001(\003\"\233\001" +
-      "\n\020RegisterTaskResp\022\016\n\006taskId\030\002 \001(\003\022\017\n\007nu" +
-      "mTask\030\004 \001(\005\0228\n\005clock\030\003 \003(\0132).ClientMaste" +
-      "r.RegisterTaskResp.ClockEntry\032,\n\nClockEn" +
-      "try\022\013\n\003key\030\001 \001(\003\022\r\n\005value\030\002 \001(\005:\0028\001\"A\n\023S" +
-      "etAngelLocationReq\022\016\n\006workId\030\001 \001(\003\022\014\n\004ho" +
-      "st\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\"?\n\024GetAngelLocati" +
-      "onResp\022\014\n\004host\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\022\013\n\003ms" +
-      "g\030\004 \001(\t\"\036\n\014HeartBeatReq\022\016\n\006workId\030\001 \001(\003\"" +
-      "3\n\rHeartBeatResp\022\"\n\003cmd\030\003 \001(\0162\025.ClientMa" +
-      "ster.Command\"<\n\010ClockReq\022\016\n\006taskId\030\001 \001(\003" +
-      "\022\r\n\005clock\030\002 \001(\005\022\021\n\tbatchSize\030\003 \001(\005\"\205\001\n\tC" +
-      "lockResp\022\016\n\006taskId\030\001 \001(\003\0227\n\010clockMap\030\002 \003" +
-      "(\0132%.ClientMaster.ClockResp.ClockMapEntr" +
-      "y\032/\n\rClockMapEntry\022\013\n\003key\030\001 \001(\003\022\r\n\005value" +
-      "\030\002 \001(\005:\0028\001\" \n\016GetClockMapReq\022\016\n\006taskId\030\001" +
-      " \001(\003\"\221\001\n\017GetClockMapResp\022\016\n\006taskId\030\001 \001(\003" +
-      "\022=\n\010clockMap\030\002 \003(\0132+.ClientMaster.GetClo" +
-      "ckMapResp.ClockMapEntry\032/\n\rClockMapEntry" +
-      "\022\013\n\003key\030\001 \001(\003\022\r\n\005value\030\002 \001(\005:\0028\001\"\'\n\022GetG" +
-      "lobalBatchResp\022\021\n\tbatchSize\030\001 \001(\005*F\n\007Com" +
-      "mand\022\r\n\tSTOPANGEL\020\000\022\017\n\013STOPPSAGENT\020\001\022\016\n\n" +
-      "STOPWORKER\020\002\022\013\n\007NOTHING\020\0032\210\005\n\021AngelClein" +
-      "tMaster\022U\n\016RegisterWorker\022\037.ClientMaster" +
-      ".RegisterWorkerReq\032 .ClientMaster.Regist" +
-      "erWorkerResp\"\000\022O\n\014RegisterTask\022\035.ClientM" +
-      "aster.RegisterTaskReq\032\036.ClientMaster.Reg" +
-      "isterTaskResp\"\000\022B\n\020SetAngelLocation\022!.Cl" +
-      "ientMaster.SetAngelLocationReq\032\t.VoidRes" +
-      "p\"\000\022B\n\020GetAngelLocation\022\010.VoidReq\032\".Clie" +
-      "ntMaster.GetAngelLocationResp\"\000\022F\n\tHeart" +
-      "Beat\022\032.ClientMaster.HeartBeatReq\032\033.Clien" +
-      "tMaster.HeartBeatResp\"\000\022:\n\005Clock\022\026.Clien" +
-      "tMaster.ClockReq\032\027.ClientMaster.ClockRes" +
-      "p\"\000\022L\n\013GetClockMap\022\034.ClientMaster.GetClo" +
-      "ckMapReq\032\035.ClientMaster.GetClockMapResp\"" +
-      "\000\022B\n\022GetGlobalBatchSize\022\010.VoidReq\032 .Clie" +
-      "ntMaster.GetGlobalBatchResp\"\000\022-\n\014Complet" +
-      "eTask\022\020.CompleteTaskReq\032\t.VoidResp\"\000B:\n " +
-      "com.tencent.client.master.protosB\021Client" +
-      "MasterProtoP\001\210\001\001b\006proto3"
+      " \001(\t\022\014\n\004port\030\002 \001(\005\"\345\001\n\022RegisterWorkerRes" +
+      "p\022\013\n\003ret\030\001 \001(\005\022\016\n\006workId\030\002 \001(\003\022\017\n\007isChie" +
+      "f\030\003 \001(\010\022\037\n\nasyncModel\030\005 \001(\0162\013.AsyncModel" +
+      "\0228\n\004conf\030\006 \003(\0132*.ClientMaster.RegisterWo" +
+      "rkerResp.ConfEntry\022\031\n\021heartBeatInterval\030" +
+      "\007 \001(\005\032+\n\tConfEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value" +
+      "\030\002 \001(\t:\0028\001\"4\n\017RegisterTaskReq\022\016\n\006workId\030" +
+      "\002 \001(\003\022\021\n\ttimestamp\030\003 \001(\003\"\233\001\n\020RegisterTas" +
+      "kResp\022\016\n\006taskId\030\002 \001(\003\022\017\n\007numTask\030\004 \001(\005\0228" +
+      "\n\005clock\030\003 \003(\0132).ClientMaster.RegisterTas" +
+      "kResp.ClockEntry\032,\n\nClockEntry\022\013\n\003key\030\001 " +
+      "\001(\003\022\r\n\005value\030\002 \001(\005:\0028\001\"A\n\023SetAngelLocati" +
+      "onReq\022\016\n\006workId\030\001 \001(\003\022\014\n\004host\030\002 \001(\t\022\014\n\004p" +
+      "ort\030\003 \001(\005\"?\n\024GetAngelLocationResp\022\014\n\004hos" +
+      "t\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\022\013\n\003msg\030\004 \001(\t\"\036\n\014He" +
+      "artBeatReq\022\016\n\006workId\030\001 \001(\003\"3\n\rHeartBeatR" +
+      "esp\022\"\n\003cmd\030\003 \001(\0162\025.ClientMaster.Command\"" +
+      "<\n\010ClockReq\022\016\n\006taskId\030\001 \001(\003\022\r\n\005clock\030\002 \001" +
+      "(\005\022\021\n\tbatchSize\030\003 \001(\005\"\205\001\n\tClockResp\022\016\n\006t" +
+      "askId\030\001 \001(\003\0227\n\010clockMap\030\002 \003(\0132%.ClientMa" +
+      "ster.ClockResp.ClockMapEntry\032/\n\rClockMap" +
+      "Entry\022\013\n\003key\030\001 \001(\003\022\r\n\005value\030\002 \001(\005:\0028\001\" \n" +
+      "\016GetClockMapReq\022\016\n\006taskId\030\001 \001(\003\"\221\001\n\017GetC" +
+      "lockMapResp\022\016\n\006taskId\030\001 \001(\003\022=\n\010clockMap\030" +
+      "\002 \003(\0132+.ClientMaster.GetClockMapResp.Clo" +
+      "ckMapEntry\032/\n\rClockMapEntry\022\013\n\003key\030\001 \001(\003" +
+      "\022\r\n\005value\030\002 \001(\005:\0028\001\"\'\n\022GetGlobalBatchRes" +
+      "p\022\021\n\tbatchSize\030\001 \001(\005*F\n\007Command\022\r\n\tSTOPA" +
+      "NGEL\020\000\022\017\n\013STOPPSAGENT\020\001\022\016\n\nSTOPWORKER\020\002\022" +
+      "\013\n\007NOTHING\020\0032\210\005\n\021AngelCleintMaster\022U\n\016Re" +
+      "gisterWorker\022\037.ClientMaster.RegisterWork" +
+      "erReq\032 .ClientMaster.RegisterWorkerResp\"" +
+      "\000\022O\n\014RegisterTask\022\035.ClientMaster.Registe" +
+      "rTaskReq\032\036.ClientMaster.RegisterTaskResp" +
+      "\"\000\022B\n\020SetAngelLocation\022!.ClientMaster.Se" +
+      "tAngelLocationReq\032\t.VoidResp\"\000\022B\n\020GetAng" +
+      "elLocation\022\010.VoidReq\032\".ClientMaster.GetA" +
+      "ngelLocationResp\"\000\022F\n\tHeartBeat\022\032.Client" +
+      "Master.HeartBeatReq\032\033.ClientMaster.Heart" +
+      "BeatResp\"\000\022:\n\005Clock\022\026.ClientMaster.Clock" +
+      "Req\032\027.ClientMaster.ClockResp\"\000\022L\n\013GetClo" +
+      "ckMap\022\034.ClientMaster.GetClockMapReq\032\035.Cl" +
+      "ientMaster.GetClockMapResp\"\000\022B\n\022GetGloba" +
+      "lBatchSize\022\010.VoidReq\032 .ClientMaster.GetG" +
+      "lobalBatchResp\"\000\022-\n\014CompleteTask\022\020.Compl" +
+      "eteTaskReq\032\t.VoidResp\"\000B:\n com.tencent.c" +
+      "lient.master.protosB\021ClientMasterProtoP\001" +
+      "\210\001\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -182,7 +183,7 @@ public final class ClientMasterProto {
     internal_static_ClientMaster_RegisterWorkerResp_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ClientMaster_RegisterWorkerResp_descriptor,
-        new java.lang.String[] { "WorkId", "IsChief", "AsyncModel", "Conf", "Msg", });
+        new java.lang.String[] { "Ret", "WorkId", "IsChief", "AsyncModel", "Conf", "HeartBeatInterval", });
     internal_static_ClientMaster_RegisterWorkerResp_ConfEntry_descriptor =
       internal_static_ClientMaster_RegisterWorkerResp_descriptor.getNestedTypes().get(0);
     internal_static_ClientMaster_RegisterWorkerResp_ConfEntry_fieldAccessorTable = new

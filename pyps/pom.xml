@@ -32,11 +32,11 @@
             <artifactId>scala-parser-combinators_${scala.binary.version}</artifactId>
             <version>1.1.0</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.apache.arrow</groupId>
             <artifactId>arrow-plasma</artifactId>
             <version>0.13.0</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>

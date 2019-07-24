@@ -34,17 +34,21 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
   private val currentClockVector: util.Map[JLong, JINT] = new ConcurrentHashMap[JLong, JINT]() // taskId -> clock
   private val currentBatchSizeVector = new ConcurrentHashMap[Long, Int]() // taskId -> batchSize
 
-
   private val timeOut = 120000
-  // Executors.newSingleThreadExecutor().execute(new HeartBeat)
+  private val heartBeatInterval = 120000
+  Executors.newSingleThreadExecutor().execute(new HeartBeat)
 
   override def registerWorker(request: RegisterWorkerReq, responseObserver: StreamObserver[RegisterWorkerResp]): Unit = synchronized {
     try {
       val location = new Location(request.getHost, request.getPort)
+      logger.info(s"${location.toString} register")
       val exists = activeWorker.containsValue(location)
 
       if (exists) {
-        throw new Exception(s"Worker[${location.getIp}:${location.getPort}] has registered! ")
+        logger.info(s"${location.toString} has registered, ERROR !")
+        val resp = RegisterWorkerResp.newBuilder().setRet(0)
+        responseObserver.onNext(resp.build())
+        responseObserver.onCompleted()
       } else {
         val workerId = nextWorkerId.getAndIncrement()
         activeWorker.put(workerId, location)
@@ -53,15 +57,17 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
         val isChief = workerId == 1
 
         val resp = RegisterWorkerResp.newBuilder()
+          .setRet(1)
           .setWorkId(workerId)
           .setIsChief(isChief)
           .setAsyncModel(syncModel)
+          .setHeartBeatInterval(heartBeatInterval)
 
         if (conf != null) {
           resp.putAllConf(conf)
         }
-        logger.info(s"${location.toString} registered!")
 
+        logger.info(s"${location.toString} registered !")
         responseObserver.onNext(resp.build())
         responseObserver.onCompleted()
       }
@@ -96,7 +102,6 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
   }
 
   override def setAngelLocation(request: SetAngelLocationReq, responseObserver: StreamObserver[VoidResp]): Unit = synchronized {
-    logger.info("setAngelLocation")
     try {
       if (masterId != -1 || masterLocation != null) {
         throw new Exception("the master has been set, error!")
@@ -263,8 +268,9 @@ class MasterService(val numTask: Int, val syncModel: AsyncModel, val conf: util.
   private class HeartBeat extends Runnable {
     override def run(): Unit = {
       while (!Thread.currentThread().isInterrupted) {
-        Thread.sleep((timeOut + 2) / 3)
+        Thread.sleep((heartBeatInterval + 1) / 2)
 
+        // workerId -> timestamp
         if (!workerHeartBeat.isEmpty) {
           val iter = workerHeartBeat.entrySet().iterator()
           while (iter.hasNext) {

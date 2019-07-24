@@ -1,18 +1,23 @@
 package com.tencent.client.plasma
 
+import java.io.IOException
 import java.nio.ByteBuffer
-import java.util
-import java.util.{ArrayList, List, Random}
+import java.util.concurrent.{ConcurrentLinkedQueue, ThreadLocalRandom, TimeUnit}
+import java.util.logging.Logger
+import java.util.Random
 
 import com.tencent.client.plasma.exceptions.{DuplicateObjectException, PlasmaOutOfMemoryException}
 import com.tencent.client.common.{DataHead, Deserializer, Meta, Serializer}
 import com.tencent.angel.ml.servingmath2.vector._
 import com.tencent.angel.ml.servingmath2.matrix._
 import com.tencent.angel.ml.servingmath2.utils.LabeledData
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.util.ShutdownHookManager
+
+import scala.collection.JavaConversions._
 
 
-
-class PlasmaClient(storeSocketName: String, managerSocketName: String, releaseDelay: Int) {
+class PlasmaClient private(storeSocketName: String, managerSocketName: String, releaseDelay: Int) {
   private lazy val conn = PlasmaClientJNI.connect(storeSocketName, managerSocketName, releaseDelay)
 
   @throws[DuplicateObjectException]
@@ -112,19 +117,30 @@ class PlasmaClient(storeSocketName: String, managerSocketName: String, releaseDe
     PlasmaClientJNI.delete(conn, objectId)
   }
 
-  def contains(objectId: Array[Byte]):Boolean = {
+  def contains(objectId: Array[Byte]): Boolean = {
     PlasmaClientJNI.contains(conn, objectId)
   }
 }
 
 object PlasmaClient {
-  private val rand = new Random()
+  private val logger = Logger.getLogger(PlasmaClient.getClass.getSimpleName)
 
-  def getObjectId(pid: Long, matId: Int, epoch: Int, batch: Int): Array[Byte] = {
+  val Plasma_Store_Path = "plasma.store.path"
+  val Plasma_Store_Suffix = "plasma.store.suffix"
+  val Plasma_Store_MemoryGB = "plasma.store.memoryGB"
+
+  private val rand = new Random()
+  private var storeProcess: Process = _
+  private var plasmaName: String = _
+  private val clientPool = new ConcurrentLinkedQueue[PlasmaClient]()
+
+  private val shutdownHookManager = ShutdownHookManager.get()
+  private var stopPlasmaHookTask: Runnable = _
+
+  def getObjectId(matId: Int, epoch: Int, batch: Int): Array[Byte] = {
     val bytes = new Array[Byte](20)
     val buf = ByteBuffer.wrap(bytes)
 
-    buf.putLong(pid)
     buf.putInt(matId)
     buf.putInt(epoch)
     buf.putInt(batch)
@@ -136,5 +152,90 @@ object PlasmaClient {
     val bytes = new Array[Byte](20)
     rand.nextBytes(bytes)
     bytes
+  }
+
+  def startObjectStore(plasmaStorePath: String, storeSuffix: String, memoryGB: Int): Unit = {
+    if (storeProcess != null) return
+
+    val memoryBytes: Long = memoryGB * 1024 * 1024 * 1024
+
+    var i = 0
+    var flag = false
+
+    while (i < 5 && !flag) { // retry
+      val currentPort: Int = ThreadLocalRandom.current.nextInt(0, 100000)
+      plasmaName = s"$storeSuffix$currentPort"
+      val cmd: String = s"$plasmaStorePath -s $plasmaName -m $memoryBytes"
+      val builder = new ProcessBuilder(cmd.split(" ").toList)
+      builder.inheritIO
+
+      try
+        storeProcess = builder.start
+      catch {
+        case e: IOException => e.printStackTrace()
+      }
+
+      if (storeProcess != null && storeProcess.isAlive) {
+        try {
+          TimeUnit.MILLISECONDS.sleep(100)
+        } catch {
+          case e: InterruptedException => e.printStackTrace()
+        }
+
+        flag = true
+      } else {
+        logger.info(s"Start object store failed, retry $i times, ...")
+      }
+
+      i += 1
+    }
+
+    if (storeProcess == null || !storeProcess.isAlive) {
+      throw new RuntimeException("Start object store failed ...")
+    } else {
+      stopPlasmaHookTask = new Runnable {
+        override def run(): Unit = {
+          if (storeProcess != null && storeProcess.isAlive) {
+            storeProcess.destroyForcibly
+            storeProcess = null
+          }
+        }
+      }
+      shutdownHookManager.addShutdownHook(stopPlasmaHookTask,
+        FileSystem.SHUTDOWN_HOOK_PRIORITY + 10)
+      logger.info("Start object store success")
+    }
+  }
+
+  def killObjectStore(): Unit = {
+    if (stopPlasmaHookTask != null && shutdownHookManager.hasShutdownHook(stopPlasmaHookTask)) {
+      shutdownHookManager.removeShutdownHook(stopPlasmaHookTask)
+      stopPlasmaHookTask = null
+    }
+
+    if (storeProcess != null && storeProcess.isAlive) {
+      storeProcess.destroyForcibly
+      storeProcess = null
+    }
+  }
+
+  def load(): Unit = {
+    try {
+      System.loadLibrary("libplasma_java")
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
+  }
+
+  def get: PlasmaClient = synchronized {
+    if (clientPool.isEmpty) {
+      new PlasmaClient(plasmaName, "", 0)
+    } else {
+      clientPool.poll()
+    }
+  }
+
+  def put(client: PlasmaClient): Unit = synchronized {
+    clientPool.offer(client)
   }
 }

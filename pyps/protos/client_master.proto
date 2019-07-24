@@ -22,11 +22,12 @@ message RegisterWorkerReq {
 }
 
 message RegisterWorkerResp {
+    int32 ret = 1;
     int64 workId = 2;
     bool isChief = 3;
     AsyncModel asyncModel = 5;
     map<string, string> conf = 6;
-    string msg = 7;
+    int32 heartBeatInterval = 7;
 }
 
 message RegisterTaskReq {

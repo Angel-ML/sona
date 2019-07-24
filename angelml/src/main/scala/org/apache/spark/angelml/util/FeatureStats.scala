@@ -6,9 +6,9 @@ import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.matrix.MatrixContext
 import com.tencent.angel.matrix.psf.aggr.enhance.ScalarAggrResult
 import com.tencent.angel.ml.core.utils.MLException
-import com.tencent.angel.ml.math2.storage.{IntDoubleSparseVectorStorage, LongDoubleSparseVectorStorage}
-import com.tencent.angel.ml.math2.utils.RowType
-import com.tencent.angel.ml.math2.vector.{IntDoubleVector, LongDoubleVector}
+import com.tencent.angel.ml.servingmath2.storage.{IntDoubleSparseVectorStorage, LongDoubleSparseVectorStorage}
+import com.tencent.angel.ml.servingmath2.utils.RowType
+import com.tencent.angel.ml.servingmath2.vector.{IntDoubleVector, LongDoubleVector}
 import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.sona.core.ExecutorContext
 import com.tencent.angel.sona.psf.StatsFunc
