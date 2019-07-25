@@ -62,8 +62,9 @@ object Master {
       "angel.log.path" -> "file:///home/fitz/github/fitzwang/sona/pyps/logpath",
       "angel.save.model.path" -> "file:///home/fitz/github/fitzwang/sona/pyps/modelpath",
       "plasma.store.path" -> "/home/fitz/working/arrow/plasma_store_server",
-      "plasma.store.suffix" -> "/tmp/plasma/store",
-      "plasma.store.memoryGB" -> "1"
+      "plasma.store.suffix" -> "/tmp/plasma",
+      "plasma.store.memoryGB" -> "1",
+      "python.script.name" -> "test.py"
     )
 
     val server = new Master(8980, 5, AsyncModel.BSP, conf)

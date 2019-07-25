@@ -163,9 +163,10 @@ object PlasmaClient {
     var flag = false
 
     while (i < 5 && !flag) { // retry
-      val currentPort: Int = ThreadLocalRandom.current.nextInt(0, 100000)
+      val currentPort: Int = ThreadLocalRandom.current.nextInt(0, 10000)
       plasmaName = s"$storeSuffix$currentPort"
-      val cmd: String = s"$plasmaStorePath -s $plasmaName -m $memoryBytes"
+      val cmd: String = s"$plasmaStorePath -m $memoryBytes -s $plasmaName"
+      logger.info(cmd)
       val builder = new ProcessBuilder(cmd.split(" ").toList)
       builder.inheritIO
 
@@ -198,16 +199,25 @@ object PlasmaClient {
           if (storeProcess != null && storeProcess.isAlive) {
             storeProcess.destroyForcibly
             storeProcess = null
+            logger.info("plasma server has stopped!")
           }
         }
       }
+
+      //Runtime.getRuntime.addShutdownHook(stopPlasmaHookTask)
       shutdownHookManager.addShutdownHook(stopPlasmaHookTask,
         FileSystem.SHUTDOWN_HOOK_PRIORITY + 10)
       logger.info("Start object store success")
+
+      // load plasma_java
+      logger.info("begin to load plasma_java, please make sure plasma_java in java.library.path ")
+      PlasmaClient.load()
+      logger.info("load plasma_java success!")
     }
   }
 
   def killObjectStore(): Unit = {
+    //Runtime.getRuntime.removeShutdownHook(stopPlasmaHookTask)
     if (stopPlasmaHookTask != null && shutdownHookManager.hasShutdownHook(stopPlasmaHookTask)) {
       shutdownHookManager.removeShutdownHook(stopPlasmaHookTask)
       stopPlasmaHookTask = null
@@ -221,7 +231,7 @@ object PlasmaClient {
 
   def load(): Unit = {
     try {
-      System.loadLibrary("libplasma_java")
+      System.loadLibrary("plasma_java")
     } catch {
       case e: Exception => e.printStackTrace()
     }
