@@ -36,7 +36,7 @@ object SPKSQLUtils {
     }
   }
 
-  def registerUDT(): Unit = {
+  def registerUDT(): Unit = synchronized{
     UDTRegistration.register("org.apache.spark.angelml.linalg.Vector", "org.apache.spark.angelml.linalg.VectorUDT")
     UDTRegistration.register("org.apache.spark.angelml.linalg.DenseVector", "org.apache.spark.angelml.linalg.VectorUDT")
     UDTRegistration.register("org.apache.spark.angelml.linalg.SparseVector", "org.apache.spark.angelml.linalg.VectorUDT")

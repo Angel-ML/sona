@@ -34,7 +34,7 @@ import org.apache.spark.sql.catalyst.expressions.codegen.GenerateUnsafeProjectio
 import org.apache.spark.sql.execution.datasources._
 import org.apache.spark.sql.sources._
 import org.apache.spark.sql.types._
-import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.{Row, SPKSQLUtils, SparkSession}
 import org.apache.spark.util.SerializableConfiguration
 
 private[libsvm] class LibSVMOutputWriter(
@@ -71,9 +71,9 @@ private[libsvm] class LibSVMFileFormat
     with DataSourceRegister
     with Logging {
 
-  override def shortName(): String = "libsvm"
+  override def shortName(): String = "libsvmex"
 
-  override def toString: String = "LibSVM"
+  override def toString: String = "LibSVMEX"
 
   private def verifySchema(dataSchema: StructType, forWriting: Boolean): Unit = {
     if (
@@ -177,8 +177,11 @@ private[libsvm] class LibSVMFileFormat
       sparkSession.sparkContext.broadcast(new SerializableConfiguration(hadoopConf))
 
     file: PartitionedFile => {
+
+      SPKSQLUtils.registerUDT()
+
       val linesReader = new HadoopFileLinesReader(file, broadcastedHadoopConf.value.value)
-      Option(TaskContext.get()).foreach(_.addTaskCompletionListener[Unit](_ => linesReader.close()))
+      Option(TaskContext.get()).foreach(_.addTaskCompletionListener(_ => linesReader.close()))
 
       val points = linesReader
         .map(_.toString.trim)

@@ -1,6 +1,6 @@
 {
   "data": {
-    "format": "libsvm",
+    "format": "dense",
     "indexrange": 148,
     "validateratio": 0.1,
     "posnegratio": 0.8

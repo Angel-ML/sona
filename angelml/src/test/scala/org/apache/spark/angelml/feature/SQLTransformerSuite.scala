@@ -67,7 +67,7 @@ class SQLTransformerSuite extends MLTest with DefaultReadWriteTest {
     assert(outputSchema === expected)
   }
 
-  test("SPARK-22538: SQLTransformer should not unpersist given dataset") {
+  ignore("SPARK-22538: SQLTransformer should not unpersist given dataset") {
     val df = spark.range(10).toDF()
     df.cache()
     df.count()

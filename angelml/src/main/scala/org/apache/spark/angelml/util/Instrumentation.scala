@@ -49,8 +49,8 @@ private[spark] class Instrumentation private () extends Logging {
   def logPipelineStage(stage: PipelineStage): Unit = {
     // estimator.getClass.getSimpleName can cause Malformed class name error,
     // call safer `Utils.getSimpleName` instead
-    val className = Utils.getSimpleName(stage.getClass)
-    logInfo(s"Stage class: $className")
+//    val className = Utils.getSimpleName(stage.getClass)
+//    logInfo(s"Stage class: $className")
     logInfo(s"Stage uid: ${stage.uid}")
   }
 

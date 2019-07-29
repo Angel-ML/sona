@@ -1,13 +1,14 @@
 package com.tencent.angel.sona.core
 
+
 import com.tencent.angel.mlcore.conf.SharedConf
-import com.tencent.angel.psagent.PSAgent
-import org.apache.spark.TaskContext
-import org.apache.spark.internal.Logging
+import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
+import org.apache.spark.internal.CompatibleLogging
+import org.apache.spark.sql.SPKSQLUtils
 
 
 case class ExecutorContext(conf: SharedConf, numTask: Int)
-  extends PSAgentContext(conf) with Serializable with Logging {
+  extends PSAgentContext(conf) with Serializable with CompatibleLogging {
 
   @transient override lazy val sparkEnvContext: SparkEnvContext = SparkEnvContext(null)
 }
@@ -18,8 +19,11 @@ object ExecutorContext {
 
   def getPSAgent(exeCtx: ExecutorContext): PSAgent = synchronized {
     while (psAgent == null) {
+      SPKSQLUtils.registerUDT()
       psAgent = exeCtx.createAndInitPSAgent
     }
+
+    PSAgentContext.get().getPsAgent.refreshMatrixInfo()
 
     psAgent
   }

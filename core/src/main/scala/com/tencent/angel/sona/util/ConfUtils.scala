@@ -10,12 +10,12 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.SparkConf
 import org.apache.spark.deploy.SparkHadoopUtil
-import org.apache.spark.internal.Logging
+import org.apache.spark.internal.CompatibleLogging
 
 
 import scala.collection.mutable.ArrayBuffer
 
-object ConfUtils extends Logging {
+object ConfUtils extends CompatibleLogging {
   val MASTER_IP = "angel.master.ip"
   val MASTER_PORT = "angel.master.port"
   val TOTAL_CORES = "angel.ps.total.cores"

@@ -21,7 +21,7 @@ import java.util.NoSuchElementException
 
 import org.apache.spark.SparkException
 import org.apache.spark.angelml.Transformer
-import org.apache.spark.angelml.attribute.AttributeGroup
+import org.apache.spark.angelml.attribute.{Attribute, AttributeGroup, NumericAttribute, UnresolvedAttribute}
 import org.apache.spark.angelml.linalg.{Vector, VectorUDT, Vectors}
 import org.apache.spark.angelml.param.shared._
 import org.apache.spark.angelml.param.{Param, ParamMap, ParamValidators}
@@ -30,6 +30,7 @@ import org.apache.spark.annotation.Since
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Dataset, Row}
+import sun.util.logging.resources.logging
 
 import scala.collection.mutable
 import scala.language.existentials
@@ -96,12 +97,60 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
 
     val vectorColsLengths = VectorAssembler.getLengths(dataset, vectorCols, $(handleInvalid))
 
+    val featureAttributesMap = $(inputCols).map { c =>
+      val field = schema(c)
+      field.dataType match {
+        case DoubleType =>
+          val attribute = Attribute.fromStructField(field)
+          attribute match {
+            case UnresolvedAttribute =>
+              Seq(NumericAttribute.defaultAttr.withName(c))
+            case _ =>
+              Seq(attribute.withName(c))
+          }
+        case _: NumericType | BooleanType =>
+          // If the input column type is a compatible scalar type, assume numeric.
+          Seq(NumericAttribute.defaultAttr.withName(c))
+        case _: VectorUDT if vectorColsLengths(c) < Int.MaxValue =>
+          val attributeGroup = AttributeGroup.fromStructField(field)
+          if (attributeGroup.attributes.isDefined) {
+            attributeGroup.attributes.get.zipWithIndex.toSeq.map { case (attr, i) =>
+              if (attr.name.isDefined) {
+                // TODO: Define a rigorous naming scheme.
+                attr.withName(c + "_" + attr.name.get)
+              } else {
+                attr.withName(c + "_" + i)
+              }
+            }
+          } else {
+            // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes
+            // from metadata, check the first row.
+            // TODO: need to handle long key vector
+            (0 until vectorColsLengths(c).toInt).map { i =>
+              NumericAttribute.defaultAttr.withName(c + "_" + i)
+            }
+          }
+        case _ : VectorUDT if vectorColsLengths(c) > Int.MaxValue =>
+          Seq.empty[Attribute]
+        case otherType =>
+          throw new SparkException(s"VectorAssembler does not support the $otherType type")
+      }
+
+//    val vectorColsLengths = VectorAssembler.getLengths(dataset, vectorCols, $(handleInvalid))
+//
+//    val lengths = $(inputCols).map{
+//      case name if vectorColsLengths.contains(name) => vectorColsLengths(name)
+//      case _ => 1L
+    }
+    val featureAttributes = featureAttributesMap.flatten[Attribute]
+//    val lengths = featureAttributesMap.map(a => a.length)
     val lengths = $(inputCols).map{
       case name if vectorColsLengths.contains(name) => vectorColsLengths(name)
       case _ => 1L
     }
+    val metadata = new AttributeGroup($(outputCol), featureAttributes).toMetadata()
 
-    val metadata = new AttributeGroup($(outputCol), numAttributes=lengths.sum).toMetadata()
+//    val metadata = new AttributeGroup($(outputCol), numAttributes=lengths.sum).toMetadata()
     val (filteredDataset, keepInvalid) = $(handleInvalid) match {
       case VectorAssembler.SKIP_INVALID => (dataset.na.drop($(inputCols)), false)
       case VectorAssembler.KEEP_INVALID => (dataset, true)
@@ -111,11 +160,11 @@ class VectorAssembler @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     val assembleFunc = if (lengths.sum < Int.MaxValue) {
       udf { r: Row =>
         VectorAssembler.assembleInt(lengths.map(_.toInt), keepInvalid)(r.toSeq: _*)
-      }.asNondeterministic()
+      }
     } else {
       udf { r: Row =>
         VectorAssembler.assembleLong(lengths, keepInvalid)(r.toSeq: _*)
-      }.asNondeterministic()
+      }
     }
 
     val args = $(inputCols).map { c =>
@@ -254,6 +303,10 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
       case null =>
         if (keepInvalid) {
           val length: Int = lengths(inputColumnIndex)
+          Array.range(0, length).foreach { i =>
+            indices += featureIndex + i
+            values += Double.NaN
+          }
           inputColumnIndex += 1
           featureIndex += length
         } else {
@@ -301,6 +354,10 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
       case null =>
         if (keepInvalid) {
           val length: Long = lengths(inputColumnIndex)
+          Range.Long(0, length, 1).foreach { i =>
+            indices += featureIndex + i
+            values += Double.NaN
+          }
           inputColumnIndex += 1
           featureIndex += length
         } else {
