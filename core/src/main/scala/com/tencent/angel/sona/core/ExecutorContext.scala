@@ -1,6 +1,6 @@
 package com.tencent.angel.sona.core
 
-import com.tencent.angel.ml.core.conf.SharedConf
+import com.tencent.angel.mlcore.conf.SharedConf
 import com.tencent.angel.psagent.PSAgent
 import org.apache.spark.TaskContext
 import org.apache.spark.internal.Logging

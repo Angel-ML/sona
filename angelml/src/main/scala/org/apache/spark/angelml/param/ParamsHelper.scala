@@ -1,7 +1,7 @@
 package org.apache.spark.angelml.param
 
 import com.tencent.angel.client.AngelPSClient
-import com.tencent.angel.ml.core.conf.SharedConf
+import com.tencent.angel.mlcore.conf.SharedConf
 import com.tencent.angel.sona.util.ConfUtils
 
 

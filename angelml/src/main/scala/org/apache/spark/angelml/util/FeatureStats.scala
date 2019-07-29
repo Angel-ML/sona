@@ -5,7 +5,7 @@ import java.util
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.matrix.MatrixContext
 import com.tencent.angel.matrix.psf.aggr.enhance.ScalarAggrResult
-import com.tencent.angel.ml.core.utils.MLException
+import com.tencent.angel.mlcore.utils.MLException
 import com.tencent.angel.ml.math2.storage.{IntDoubleSparseVectorStorage, LongDoubleSparseVectorStorage}
 import com.tencent.angel.ml.math2.utils.RowType
 import com.tencent.angel.ml.math2.vector.{IntDoubleVector, LongDoubleVector}

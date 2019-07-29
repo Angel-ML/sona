@@ -1,13 +1,13 @@
 package org.apache.spark.angelml.common
 
-import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
-import com.tencent.angel.ml.core.data.DataBlock
-import com.tencent.angel.ml.core.local.data.LocalMemoryDataBlock
+import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
+import com.tencent.angel.mlcore.data.DataBlock
 import com.tencent.angel.ml.math2.utils.LabeledData
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.angelml.linalg.{Vector, Vectors}
 import org.apache.spark.angelml.common.MathImplicits._
 import com.tencent.angel.sona.core.ExecutorContext
+import com.tencent.angel.sona.data.LocalMemoryDataBlock
 import com.tencent.angel.sona.ml.AngeGraphModel
 import org.apache.spark.sql.types.{DoubleType, StructField, StructType}
 import org.apache.spark.sql.{Row, SPKSQLUtils}

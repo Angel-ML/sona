@@ -5,10 +5,11 @@ import java.util
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.conf.AngelConf
 import com.tencent.angel.matrix.MatrixContext
-import com.tencent.angel.ml.core.conf.SharedConf
-import com.tencent.angel.ml.core.network.EnvContext
-import com.tencent.angel.ml.core.variable.{PSVariable, VarState, VariableManager}
-import com.tencent.angel.ml.servingmath2.vector
+import com.tencent.angel.mlcore.conf.SharedConf
+import com.tencent.angel.mlcore.network.EnvContext
+import com.tencent.angel.mlcore.variable.{VarState, VariableManager}
+import com.tencent.angel.ml.core.variable.PSVariable
+import com.tencent.angel.ml.math2.vector
 import com.tencent.angel.model.{MatrixLoadContext, MatrixSaveContext, ModelLoadContext, ModelSaveContext}
 import com.tencent.angel.sona.core.SparkEnvContext
 import org.apache.hadoop.conf.Configuration

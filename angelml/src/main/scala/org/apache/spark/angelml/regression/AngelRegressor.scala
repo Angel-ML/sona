@@ -2,8 +2,8 @@ package org.apache.spark.angelml.regression
 
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.ml.core.PSOptimizerProvider
-import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
-import com.tencent.angel.ml.core.variable.VarState
+import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
+import com.tencent.angel.mlcore.variable.VarState
 import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
 import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.sona.core._

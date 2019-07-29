@@ -1,7 +1,7 @@
 package com.tencent.angel.sona.core
 
-import com.tencent.angel.ml.core.conf.SharedConf
-import com.tencent.angel.ml.core.variable.VarState
+import com.tencent.angel.mlcore.conf.SharedConf
+import com.tencent.angel.mlcore.variable.VarState
 import com.tencent.angel.sona.ml.AngeGraphModel
 import org.apache.spark.TaskContext
 

@@ -1,7 +1,7 @@
 package org.apache.spark.angelml.common
 
 import com.tencent.angel.client.AngelPSClient
-import com.tencent.angel.ml.core.conf.SharedConf
+import com.tencent.angel.mlcore.conf.SharedConf
 import com.tencent.angel.sona.core.{DriverContext, ExecutorContext, SparkEnvContext}
 import com.tencent.angel.sona.ml.AngeGraphModel
 import org.apache.spark.angelml.evaluation.TrainingStat

@@ -1,6 +1,6 @@
 package org.apache.spark.angelml.evaluation
 
-import com.tencent.angel.ml.core.PredictResult
+import com.tencent.angel.mlcore.PredictResult
 import org.apache.spark.angelml.evaluation.training.ClassificationTrainingStat
 
 import scala.collection.mutable

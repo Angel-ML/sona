@@ -4,8 +4,8 @@ import java.io.File
 
 import com.tencent.angel.client.{AngelContext, AngelPSClient}
 import com.tencent.angel.conf.AngelConf
-import com.tencent.angel.ml.core.conf.SharedConf
-import com.tencent.angel.ml.core.utils.JsonUtils
+import com.tencent.angel.mlcore.conf.SharedConf
+import com.tencent.angel.mlcore.utils.JsonUtils
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem

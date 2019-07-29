@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.tencent.angel.conf.AngelConf
 import com.tencent.angel.conf.AngelConf._
-import com.tencent.angel.ml.core.conf.SharedConf
+import com.tencent.angel.mlcore.conf.SharedConf
 import com.tencent.angel.ps.ParameterServer
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.{FileSystem, Path}

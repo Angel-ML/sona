@@ -19,10 +19,10 @@ class AngelClassificationSuite extends FunSuite {
   test("train") {
     val driverCtx = DriverContext.get(sparkConf)
     driverCtx.startAngelAndPSAgent()
-    val trainData = libsvm.load("../data/angel/census/census_148d_train.libsvm")
+    val trainData = libsvm.load("./data/angel/census/census_148d_train.libsvm")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("E:\\github\\fitzwang\\sona\\angelml\\src\\test\\jsons\\daw.json")
+      .setModelJsonFile("./angelml/src/test/jsons/daw.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(10)
@@ -32,7 +32,7 @@ class AngelClassificationSuite extends FunSuite {
     val model = classifier.fit(trainData)
 
 
-    model.write.overwrite.save("test2")
+    model.write.overwrite().save("test2")
 
     driverCtx.stopAngelAndPSAgent()
   }
