@@ -8,7 +8,7 @@ import com.tencent.angel.matrix.MatrixContext
 import com.tencent.angel.ml.core.conf.SharedConf
 import com.tencent.angel.ml.core.network.EnvContext
 import com.tencent.angel.ml.core.variable.{PSVariable, VarState, VariableManager}
-import com.tencent.angel.ml.math2.vector
+import com.tencent.angel.ml.servingmath2.vector
 import com.tencent.angel.model.{MatrixLoadContext, MatrixSaveContext, ModelLoadContext, ModelSaveContext}
 import com.tencent.angel.sona.core.SparkEnvContext
 import org.apache.hadoop.conf.Configuration

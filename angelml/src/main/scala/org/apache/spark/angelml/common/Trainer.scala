@@ -1,6 +1,6 @@
 package org.apache.spark.angelml.common
 
-import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
+import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.math2.utils.LabeledData
 import com.tencent.angel.psagent.PSAgentContext
 import com.tencent.angel.sona.core.ExecutorContext

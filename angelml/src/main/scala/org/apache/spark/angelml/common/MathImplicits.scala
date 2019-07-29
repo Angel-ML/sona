@@ -1,14 +1,14 @@
 package org.apache.spark.angelml.common
 
 
-import com.tencent.angel.ml.math2.VFactory
-import com.tencent.angel.ml.math2.vector.{IntDoubleVector, IntFloatVector, IntIntVector, IntLongVector, LongDoubleVector, LongFloatVector, LongIntVector, LongLongVector}
+import com.tencent.angel.ml.servingmath2.VFactory
+import com.tencent.angel.ml.servingmath2.vector.{IntDoubleVector, IntFloatVector, IntIntVector, IntLongVector, LongDoubleVector, LongFloatVector, LongIntVector, LongLongVector}
 import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector}
 
 
 object MathImplicits {
 
-  type AVector = com.tencent.angel.ml.math2.vector.Vector
+  type AVector = com.tencent.angel.ml.servingmath2.vector.Vector
 
   implicit def toAngelVector(bv: Vector): AVector = {
     bv match {

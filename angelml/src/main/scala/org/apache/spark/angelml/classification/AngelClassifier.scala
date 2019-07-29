@@ -4,7 +4,7 @@ import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.ml.core.PSOptimizerProvider
 import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.core.variable.VarState
-import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
+import com.tencent.angel.ml.servingmath2.utils.{LabeledData, RowType}
 import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
 import com.tencent.angel.sona.core.{DriverContext, _}
 import com.tencent.angel.sona.util.ConfUtils
@@ -221,7 +221,7 @@ class AngelClassifier(override val uid: String)
     /** training **********************************************************************************/
     (0 until getMaxIter).foreach { epoch =>
       globalRunStat.clearStat().setAvgLoss(0.0).setNumSamples(0)
-      manifoldRDD.foreach { batch: RDD[Array[LabeledData]] =>
+      manifoldRDD.foreach { case batch: RDD[Array[LabeledData]] =>
         // training one batch
         val trainer = new Trainer(bcExeCtx, epoch, bcConf)
         val runStat = batch.map(miniBatch => trainer.trainOneBatch(miniBatch))

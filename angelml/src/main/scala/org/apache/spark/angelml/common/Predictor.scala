@@ -3,7 +3,7 @@ package org.apache.spark.angelml.common
 import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.ml.core.data.DataBlock
 import com.tencent.angel.ml.core.local.data.LocalMemoryDataBlock
-import com.tencent.angel.ml.math2.utils.LabeledData
+import com.tencent.angel.ml.servingmath2.utils.LabeledData
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.angelml.linalg.{Vector, Vectors}
 import org.apache.spark.angelml.common.MathImplicits._

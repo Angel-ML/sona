@@ -7,14 +7,14 @@ import com.tencent.angel.ml.core.network.{Graph, PlaceHolder}
 import com.tencent.angel.ml.core.utils.JsonUtils
 import com.tencent.angel.ml.core.variable.{CILSImpl, VariableManager, VariableProvider}
 import com.tencent.angel.ml.core.{GraphModel, PSVariableProvider, PredictResult}
-import com.tencent.angel.ml.math2.utils.LabeledData
+import com.tencent.angel.ml.servingmath2.utils.LabeledData
 
 
 class AngeGraphModel(conf: SharedConf, val numTask: Int) extends GraphModel(conf) {
   private implicit val sharedConf: SharedConf = conf
   override val isSparseFormat: Boolean = conf.getBoolean(MLCoreConf.ML_IS_DATA_SPARSE)
 
-  protected val placeHolder: PlaceHolder = new PlaceHolder(conf)
+  // protected val placeHolder: PlaceHolder = new PlaceHolder(conf)
   override protected implicit val variableManager: VariableManager = SparkPSVariableManager.get(isSparseFormat, conf)
   private implicit val cilsImpl: CILSImpl = new SparkCILSImpl(conf)
   override protected val variableProvider: VariableProvider = new PSVariableProvider(dataFormat, modelType)
@@ -36,7 +36,7 @@ class AngeGraphModel(conf: SharedConf, val numTask: Int) extends GraphModel(conf
     graph.feedData(batchData)
 
     if (isSparseFormat) {
-      pullParams(-1, placeHolder.getIndices)
+      pullParams(-1, graph.placeHolder.getIndices)
     } else {
       pullParams(-1)
     }

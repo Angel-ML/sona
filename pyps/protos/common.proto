@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_generic_services = true;
+option java_package = "com.tencent.client.common.protos";
+option java_outer_classname = "MWComProto";
+
+enum AsyncModel {
+    BSP = 0;
+    SSP = 1;
+    ASP = 2;
+}
+
+message CompleteTaskReq {
+    int64 taskId = 1;
+    int64 timestamps = 2;
+}
+
+message VoidReq {
+    int64 itemId = 1;
+}
+
+message VoidResp {
+    string msg = 1;
+}
+
