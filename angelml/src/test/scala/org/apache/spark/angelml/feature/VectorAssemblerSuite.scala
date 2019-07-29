@@ -155,6 +155,7 @@ class VectorAssemblerSuite
     val assembler = new VectorAssembler()
       .setInputCols(Array("x", "z", "n"))
       .setOutputCol("features")
+      .setHandleInvalid("skip")
 
     val filteredDF = df.filter($"y".isNotNull)
 

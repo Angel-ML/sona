@@ -2,8 +2,8 @@ package org.apache.spark.angelml.regression
 
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.ml.core.PSOptimizerProvider
-import com.tencent.angel.ml.core.conf.{MLCoreConf, SharedConf}
-import com.tencent.angel.ml.core.variable.VarState
+import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
+import com.tencent.angel.mlcore.variable.VarState
 import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
 import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.sona.core._
@@ -216,11 +216,12 @@ class AngelRegressor(override val uid: String)
     /** training **********************************************************************************/
     (0 until getMaxIter).foreach { epoch =>
       globalRunStat.clearStat().setAvgLoss(0.0).setNumSamples(0)
-      manifoldRDD.foreach { batch: RDD[Array[LabeledData]] =>
+      manifoldRDD.foreach { batch =>  // RDD[Array[LabeledData]]
         // training one batch
         val trainer = new Trainer(bcExeCtx, epoch, bcConf)
-        val runStat = batch.map(miniBatch => trainer.trainOneBatch(miniBatch))
-          .reduce(TrainingStat.mergeInBatch)
+        val runStat = batch.map{ miniBatch => // Array[LabeledData]
+          trainer.trainOneBatch(miniBatch)
+          }.reduce(TrainingStat.mergeInBatch)
 
         // those code executor on driver
         val startUpdate = System.currentTimeMillis()

@@ -94,7 +94,8 @@ class ImageFileFormatSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val firstBytes20Set = images.map { rrow =>
       val row = rrow.getAs[Row]("image")
-      val filename = Paths.get(getOrigin(row)).getFileName().toString()
+      val rowStr = getOrigin(row)
+      val filename = Paths.get(rowStr.substring(rowStr.indexOf("sona"))).getFileName().toString()
       val mode = getMode(row)
       val bytes20 = getData(row).slice(0, 20).toList
       filename -> Tuple2(mode, bytes20) // Cannot remove `Tuple2`, otherwise `->` operator

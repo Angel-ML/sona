@@ -25,7 +25,11 @@ class LabeledPointSuite extends SparkFunSuite {
 
   test("Kryo class register") {
     val conf = new SparkConf(false)
-    conf.set("spark.kryo.registrationRequired", "true")
+    conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+    conf.registerKryoClasses(
+      Array(classOf[scala.collection.mutable.WrappedArray.ofRef[_]],
+        classOf[LabeledPoint]))
+//    conf.set("spark.kryo.registrationRequired", "true")
 
     val ser = new KryoSerializer(conf).newInstance()
 

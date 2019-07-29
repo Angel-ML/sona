@@ -168,7 +168,7 @@ final class Bucketizer @Since("1.4.0") (@Since("1.4.0") override val uid: String
     val bucketizers: Seq[UserDefinedFunction] = seqOfSplits.zipWithIndex.map { case (splits, idx) =>
       udf { (feature: Double) =>
         Bucketizer.binarySearchForBuckets(splits, feature, keepInvalid)
-      }.withName(s"bucketizer_$idx")
+      }
     }
 
 
@@ -178,7 +178,12 @@ final class Bucketizer @Since("1.4.0") (@Since("1.4.0") override val uid: String
     val metadata = outputColumns.map { col =>
       transformedSchema(col).metadata
     }
-    filteredDataset.withColumns(outputColumns, newCols, metadata)
+    var finalDataset = filteredDataset
+    (0 until newCols.length).foreach { index =>
+      finalDataset = finalDataset.withColumn(outputColumns(index), newCols(index), metadata(index))
+    }
+    finalDataset
+//    filteredDataset.withColumns(outputColumns, newCols, metadata)
   }
 
   private def prepOutputField(splits: Array[Double], outputCol: String): StructField = {

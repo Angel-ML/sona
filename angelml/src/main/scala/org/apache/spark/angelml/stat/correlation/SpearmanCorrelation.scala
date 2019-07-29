@@ -24,31 +24,29 @@ import org.apache.spark.angelml.linalg.{Matrix, Vector, Vectors}
 import org.apache.spark.rdd.RDD
 
 /**
- * Compute Spearman's correlation for two RDDs of the type RDD[Double] or the correlation matrix
- * for an RDD of the type RDD[Vector].
- *
- * Definition of Spearman's correlation can be found at
- * http://en.wikipedia.org/wiki/Spearman's_rank_correlation_coefficient
- */
+  * Compute Spearman's correlation for two RDDs of the type RDD[Double] or the correlation matrix
+  * for an RDD of the type RDD[Vector].
+  *
+  * Definition of Spearman's correlation can be found at
+  * http://en.wikipedia.org/wiki/Spearman's_rank_correlation_coefficient
+  */
 private[stat] object SpearmanCorrelation extends Correlation with Logging {
 
   /**
-   * Compute Spearman's correlation for two datasets.
-   */
+    * Compute Spearman's correlation for two datasets.
+    */
   override def computeCorrelation(x: RDD[Double], y: RDD[Double]): Double = {
     computeCorrelationWithMatrixImpl(x, y)
   }
 
   /**
-   * Compute Spearman's correlation matrix S, for the input matrix, where S(i, j) is the
-   * correlation between column i and j.
-   */
+    * Compute Spearman's correlation matrix S, for the input matrix, where S(i, j) is the
+    * correlation between column i and j.
+    */
   override def computeCorrelationMatrix(X: RDD[Vector]): Matrix = {
     // ((columnIndex, value), rowUid)
-    val colBased = X.zipWithUniqueId().flatMap { case (vec, uid) =>
-      vec.toArray.view.zipWithIndex.map { case (v, j) =>
-        ((j, v), uid)
-      }
+    val colBased = X.zipWithUniqueId().flatMap{ case (vec: Vector, uid: Long) =>
+        vec.toArray.zipWithIndex.map{case (v, j) => ((j, v), uid)}
     }
     // global sort by (columnIndex, value)
     val sorted = colBased.sortByKey()

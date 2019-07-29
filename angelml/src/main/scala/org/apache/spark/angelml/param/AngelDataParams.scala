@@ -1,6 +1,6 @@
 package org.apache.spark.angelml.param
 
-import com.tencent.angel.ml.core.conf.MLCoreConf
+import com.tencent.angel.mlcore.conf.MLCoreConf
 import org.apache.spark.angelml.param.shared.{HasNumFeatures, HasWeightCol}
 
 

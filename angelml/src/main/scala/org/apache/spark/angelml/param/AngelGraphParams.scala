@@ -2,8 +2,8 @@ package org.apache.spark.angelml.param
 
 import java.io.File
 
-import com.tencent.angel.ml.core.conf.MLCoreConf
-import com.tencent.angel.ml.core.utils.{JsonUtils, MLException}
+import com.tencent.angel.mlcore.conf.MLCoreConf
+import com.tencent.angel.mlcore.utils.{JsonUtils, MLException}
 import org.apache.hadoop.conf.Configuration
 
 trait AngelGraphParams extends Params with AngelDataParams with HasModelType

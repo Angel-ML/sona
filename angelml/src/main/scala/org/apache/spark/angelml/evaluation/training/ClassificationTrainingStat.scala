@@ -1,6 +1,6 @@
 package org.apache.spark.angelml.evaluation.training
 
-import com.tencent.angel.ml.core.PredictResult
+import com.tencent.angel.mlcore.PredictResult
 import org.apache.spark.angelml.evaluation.BinaryClassMetrics.BinaryPredictedResult
 import org.apache.spark.angelml.evaluation.MultiClassMetrics.MultiPredictedResult
 import org.apache.spark.angelml.evaluation._

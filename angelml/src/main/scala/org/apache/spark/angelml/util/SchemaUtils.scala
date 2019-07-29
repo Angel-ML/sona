@@ -19,6 +19,7 @@ package org.apache.spark.angelml.util
 
 import org.apache.spark.angelml.linalg.VectorUDT
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.Compatible
 
 
 /**
@@ -74,7 +75,7 @@ private[spark] object SchemaUtils {
     val actualDataType = schema(colName).dataType
     val message = if (msg != null && msg.trim.length > 0) " " + msg else ""
     require(actualDataType.isInstanceOf[NumericType],
-      s"Column $colName must be of type ${NumericType.simpleString} but was actually of type " +
+      s"Column $colName must be of type ${Compatible.numericTypeSimpleString} but was actually of type " +
       s"${actualDataType.catalogString}.$message")
   }
 

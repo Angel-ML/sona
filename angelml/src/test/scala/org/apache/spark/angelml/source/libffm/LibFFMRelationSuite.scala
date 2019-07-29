@@ -58,7 +58,6 @@ class LibFFMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("read_ffm"){
-    path = "F:\\libffm_toy\\criteo.va.r100.gbdt0.ffm"
     val df = spark.read.format("libffm").load(path)
     val metadata = df.schema(1).metadata
 

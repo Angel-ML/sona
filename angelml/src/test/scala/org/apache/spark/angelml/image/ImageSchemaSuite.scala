@@ -137,7 +137,8 @@ class ImageSchemaSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     images.foreach { rrow =>
       val row = rrow.getAs[Row](0)
-      val filename = Paths.get(getOrigin(row)).getFileName().toString()
+      val rowStr = getOrigin(row)
+      val filename = Paths.get(rowStr.substring(rowStr.indexOf("sona"))).getFileName().toString()
       if (firstBytes20.contains(filename)) {
         val mode = getMode(row)
         val bytes20 = getData(row).slice(0, 20)

@@ -1,7 +1,7 @@
 package org.apache.spark.angelml.common
 
 import com.tencent.angel.client.AngelPSClient
-import com.tencent.angel.ml.core.conf.SharedConf
+import com.tencent.angel.mlcore.conf.SharedConf
 import com.tencent.angel.sona.core.DriverContext
 import org.apache.hadoop.fs.Path
 import org.apache.spark.angelml.util._
@@ -30,6 +30,14 @@ object AngelSaverLoader {
       val angelModelPath = new Path(path, "angel").toString
       instance.angelModel.saveModel(DriverContext.get().sparkEnvContext,
         MLUtils.getHDFSPath(angelModelPath))
+
+      // for park2.1
+      // cancel saving other information for the moment due to the error below:
+      // ERROR ApplicationMaster: User class threw exception: java.util.ServiceConfigurationError:
+      // org.apache.spark.sql.sources.DataSourceRegister: Provider org.apache.spark.sql.execution.datasources.csv.CSVFileFormat
+      // could not be instantiated
+      //java.util.ServiceConfigurationError: org.apache.spark.sql.sources.DataSourceRegister:
+      // Provider org.apache.spark.sql.execution.datasources.csv.CSVFileFormat could not be instantiated
 
       // 3. prepare other information to save
       val modelData = ModelData(instance.sharedConf.toString(), instance.angelModelName)

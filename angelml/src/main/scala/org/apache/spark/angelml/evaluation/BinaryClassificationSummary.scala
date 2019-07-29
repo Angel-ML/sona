@@ -72,7 +72,7 @@ abstract class BinaryClassificationSummary extends ClassificationSummary with Se
         }
     }
 
-    rocData.sortWith { (p1: (Double, Double), p2: (Double, Double)) => p1._1 <= p2._1 }
+    rocData.sortWith { (p1: (Double, Double), p2: (Double, Double)) => p1._1 < p2._1 }
   }
 
   @transient lazy val areaUnderROC: Double = {

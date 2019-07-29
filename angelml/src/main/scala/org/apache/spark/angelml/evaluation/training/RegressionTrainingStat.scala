@@ -1,6 +1,6 @@
 package org.apache.spark.angelml.evaluation.training
 
-import com.tencent.angel.ml.core.PredictResult
+import com.tencent.angel.mlcore.PredictResult
 import org.apache.spark.angelml.evaluation.RegressionMetrics.RegressionPredictedResult
 import org.apache.spark.angelml.evaluation.{RegressionMetrics, RegressionSummary, TrainingStat}
 

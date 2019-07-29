@@ -4,8 +4,8 @@ import java.io.File
 
 import com.tencent.angel.client.{AngelContext, AngelPSClient}
 import com.tencent.angel.conf.AngelConf
-import com.tencent.angel.ml.core.conf.SharedConf
-import com.tencent.angel.ml.core.utils.JsonUtils
+import com.tencent.angel.mlcore.conf.SharedConf
+import com.tencent.angel.mlcore.utils.JsonUtils
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
@@ -52,10 +52,15 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
   }
 
   def startAngelAndPSAgent(): AngelPSClient = synchronized {
-    SPKSQLUtils.registerUDT()
 
     if (angelClient == null) {
       angelClient = new AngelPSClient(hadoopConf)
+
+      val iter = hadoopConf.iterator()
+      while (iter.hasNext) {
+        val entry = iter.next()
+        println(s"${entry.getKey} -> ${entry.getValue}")
+      }
 
       stopAngelHookTask = new Runnable {
         def run(): Unit = doStopAngel()
@@ -162,6 +167,7 @@ object DriverContext {
 
   def get(conf: SparkConf): DriverContext = synchronized {
     if (driverContext == null) {
+      SPKSQLUtils.registerUDT()
       val hadoopConf = ConfUtils.convertToHadoop(conf)
       driverContext = new DriverContext(initConf(hadoopConf), hadoopConf)
     }

@@ -1,15 +1,15 @@
 package com.tencent.angel.sona.core
 
-import com.tencent.angel.ml.core.conf.SharedConf
+import com.tencent.angel.mlcore.conf.SharedConf
 import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.util.ShutdownHookManager
 import org.apache.spark.TaskContext
-import org.apache.spark.internal.Logging
+import org.apache.spark.internal.CompatibleLogging
 
-abstract class PSAgentContext(conf: SharedConf) extends Logging{
+abstract class PSAgentContext(conf: SharedConf) extends CompatibleLogging{
   @transient protected var psAgent: PSAgent = _
   @transient protected var stopAgentHookTask: Runnable = _
 

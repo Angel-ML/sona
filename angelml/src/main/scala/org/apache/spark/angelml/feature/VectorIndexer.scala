@@ -20,7 +20,7 @@ package org.apache.spark.angelml.feature
 import java.lang.{Double => JDouble, Integer => JInt}
 import java.util.{NoSuchElementException, Map => JMap}
 
-import com.tencent.angel.ml.core.utils.MLException
+import com.tencent.angel.mlcore.utils.MLException
 
 import scala.collection.JavaConverters._
 import org.apache.hadoop.fs.Path

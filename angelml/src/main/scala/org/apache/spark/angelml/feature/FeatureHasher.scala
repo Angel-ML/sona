@@ -28,10 +28,11 @@ import org.apache.spark.annotation.{Experimental, Since}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Dataset, Row}
-import org.apache.spark.unsafe.hash.Murmur3_x86_32.{hashInt, hashLong, hashUnsafeBytes2}
+import org.apache.spark.unsafe.hash.Murmur3_x86_32.{hashInt, hashLong, hashUnsafeBytes}
 import org.apache.spark.unsafe.types.UTF8String
 import org.apache.spark.util.Utils
 import org.apache.spark.util.collection.OpenHashMap
+import org.apache.spark.sql.Compatible
 
 /**
   * Feature hashing projects a set of categorical or numerical features into a feature vector of
@@ -82,17 +83,26 @@ import org.apache.spark.util.collection.OpenHashMap
 @Experimental
 @Since("2.3.0")
 class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transformer
-  with HasInputCols with HasOutputCol with HasLongKey with HasNumFeatures with DefaultParamsWritable {
+  with HasInputCols with HasOutputCol with HasNumFeatures with DefaultParamsWritable {
+
+  @Since("2.1.0")
+  val longKey: BooleanParam = new BooleanParam(this, "longKey",
+    "Force to index label whether it is numeric or string")
+  setDefault(longKey -> false)
+
+  /** @group getParam */
+  @Since("2.1.0")
+  def getLongKey: Boolean = $(longKey)
 
   @Since("2.3.0")
   def this() = this(Identifiable.randomUID("featureHasher"))
-
-
-  def setLongKey(isLongKey: Boolean): this.type = {
-    set(longKey, isLongKey)
-  }
-
-  setDefault(longKey -> false)
+//
+//
+//  def setLongKey(isLongKey: Boolean): this.type = {
+//    set(longKey, isLongKey)
+//  }
+//
+//  setDefault(longKey -> false)
 
   /**
     * Numeric columns to treat as categorical features. By default only string and boolean
@@ -238,7 +248,7 @@ class FeatureHasher(@Since("2.3.0") override val uid: String) extends Transforme
       require(dataType.isInstanceOf[NumericType] ||
         dataType.isInstanceOf[StringType] ||
         dataType.isInstanceOf[BooleanType],
-        s"FeatureHasher requires columns to be of ${NumericType.simpleString}, " +
+        s"FeatureHasher requires columns to be of ${Compatible.numericTypeSimpleString}, " +
           s"${BooleanType.catalogString} or ${StringType.catalogString}. " +
           s"Column $fieldName was ${dataType.catalogString}")
     }
@@ -275,7 +285,7 @@ object FeatureHasher extends DefaultParamsReadable[FeatureHasher] {
       case d: Double => hashLong(java.lang.Double.doubleToLongBits(d), seed)
       case s: String =>
         val utf8 = UTF8String.fromString(s)
-        hashUnsafeBytes2(utf8.getBaseObject, utf8.getBaseOffset, utf8.numBytes(), seed)
+        hashUnsafeBytes(utf8.getBaseObject, utf8.getBaseOffset, utf8.numBytes(), seed)
       case _ => throw new SparkException("FeatureHasher with murmur3 algorithm does not " +
         s"support type ${term.getClass.getCanonicalName} of input data.")
     }

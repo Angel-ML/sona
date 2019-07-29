@@ -2,7 +2,7 @@ package org.apache.spark.angelml.common
 
 
 import com.tencent.angel.ml.math2.VFactory
-import com.tencent.angel.ml.math2.vector.{IntDoubleVector, IntFloatVector, IntIntVector, IntLongVector, LongDoubleVector, LongFloatVector, LongIntVector, LongLongVector}
+import com.tencent.angel.ml.math2.vector._
 import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector}
 
 
