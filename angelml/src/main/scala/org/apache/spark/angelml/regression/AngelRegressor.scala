@@ -216,11 +216,12 @@ class AngelRegressor(override val uid: String)
     /** training **********************************************************************************/
     (0 until getMaxIter).foreach { epoch =>
       globalRunStat.clearStat().setAvgLoss(0.0).setNumSamples(0)
-      manifoldRDD.foreach { batch: RDD[Array[LabeledData]] =>
+      manifoldRDD.foreach { batch =>  // RDD[Array[LabeledData]]
         // training one batch
         val trainer = new Trainer(bcExeCtx, epoch, bcConf)
-        val runStat = batch.map(miniBatch => trainer.trainOneBatch(miniBatch))
-          .reduce(TrainingStat.mergeInBatch)
+        val runStat = batch.map{ miniBatch => // Array[LabeledData]
+          trainer.trainOneBatch(miniBatch)
+          }.reduce(TrainingStat.mergeInBatch)
 
         // those code executor on driver
         val startUpdate = System.currentTimeMillis()

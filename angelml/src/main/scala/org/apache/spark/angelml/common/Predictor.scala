@@ -1,5 +1,6 @@
 package org.apache.spark.angelml.common
 
+
 import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.mlcore.data.DataBlock
 import com.tencent.angel.ml.math2.utils.LabeledData
