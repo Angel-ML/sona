@@ -31,6 +31,7 @@ import org.apache.spark.angelml.param.shared.{HasFeaturesCol, HasHandleInvalid, 
 import org.apache.spark.angelml.util._
 import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.Compatible
 
 /**
  * Base trait for [[RFormula]] and [[RFormulaModel]].
@@ -394,7 +395,7 @@ class RFormulaModel private[feature](
     require(!columnNames.contains($(featuresCol)), "Features column already exists.")
     require(
       !columnNames.contains($(labelCol)) || schema($(labelCol)).dataType.isInstanceOf[NumericType],
-      s"Label column already exists and is not of type ${NumericType.simpleString}.")
+      s"Label column already exists and is not of type ${Compatible.numericTypeSimpleString}.")
   }
 
   @Since("2.0.0")

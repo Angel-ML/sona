@@ -32,14 +32,16 @@ class VectorUDTSuite extends SparkFunSuite {
     UDTRegistration.register("org.apache.spark.angelml.linalg.Matrix", "org.apache.spark.angelml.linalg.MatrixUDT")
     UDTRegistration.register("org.apache.spark.angelml.linalg.DenseMatrix", "org.apache.spark.angelml.linalg.MatrixUDT")
     UDTRegistration.register("org.apache.spark.angelml.linalg.SparseMatrix", "org.apache.spark.angelml.linalg.MatrixUDT")
+    UDTRegistration.register("org.apache.spark.angelml.linalg.IntSparseVector", "org.apache.spark.angelml.linalg.VectorUDT")
+    UDTRegistration.register("org.apache.spark.angelml.linalg.LongSparseVector", "org.apache.spark.angelml.linalg.VectorUDT")
 
   }
 
   test("preloaded VectorUDT") {
     val dv1 = Vectors.dense(Array.empty[Double])
     val dv2 = Vectors.dense(1.0, 2.0)
-    val sv1 = Vectors.sparse(2, Array.empty, Array.empty)
-    val sv2 = Vectors.sparse(2, Array(1), Array(2.0))
+    val sv1 = Vectors.sparse(2, Array.empty[Int], Array.empty)
+    val sv2 = Vectors.sparse(2, Array(1L), Array(2.0))
 
     for (v <- Seq(dv1, dv2, sv1, sv2)) {
       val udt = UDTRegistration.getUDTFor(v.getClass.getName).get.newInstance()

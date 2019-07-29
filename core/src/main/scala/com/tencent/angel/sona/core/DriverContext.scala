@@ -52,7 +52,6 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
   }
 
   def startAngelAndPSAgent(): AngelPSClient = synchronized {
-    SPKSQLUtils.registerUDT()
 
     if (angelClient == null) {
       angelClient = new AngelPSClient(hadoopConf)
@@ -168,6 +167,7 @@ object DriverContext {
 
   def get(conf: SparkConf): DriverContext = synchronized {
     if (driverContext == null) {
+      SPKSQLUtils.registerUDT()
       val hadoopConf = ConfUtils.convertToHadoop(conf)
       driverContext = new DriverContext(initConf(hadoopConf), hadoopConf)
     }

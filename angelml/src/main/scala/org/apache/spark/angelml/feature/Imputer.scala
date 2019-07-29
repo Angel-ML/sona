@@ -120,6 +120,7 @@ class Imputer @Since("2.2.0") (@Since("2.2.0") override val uid: String)
 
   setDefault(strategy -> Imputer.mean, missingValue -> Double.NaN)
 
+  /*
   override def fit(dataset: Dataset[_]): ImputerModel = {
     transformSchema(dataset.schema, logging = true)
     val spark = dataset.sparkSession
@@ -148,14 +149,24 @@ class Imputer @Since("2.2.0") (@Since("2.2.0") override val uid: String)
       case Imputer.median =>
         // Function approxQuantile will ignore null automatically.
         // For a column only containing null, approxQuantile will return an empty array.
-        dataset.select(cols: _*).stat.approxQuantile($(inputCols), Array(0.5), 0.001)
-          .map { array =>
-            if (array.isEmpty) {
-              Double.NaN
-            } else {
-              array.head
-            }
+//        dataset.select(cols: _*).stat.approxQuantile($(inputCols), Array(0.5), 0.001)
+//          .map { array =>
+//            if (array.isEmpty) {
+//              Double.NaN
+//            } else {
+//              array.head
+//            }
+//          }
+        val xx = $(inputCols).map { inputCol =>
+          dataset.select(cols: _*).stat.approxQuantile(inputCol, Array(0.5), 0.001)
+        }
+        xx.map { array =>
+          if (array.isEmpty) {
+            Double.NaN
+          } else {
+            array.head
           }
+        }
     }
 
     val emptyCols = $(inputCols).zip(results).filter(_._2.isNaN).map(_._1)
@@ -166,6 +177,33 @@ class Imputer @Since("2.2.0") (@Since("2.2.0") override val uid: String)
     }
 
     val rows = spark.sparkContext.parallelize(Seq(Row.fromSeq(results)))
+    val schema = StructType($(inputCols).map(col => StructField(col, DoubleType, nullable = false)))
+    val surrogateDF = spark.createDataFrame(rows, schema)
+    copyValues(new ImputerModel(uid, surrogateDF).setParent(this))
+  }
+  */
+
+
+  override def fit(dataset: Dataset[_]): ImputerModel = {
+    transformSchema(dataset.schema, logging = true)
+    val spark = dataset.sparkSession
+    import spark.implicits._
+    val surrogates = $(inputCols).map { inputCol =>
+      val ic = col(inputCol)
+      val filtered = dataset.select(ic.cast(DoubleType))
+        .filter(ic.isNotNull && ic =!= $(missingValue) && !ic.isNaN)
+      if(filtered.take(1).length == 0) {
+        throw new SparkException(s"surrogate cannot be computed. " +
+          s"All the values in $inputCol are Null, Nan or missingValue(${$(missingValue)})")
+      }
+      val surrogate = $(strategy) match {
+        case Imputer.mean => filtered.select(avg(inputCol)).as[Double].first()
+        case Imputer.median => filtered.stat.approxQuantile(inputCol, Array(0.5), 0.001).head
+      }
+      surrogate
+    }
+
+    val rows = spark.sparkContext.parallelize(Seq(Row.fromSeq(surrogates)))
     val schema = StructType($(inputCols).map(col => StructField(col, DoubleType, nullable = false)))
     val surrogateDF = spark.createDataFrame(rows, schema)
     copyValues(new ImputerModel(uid, surrogateDF).setParent(this))
@@ -224,7 +262,12 @@ class ImputerModel private[angelml](
           .otherwise(ic)
           .cast(inputType)
     }
-    dataset.withColumns($(outputCols), newCols).toDF()
+    var finalDataset = dataset
+    (0 until newCols.length).foreach { index =>
+      finalDataset = finalDataset.withColumn($(outputCols)(index), newCols(index))
+    }
+    finalDataset.toDF()
+//    dataset.withColumns($(outputCols), newCols).toDF()
   }
 
   override def transformSchema(schema: StructType): StructType = {

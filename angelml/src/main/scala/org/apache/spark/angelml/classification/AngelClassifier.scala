@@ -197,7 +197,6 @@ class AngelClassifier(override val uid: String)
 
     val startCreate = System.currentTimeMillis()
     angelModel.createMatrices(sparkEnvCtx)
-    psAgent.refreshMatrixInfo()
     PSAgentContext.get().getPsAgent.refreshMatrixInfo()
     val finishedCreate = System.currentTimeMillis()
     globalRunStat.setCreateTime(finishedCreate - startCreate)

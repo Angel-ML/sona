@@ -345,7 +345,12 @@ class MultiHotEncoderModel private[angelml](
       encoder(col(inputColName).cast(DoubleType), lit(idx))
         .as(outputColName, metadata)
     }
-    dataset.withColumns($(outputCols), encodedColumns)
+    var finalDataset = dataset
+    (0 until encodedColumns.length).foreach { index =>
+      finalDataset = finalDataset.withColumn($(outputCols)(index), encodedColumns(index))
+    }
+    finalDataset.toDF()
+//    dataset.withColumns($(outputCols), encodedColumns)
   }
 
   @Since("2.3.0")
