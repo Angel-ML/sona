@@ -36,7 +36,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.spark.angel</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>spark-on-angel-core</artifactId>
       <version>${parent.version}</version>
       <exclusions>
         <exclusion>
