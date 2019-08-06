@@ -4,8 +4,7 @@ import java.io.IOException
 import java.util
 import java.util.Collections
 
-import com.tencent.angel.ml.math2.utils.LabeledData
-import com.tencent.angel.mlcore.data.DataBlock
+import com.tencent.angel.ml.math2.utils.{DataBlock, LabeledData}
 import org.apache.commons.logging.{Log, LogFactory}
 import org.ehcache.sizeof.SizeOf
 

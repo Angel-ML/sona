@@ -29,6 +29,7 @@
     <modules>
         <module>core</module>
         <module>angelml</module>
+        <module>graph</module>
     </modules>
 
     <properties>
@@ -133,11 +134,11 @@
                 </exclusion>
             </exclusions>
         </dependency-->
-        <!--dependency>
+        <dependency>
             <groupId>org.json4s</groupId>
             <artifactId>json4s-native_2.11</artifactId>
             <version>${json4s.version}</version>
-        </dependency-->
+        </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_${scala.binary.version}</artifactId>

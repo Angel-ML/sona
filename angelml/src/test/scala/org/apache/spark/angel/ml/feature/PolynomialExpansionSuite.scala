@@ -1,0 +1,153 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.spark.angel.ml.feature
+
+import org.apache.spark.angel.ml.linalg
+import org.apache.spark.angel.ml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vectors}
+import org.apache.spark.angel.ml.param.ParamsSuite
+import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
+import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, Vectors}
+import org.apache.spark.angelml.param.ParamsSuite
+import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
+import org.apache.spark.angelml.util.TestingUtils._
+import org.apache.spark.sql.Row
+
+class PolynomialExpansionSuite extends MLTest with DefaultReadWriteTest {
+
+  import testImplicits._
+
+  test("params") {
+    ParamsSuite.checkParams(new PolynomialExpansion)
+  }
+
+  private val data = Array(
+    Vectors.sparse(3, Seq((0, -2.0), (1, 2.3))),
+    Vectors.dense(-2.0, 2.3),
+    Vectors.dense(0.0, 0.0, 0.0),
+    Vectors.dense(0.6, -1.1, -3.0),
+    Vectors.sparse(3, Seq[(Int, Double)]()),
+    Vectors.sparse(3L, Seq[(Long, Double)]())
+  )
+
+  private val twoDegreeExpansion: Array[linalg.Vector] = Array(
+    Vectors.sparse(9, Array(0, 1, 2, 3, 4), Array(-2.0, 4.0, 2.3, -4.6, 5.29)),
+    Vectors.dense(-2.0, 4.0, 2.3, -4.6, 5.29),
+    Vectors.dense(new Array[Double](9)),
+    Vectors.dense(0.6, 0.36, -1.1, -0.66, 1.21, -3.0, -1.8, 3.3, 9.0),
+    Vectors.sparse(9, Array.empty[Int], Array.empty[Double]),
+    Vectors.sparse(9L, Array.empty[Long], Array.empty[Double]))
+
+  private val threeDegreeExpansion: Array[linalg.Vector] = Array(
+    Vectors.sparse(19, Array(0, 1, 2, 3, 4, 5, 6, 7, 8),
+      Array(-2.0, 4.0, -8.0, 2.3, -4.6, 9.2, 5.29, -10.58, 12.17)),
+    Vectors.dense(-2.0, 4.0, -8.0, 2.3, -4.6, 9.2, 5.29, -10.58, 12.17),
+    Vectors.dense(new Array[Double](19)),
+    Vectors.dense(0.6, 0.36, 0.216, -1.1, -0.66, -0.396, 1.21, 0.726, -1.331, -3.0, -1.8,
+      -1.08, 3.3, 1.98, -3.63, 9.0, 5.4, -9.9, -27.0),
+    Vectors.sparse(19, Array.empty[Int], Array.empty[Double]),
+    Vectors.sparse(19L, Array.empty[Long], Array.empty[Double]))
+
+  def assertTypeOfVector(lhs: linalg.Vector, rhs: linalg.Vector): Unit = {
+    assert((lhs, rhs) match {
+      case (v1: DenseVector, v2: DenseVector) => true
+      case (v1: IntSparseVector, v2: IntSparseVector) => true
+      case (v1: LongSparseVector, v2: LongSparseVector) => true
+      case _ => false
+    }, "The vector type should be preserved after polynomial expansion.")
+  }
+
+  def assertValues(lhs: linalg.Vector, rhs: linalg.Vector): Unit = {
+    assert(lhs ~== rhs absTol 1e-1, "The vector value is not correct after polynomial expansion.")
+  }
+
+  test("Polynomial expansion with default parameter") {
+    val df = data.zip(twoDegreeExpansion).toSeq.toDF("features", "expected")
+
+    val polynomialExpansion = new PolynomialExpansion()
+      .setInputCol("features")
+      .setOutputCol("polyFeatures")
+
+    testTransformer[(linalg.Vector, linalg.Vector)](df, polynomialExpansion, "polyFeatures", "expected") {
+      case Row(expanded: linalg.Vector, expected: linalg.Vector) =>
+        assertTypeOfVector(expanded, expected)
+        assertValues(expanded, expected)
+    }
+  }
+
+  test("Polynomial expansion with setter") {
+    val df = data.zip(threeDegreeExpansion).toSeq.toDF("features", "expected")
+
+    val polynomialExpansion = new PolynomialExpansion()
+      .setInputCol("features")
+      .setOutputCol("polyFeatures")
+      .setDegree(3)
+
+    testTransformer[(linalg.Vector, linalg.Vector)](df, polynomialExpansion, "polyFeatures", "expected") {
+      case Row(expanded: linalg.Vector, expected: linalg.Vector) =>
+        assertTypeOfVector(expanded, expected)
+        assertValues(expanded, expected)
+    }
+  }
+
+  test("Polynomial expansion with degree 1 is identity on vectors") {
+    val df = data.zip(data).toSeq.toDF("features", "expected")
+
+    val polynomialExpansion = new PolynomialExpansion()
+      .setInputCol("features")
+      .setOutputCol("polyFeatures")
+      .setDegree(1)
+
+    testTransformer[(linalg.Vector, linalg.Vector)](df, polynomialExpansion, "polyFeatures", "expected") {
+      case Row(expanded: linalg.Vector, expected: linalg.Vector) =>
+        assertValues(expanded, expected)
+    }
+  }
+
+  test("read/write") {
+    val t = new PolynomialExpansion()
+      .setInputCol("myInputCol")
+      .setOutputCol("myOutputCol")
+      .setDegree(3)
+    testDefaultReadWrite(t)
+  }
+
+  test("SPARK-17027. Integer overflow in PolynomialExpansion.getPolySize") {
+    val data: Array[(linalg.Vector, Int, Int)] = Array(
+      (Vectors.dense(1.0, 2.0, 3.0, 4.0, 5.0), 3002, 4367),
+      (Vectors.sparse(5, Seq((0, 1.0), (4, 5.0))), 3002, 4367),
+      (Vectors.dense(1.0, 2.0, 3.0, 4.0, 5.0, 6.0), 8007, 12375)
+    )
+
+    val df = data.toSeq.toDF("features", "expectedPoly10size", "expectedPoly11size")
+
+    val t = new PolynomialExpansion()
+      .setInputCol("features")
+      .setOutputCol("polyFeatures")
+
+    for (i <- Seq(10, 11)) {
+      testTransformer[(linalg.Vector, Int, Int)](
+        df,
+        t.setDegree(i),
+        s"expectedPoly${i}size",
+        "polyFeatures") { case Row(size: Int, expected: linalg.Vector) =>
+            assert(size === expected.size)
+      }
+    }
+  }
+}
+
