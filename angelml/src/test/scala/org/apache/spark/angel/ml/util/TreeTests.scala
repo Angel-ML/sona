@@ -24,12 +24,12 @@ import org.apache.spark.angel.ml.linalg.Vectors
 import scala.collection.JavaConverters._
 import org.apache.spark.{SparkContext, SparkFunSuite}
 import org.apache.spark.api.java.JavaRDD
-import org.apache.spark.angelml.attribute.{AttributeGroup, NominalAttribute, NumericAttribute}
-import org.apache.spark.angelml.linalg.Vectors
+import org.apache.spark.angel.ml.attribute.{AttributeGroup, NominalAttribute, NumericAttribute}
+import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
-private[angelml] object TreeTests extends SparkFunSuite {
+ private[angel] object TreeTests extends SparkFunSuite {
 
   /**
    * Convert the given data to a DataFrame, and set the features and label metadata.

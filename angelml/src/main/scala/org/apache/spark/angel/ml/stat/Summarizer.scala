@@ -184,7 +184,7 @@ object Summarizer extends Logging {
   }
 }
 
-private[angelml] class SummaryBuilderImpl(
+ private[angel] class SummaryBuilderImpl(
     requestedMetrics: Seq[SummaryBuilderImpl.Metric],
     requestedCompMetrics: Seq[SummaryBuilderImpl.ComputeMetric]
   ) extends SummaryBuilder {
@@ -203,7 +203,7 @@ private[angelml] class SummaryBuilderImpl(
   }
 }
 
-private[angelml] object SummaryBuilderImpl extends Logging {
+ private[angel] object SummaryBuilderImpl extends Logging {
 
   def implementedMetrics: Seq[String] = allMetrics.map(_._1).sorted
 

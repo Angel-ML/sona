@@ -29,7 +29,7 @@ import org.apache.spark.rdd.RDD
  * @param diagInvAtWA diagonal of matrix (A^T * W * A)^-1 in the last iteration
  * @param numIterations number of iterations
  */
-private[angelml] class IterativelyReweightedLeastSquaresModel(
+ private[angel] class IterativelyReweightedLeastSquaresModel(
     val coefficients: DenseVector,
     val intercept: Double,
     val diagInvAtWA: DenseVector,
@@ -55,7 +55,7 @@ private[angelml] class IterativelyReweightedLeastSquaresModel(
  * and Resistant Alternatives, Journal of the Royal Statistical Society.
  * Series B, 1984.</a>
  */
-private[angelml] class IterativelyReweightedLeastSquares(
+ private[angel] class IterativelyReweightedLeastSquares(
     val initialModel: WeightedLeastSquaresModel,
     val reweightFunc: (OffsetInstance, WeightedLeastSquaresModel) => (Double, Double),
     val fitIntercept: Boolean,

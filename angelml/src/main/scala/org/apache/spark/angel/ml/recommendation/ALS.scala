@@ -265,7 +265,7 @@ private[recommendation] trait ALSParams extends ALSModelParams with HasMaxIter w
  * @param itemFactors a DataFrame that stores item factors in two columns: `id` and `features`
  */
 @Since("1.3.0")
-class ALSModel private[angelml](
+class ALSModel private[angel](
     @Since("1.4.0") override val uid: String,
     @Since("1.4.0") val rank: Int,
     @transient val userFactors: DataFrame,

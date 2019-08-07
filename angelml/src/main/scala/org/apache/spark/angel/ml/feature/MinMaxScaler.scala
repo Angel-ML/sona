@@ -147,7 +147,7 @@ object MinMaxScaler extends DefaultParamsReadable[MinMaxScaler] {
   *                    TODO: The transformer does not yet set the metadata in the output column (SPARK-8529).
   */
 @Since("1.5.0")
-class MinMaxScalerModel private[angelml](
+class MinMaxScalerModel private[angel](
                                           @Since("1.5.0") override val uid: String,
                                           @Since("2.0.0") val originalMin: linalg.Vector,
                                           @Since("2.0.0") val originalMax: linalg.Vector)

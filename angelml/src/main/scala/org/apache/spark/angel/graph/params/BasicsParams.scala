@@ -2,18 +2,6 @@ package org.apache.spark.angel.graph.params
 
 import org.apache.spark.angel.ml.param.{DoubleParam, IntParam, LongParam, Param, Params}
 
-trait HasPartitionNum extends Params {
-
-  final val partitionNum = new IntParam(this, "partitionNum", "partitionNum")
-
-  final def getPartitionNum: Int = $(partitionNum)
-
-  setDefault(partitionNum, -1)
-
-  final def setPartitionNum(num: Int): this.type = set(partitionNum, num)
-
-}
-
 trait HasWindowSize extends Params {
 
   final val windowSize = new IntParam(this, "windowSize", "windowSize")
@@ -122,6 +110,29 @@ trait HasModel extends Params {
 
 }
 
+trait HasEmbeddingMatrixName extends Params {
+
+  final val embeddingMatrixName = new Param[String](this, "embeddingMatrixName", "embeddingMatrixName")
+
+  final def getEmbeddingMatrixName: String = $(embeddingMatrixName)
+
+  setDefault(embeddingMatrixName, "embedding")
+
+  final def setEmbeddingMatrixName(m: String): this.type = set(embeddingMatrixName, m)
+}
+
+trait HasVersion extends Params {
+
+  final val version = new Param[String](this, "version", "version")
+
+  final def getVersion: String = $(version)
+
+  setDefault(version, "v2")
+
+  final def setVersion(m: String): this.type = set(version, m)
+
+}
+
 trait HasModelPath extends Params {
 
   final val modelPath = new Param[String](this, "modelPath", "modelPath")
@@ -138,11 +149,11 @@ trait HasNumRowDataSet extends Params {
 
   final val numRowDataSet = new LongParam(this, "numRowDataSet", "numRowDataSet")
 
-  final def getPartitionNum: Long = $(numRowDataSet)
+  final def getNumRowDataSet: Long = $(numRowDataSet)
 
   setDefault(numRowDataSet, -1L)
 
-  final def setPartitionNum(num: Long): this.type = set(numRowDataSet, num)
+  final def setNumRowDataSet(num: Long): this.type = set(numRowDataSet, num)
 
 }
 

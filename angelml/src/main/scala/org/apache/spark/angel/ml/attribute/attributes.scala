@@ -128,7 +128,7 @@ private[attribute] trait AttributeFactory {
   /**
    * Creates an [[Attribute]] from a `StructField` instance, optionally preserving name.
    */
-  private[angelml] def decodeStructField(field: StructField, preserveName: Boolean): Attribute = {
+  private[angel] def decodeStructField(field: StructField, preserveName: Boolean): Attribute = {
     require(field.dataType.isInstanceOf[NumericType])
     val metadata = field.metadata
     val mlAttr = AttributeKeys.ML_ATTR
@@ -192,7 +192,7 @@ object Attribute extends AttributeFactory {
  * @param sparsity optional sparsity (ratio of zeros)
  */
 @DeveloperApi
-class NumericAttribute private[angelml](
+class NumericAttribute private[angel](
     override val name: Option[String] = None,
     override val index: Option[Long] = None,
     val min: Option[Double] = None,
@@ -330,7 +330,7 @@ object NumericAttribute extends AttributeFactory {
  * @param values optional values. At most one of `numValues` and `values` can be defined.
  */
 @DeveloperApi
-class NominalAttribute private[angelml](
+class NominalAttribute private[angel](
     override val name: Option[String] = None,
     override val index: Option[Long] = None,
     val isOrdinal: Option[Boolean] = None,
@@ -493,7 +493,7 @@ object NominalAttribute extends AttributeFactory {
  * @param values optional values. If set, its size must be 2.
  */
 @DeveloperApi
-class BinaryAttribute private[angelml](
+class BinaryAttribute private[angel](
     override val name: Option[String] = None,
     override val index: Option[Long] = None,
     val values: Option[Array[String]] = None)

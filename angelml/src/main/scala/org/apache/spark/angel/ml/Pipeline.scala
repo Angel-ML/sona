@@ -217,7 +217,7 @@ object Pipeline extends MLReadable[Pipeline] {
   /**
    * Methods for `MLReader` and `MLWriter` shared between [[Pipeline]] and [[PipelineModel]]
    */
-  private[angelml] object SharedReadWrite {
+  private[angel] object SharedReadWrite {
 
     import org.json4s.JsonDSL._
 
@@ -288,13 +288,13 @@ object Pipeline extends MLReadable[Pipeline] {
  * Represents a fitted pipeline.
  */
 @Since("1.2.0")
-class PipelineModel private[angelml](
+class PipelineModel private[angel](
     @Since("1.4.0") override val uid: String,
     @Since("1.4.0") val stages: Array[Transformer])
   extends Model[PipelineModel] with MLWritable with Logging {
 
   /** A Java/Python-friendly auxiliary constructor. */
-  private[angelml] def this(uid: String, stages: ju.List[Transformer]) = {
+  private[angel] def this(uid: String, stages: ju.List[Transformer]) = {
     this(uid, stages.asScala.toArray)
   }
 

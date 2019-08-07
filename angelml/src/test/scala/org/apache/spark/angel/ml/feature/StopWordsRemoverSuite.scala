@@ -18,7 +18,6 @@
 package org.apache.spark.angel.ml.feature
 
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.util.MLTest
 import org.apache.spark.sql.{DataFrame, Row}
 
 class StopWordsRemoverSuite extends MLTest with DefaultReadWriteTest {

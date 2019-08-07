@@ -25,11 +25,6 @@ import org.apache.spark.angel.ml.feature.{Instance, LabeledPoint}
 import org.apache.spark.angel.ml.linalg.{VectorUDT, Vectors}
 import org.apache.spark.angel.ml.param.ParamMap
 import org.apache.spark.angel.ml.param.shared.HasWeightCol
-import org.apache.spark.angelml._
-import org.apache.spark.angelml.evaluation.Evaluator
-import org.apache.spark.angelml.feature.{Instance, LabeledPoint}
-import org.apache.spark.angelml.linalg.{Vector, VectorUDT, Vectors}
-import org.apache.spark.angelml.param.ParamMap
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}

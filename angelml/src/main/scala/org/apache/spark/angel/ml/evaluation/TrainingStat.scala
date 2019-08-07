@@ -4,7 +4,7 @@ import com.tencent.angel.mlcore.PredictResult
 import org.apache.spark.angel.ml.evaluation.training.ClassificationTrainingStat
 
 import scala.collection.mutable
-
+import scala.language.implicitConversions
 
 abstract class TrainingStat extends Serializable {
   protected var avgLoss: Double = 0.0

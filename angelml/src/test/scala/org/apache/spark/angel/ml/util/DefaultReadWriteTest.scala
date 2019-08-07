@@ -20,9 +20,7 @@ package org.apache.spark.angel.ml.util
 import java.io.{File, IOException}
 
 import org.apache.spark.angel.ml.{Estimator, Model}
-import org.apache.spark.angel.ml.param.{DoubleArrayParam, DoubleParam, FloatParam, IntArrayParam, IntParam, LongParam, Param, ParamMap, Params, StringArrayParam}
-import org.apache.spark.angelml.param._
-import org.apache.spark.angelml.Estimator
+import org.apache.spark.angel.ml.param._
 import org.apache.spark.sql.Dataset
 import org.apache.spark.{SparkException, SparkFunSuite}
 import org.scalatest.Suite

@@ -40,7 +40,7 @@ import org.apache.spark.util.ThreadUtils
 /**
  * Params for [[TrainValidationSplit]] and [[TrainValidationSplitModel]].
  */
-private[angelml] trait TrainValidationSplitParams extends ValidatorParams {
+ private[angel] trait TrainValidationSplitParams extends ValidatorParams {
   /**
    * Param for ratio between train and validation data. Must be between 0 and 1.
    * Default: 0.75
@@ -241,14 +241,14 @@ object TrainValidationSplit extends MLReadable[TrainValidationSplit] {
  * @param validationMetrics Evaluated validation metrics.
  */
 @Since("1.5.0")
-class TrainValidationSplitModel private[angelml](
+class TrainValidationSplitModel private[angel](
     @Since("1.5.0") override val uid: String,
     @Since("1.5.0") val bestModel: Model[_],
     @Since("1.5.0") val validationMetrics: Array[Double])
   extends Model[TrainValidationSplitModel] with TrainValidationSplitParams with MLWritable {
 
   /** A Python-friendly auxiliary constructor. */
-  private[angelml] def this(uid: String, bestModel: Model[_], validationMetrics: JList[Double]) = {
+  private[angel] def this(uid: String, bestModel: Model[_], validationMetrics: JList[Double]) = {
     this(uid, bestModel, validationMetrics.asScala.toArray)
   }
 

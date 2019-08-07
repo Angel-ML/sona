@@ -183,7 +183,7 @@ import org.apache.spark.internal.Logging
  * for speed. We convert back to row major order when we create the model,
  * since this form is optimal for the matrix operations used for prediction.
  */
-private[angelml] class LogisticAggregator(
+ private[angel] class LogisticAggregator(
     bcFeaturesStd: Broadcast[Array[Double]],
     numClasses: Int,
     fitIntercept: Boolean,

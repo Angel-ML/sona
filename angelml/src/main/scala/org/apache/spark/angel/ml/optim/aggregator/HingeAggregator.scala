@@ -34,7 +34,7 @@ import org.apache.spark.broadcast.Broadcast
  * @param fitIntercept Whether to fit an intercept term.
  * @param bcFeaturesStd The standard deviation values of the features.
  */
-private[angelml] class HingeAggregator(
+ private[angel] class HingeAggregator(
     bcFeaturesStd: Broadcast[Array[Double]],
     fitIntercept: Boolean)(bcCoefficients: Broadcast[Vector])
   extends DifferentiableLossAggregator[Instance, HingeAggregator] {

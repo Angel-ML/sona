@@ -259,7 +259,7 @@ class IndexedRowMatrix @Since("1.0.0") (
     toRowMatrix().computeGramianMatrix()
   }
 
-  private[angelml] override def toBreeze(): BDM[Double] = {
+  private[angel] override def toBreeze(): BDM[Double] = {
     val m = numRows().toInt
     val n = numCols().toInt
     val mat = BDM.zeros[Double](m, n)

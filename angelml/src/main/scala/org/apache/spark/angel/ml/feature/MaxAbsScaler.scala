@@ -101,7 +101,7 @@ object MaxAbsScaler extends DefaultParamsReadable[MaxAbsScaler] {
   *
   */
 @Since("2.0.0")
-class MaxAbsScalerModel private[angelml](
+class MaxAbsScalerModel private[angel](
                                      @Since("2.0.0") override val uid: String,
                                      @Since("2.0.0") val maxAbs: linalg.Vector)
   extends Model[MaxAbsScalerModel] with MaxAbsScalerParams with MLWritable {

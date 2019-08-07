@@ -20,10 +20,7 @@ import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.angel.ml.param.ParamsSuite
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest, MLTestingUtils}
-import org.apache.spark.angelml.linalg.{Vector, Vectors}
-import org.apache.spark.angelml.param.ParamsSuite
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest, MLTestingUtils}
-import org.apache.spark.angelml.util.TestingUtils._
+import org.apache.spark.angel.ml.util.TestingUtils._
 import org.apache.spark.sql.Row
 
 class CountVectorizerSuite extends MLTest with DefaultReadWriteTest {

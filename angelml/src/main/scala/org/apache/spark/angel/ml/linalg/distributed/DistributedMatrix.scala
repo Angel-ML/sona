@@ -36,5 +36,5 @@ trait DistributedMatrix extends Serializable {
   def numCols(): Long
 
   /** Collects data and assembles a local dense breeze matrix (for test only). */
-  private[angelml] def toBreeze(): BDM[Double]
+  private[angel] def toBreeze(): BDM[Double]
 }

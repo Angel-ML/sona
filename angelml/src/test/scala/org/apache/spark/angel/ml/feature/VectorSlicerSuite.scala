@@ -22,10 +22,6 @@ import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.{VectorUDT, Vectors}
 import org.apache.spark.angel.ml.param.ParamsSuite
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.attribute.{Attribute, AttributeGroup, NumericAttribute}
-import org.apache.spark.angelml.linalg.{Vector, VectorUDT, Vectors}
-import org.apache.spark.angelml.param.ParamsSuite
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.{StructField, StructType}
 

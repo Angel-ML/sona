@@ -24,10 +24,7 @@ import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
 
 import scala.util.Random
 import org.apache.spark.{SparkException, SparkFunSuite}
-import org.apache.spark.angelml.Pipeline
-import org.apache.spark.angelml.param.ParamsSuite
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.util.TestingUtils._
+import org.apache.spark.angel.ml.util.TestingUtils._
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._

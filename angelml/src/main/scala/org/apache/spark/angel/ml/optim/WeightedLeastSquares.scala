@@ -30,7 +30,7 @@ import org.apache.spark.rdd.RDD
  * @param diagInvAtWA diagonal of matrix (A^T * W * A)^-1
  * @param objectiveHistory objective function (scaled loss + regularization) at each iteration.
  */
-private[angelml] class WeightedLeastSquaresModel(
+ private[angel] class WeightedLeastSquaresModel(
     val coefficients: DenseVector,
     val intercept: Double,
     val diagInvAtWA: DenseVector,
@@ -73,7 +73,7 @@ private[angelml] class WeightedLeastSquaresModel(
  * @param maxIter maximum number of iterations. Only for QuasiNewton solverType.
  * @param tol the convergence tolerance of the iterations. Only for QuasiNewton solverType.
  */
-private[angelml] class WeightedLeastSquares(
+ private[angel] class WeightedLeastSquares(
     val fitIntercept: Boolean,
     val regParam: Double,
     val elasticNetParam: Double,
@@ -324,7 +324,7 @@ private[angelml] class WeightedLeastSquares(
   }
 }
 
-private[angelml] object WeightedLeastSquares {
+ private[angel] object WeightedLeastSquares {
 
   /**
    * In order to take the normal equation approach efficiently, [[WeightedLeastSquares]]

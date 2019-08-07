@@ -27,7 +27,7 @@ import org.apache.spark.angel.ml.linalg.{BLAS, Vector, Vectors}
  * @tparam Agg Specialization of [[DifferentiableLossAggregator]]. Classes that subclass this
  *             type need to use this parameter to specify the concrete type of the aggregator.
  */
-private[angelml] trait DifferentiableLossAggregator[
+ private[angel] trait DifferentiableLossAggregator[
     Datum,
     Agg <: DifferentiableLossAggregator[Datum, Agg]] extends Serializable {
 

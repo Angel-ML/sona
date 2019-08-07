@@ -26,7 +26,7 @@ import org.apache.spark.angel.ml.linalg.{DenseVector, IntSparseVector, Vectors}
  *
  * @tparam T The type of the coefficients being regularized.
  */
-private[angelml] trait DifferentiableRegularization[T] extends DiffFunction[T] {
+ private[angel] trait DifferentiableRegularization[T] extends DiffFunction[T] {
 
   /** Magnitude of the regularization penalty. */
   def regParam: Double
@@ -47,7 +47,7 @@ private[angelml] trait DifferentiableRegularization[T] extends DiffFunction[T] {
  *                         standardization by penalizing each component differently by this param.
  *                         If `standardization` is true, this should be `None`.
  */
-private[angelml] class L2Regularization(
+ private[angel] class L2Regularization(
     override val regParam: Double,
     shouldApply: Int => Boolean,
     applyFeaturesStd: Option[Int => Double]) extends DifferentiableRegularization[linalg.Vector] {
@@ -83,6 +83,7 @@ private[angelml] class L2Regularization(
         (0.5 * sum * regParam, Vectors.dense(gradient))
       case _: IntSparseVector =>
         throw new IllegalArgumentException("Sparse coefficients are not currently supported.")
+      case _ => throw new Exception("Vector Type Error!")
     }
   }
 }

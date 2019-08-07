@@ -29,7 +29,7 @@ private[spark] object BLAS extends Serializable {
   @transient private var _nativeBLAS: NetlibBLAS = _
 
   // For level-1 routines, we use Java implementation.
-  private[angelml] def f2jBLAS: NetlibBLAS = {
+  private[angel] def f2jBLAS: NetlibBLAS = {
     if (_f2jBLAS == null) {
       _f2jBLAS = new F2jBLAS
     }
@@ -346,6 +346,7 @@ private[spark] object BLAS extends Serializable {
             }
           case dx: DenseVector =>
             Array.copy(dx.values, 0, dy.values, 0, n.toInt)
+          case _ => throw new Exception("Vector Type Error!")
         }
       case _ =>
         throw new IllegalArgumentException(s"y must be dense in copy but got ${y.getClass}")

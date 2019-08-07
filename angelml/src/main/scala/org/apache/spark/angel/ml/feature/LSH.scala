@@ -31,7 +31,7 @@ import org.apache.spark.sql.types._
 /**
  * Params for [[LSH]].
  */
-private[angelml] trait LSHParams extends HasInputCol with HasOutputCol {
+ private[angel] trait LSHParams extends HasInputCol with HasOutputCol {
   /**
    * Param for the number of hash tables used in LSH OR-amplification.
    *
@@ -61,7 +61,7 @@ private[angelml] trait LSHParams extends HasInputCol with HasOutputCol {
 /**
  * Model produced by [[LSH]].
  */
-private[angelml] abstract class LSHModel[T <: LSHModel[T]]
+ private[angel] abstract class LSHModel[T <: LSHModel[T]]
   extends Model[T] with LSHParams with MLWritable {
   self: T =>
 
@@ -75,7 +75,7 @@ private[angelml] abstract class LSHModel[T <: LSHModel[T]]
    * The hash function of LSH, mapping an input feature vector to multiple hash vectors.
    * @return The mapping of LSH function.
    */
-  protected[angelml] def hashFunction(elems: linalg.Vector): Array[linalg.Vector]
+  protected[angel] def hashFunction(elems: linalg.Vector): Array[linalg.Vector]
 
   /**
    * Calculate the distance between two different keys using the distance metric corresponding
@@ -84,7 +84,7 @@ private[angelml] abstract class LSHModel[T <: LSHModel[T]]
    * @param y One input vector in the metric space.
    * @return The distance between x and y.
    */
-  protected[angelml] def keyDistance(x: linalg.Vector, y: linalg.Vector): Double
+  protected[angel] def keyDistance(x: linalg.Vector, y: linalg.Vector): Double
 
   /**
    * Calculate the distance between two different hash Vectors.
@@ -93,7 +93,7 @@ private[angelml] abstract class LSHModel[T <: LSHModel[T]]
    * @param y Another hash vector.
    * @return The distance between hash vectors x and y.
    */
-  protected[angelml] def hashDistance(x: Seq[linalg.Vector], y: Seq[linalg.Vector]): Double
+  protected[angel] def hashDistance(x: Seq[linalg.Vector], y: Seq[linalg.Vector]): Double
 
   override def transform(dataset: Dataset[_]): DataFrame = {
     transformSchema(dataset.schema, logging = true)
@@ -301,7 +301,7 @@ private[angelml] abstract class LSHModel[T <: LSHModel[T]]
  * (2) Wang, Jingdong et al. "Hashing for similarity search: A survey." arXiv preprint
  * arXiv:1408.2927 (2014).
  */
-private[angelml] abstract class LSH[T <: LSHModel[T]]
+ private[angel] abstract class LSH[T <: LSHModel[T]]
   extends Estimator[T] with LSHParams with DefaultParamsWritable {
   self: Estimator[T] =>
 

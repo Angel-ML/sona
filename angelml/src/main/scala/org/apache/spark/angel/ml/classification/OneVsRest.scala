@@ -42,7 +42,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.util.ThreadUtils
 
-private[angelml] trait ClassifierTypeTrait {
+ private[angel] trait ClassifierTypeTrait {
   // scalastyle:off structural.type
   type ClassifierType = Classifier[F, E, M] forSome {
     type F
@@ -55,7 +55,7 @@ private[angelml] trait ClassifierTypeTrait {
 /**
  * Params for [[OneVsRest]].
  */
-private[angelml] trait OneVsRestParams extends ClassifierParams
+ private[angel] trait OneVsRestParams extends ClassifierParams
   with ClassifierTypeTrait with HasWeightCol {
 
   /**
@@ -70,7 +70,7 @@ private[angelml] trait OneVsRestParams extends ClassifierParams
   def getClassifier: ClassifierType = $(classifier)
 }
 
-private[angelml] object OneVsRestParams extends ClassifierTypeTrait {
+ private[angel] object OneVsRestParams extends ClassifierTypeTrait {
 
   def validateParams(instance: OneVsRestParams): Unit = {
     def checkElement(elem: Params, name: String): Unit = elem match {
@@ -132,9 +132,9 @@ private[angelml] object OneVsRestParams extends ClassifierTypeTrait {
  *               (taking label 0).
  */
 @Since("1.4.0")
-final class OneVsRestModel private[angelml](
+final class OneVsRestModel private[angel](
                                              @Since("1.4.0") override val uid: String,
-                                             private[angelml] val labelMetadata: Metadata,
+                                             private[angel] val labelMetadata: Metadata,
                                              @Since("1.4.0") val models: Array[_ <: ClassificationModel[_, _]])
   extends Model[OneVsRestModel] with OneVsRestParams with MLWritable {
 

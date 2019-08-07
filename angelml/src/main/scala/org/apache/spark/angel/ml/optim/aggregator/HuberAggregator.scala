@@ -67,7 +67,7 @@ import org.apache.spark.broadcast.Broadcast
  *                     to the features, the intercept (if fitIntercept is ture)
  *                     and the scale parameter (sigma).
  */
-private[angelml] class HuberAggregator(
+ private[angel] class HuberAggregator(
     fitIntercept: Boolean,
     epsilon: Double,
     bcFeaturesStd: Broadcast[Array[Double]])(bcParameters: Broadcast[Vector])

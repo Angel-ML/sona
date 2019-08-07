@@ -22,8 +22,6 @@ import edu.emory.mathcs.jtransforms.dct.DoubleDCT_1D
 import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.linalg.{Vector, Vectors}
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
 import org.apache.spark.sql.Row
 
 @BeanInfo

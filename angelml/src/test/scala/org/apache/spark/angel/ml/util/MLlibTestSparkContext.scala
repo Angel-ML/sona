@@ -33,12 +33,12 @@ trait MLlibTestSparkContext extends TempDirectory { self: Suite =>
   override def beforeAll() {
     super.beforeAll()
 
-    UDTRegistration.register("org.apache.spark.angelml.linalg.Vector", "org.apache.spark.angelml.linalg.VectorUDT")
-    UDTRegistration.register("org.apache.spark.angelml.linalg.DenseVector", "org.apache.spark.angelml.linalg.VectorUDT")
-    UDTRegistration.register("org.apache.spark.angelml.linalg.SparseVector", "org.apache.spark.angelml.linalg.VectorUDT")
-    UDTRegistration.register("org.apache.spark.angelml.linalg.Matrix", "org.apache.spark.angelml.linalg.MatrixUDT")
-    UDTRegistration.register("org.apache.spark.angelml.linalg.DenseMatrix", "org.apache.spark.angelml.linalg.MatrixUDT")
-    UDTRegistration.register("org.apache.spark.angelml.linalg.SparseMatrix", "org.apache.spark.angelml.linalg.MatrixUDT")
+    UDTRegistration.register("org.apache.spark.angel.ml.linalg.Vector", "org.apache.spark.angel.ml.linalg.VectorUDT")
+    UDTRegistration.register("org.apache.spark.angel.ml.linalg.DenseVector", "org.apache.spark.angel.ml.linalg.VectorUDT")
+    UDTRegistration.register("org.apache.spark.angel.ml.linalg.SparseVector", "org.apache.spark.angel.ml.linalg.VectorUDT")
+    UDTRegistration.register("org.apache.spark.angel.ml.linalg.Matrix", "org.apache.spark.angel.ml.linalg.MatrixUDT")
+    UDTRegistration.register("org.apache.spark.angel.ml.linalg.DenseMatrix", "org.apache.spark.angel.ml.linalg.MatrixUDT")
+    UDTRegistration.register("org.apache.spark.angel.ml.linalg.SparseMatrix", "org.apache.spark.angel.ml.linalg.MatrixUDT")
 
     spark = SparkSession.builder
       .master("local[2]")

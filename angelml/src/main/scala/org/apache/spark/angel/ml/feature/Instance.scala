@@ -26,7 +26,7 @@ import org.apache.spark.angel.ml.linalg.Vector
  * @param weight The weight of this instance.
  * @param features The vector of features for this data point.
  */
-private[angelml] case class Instance(label: Double, weight: Double, features: Vector) extends Serializable
+ private[angel] case class Instance(label: Double, weight: Double, features: Vector) extends Serializable
 
 /**
  * Case class that represents an instance of data point with
@@ -38,7 +38,7 @@ private[angelml] case class Instance(label: Double, weight: Double, features: Ve
  * @param offset The offset used for this data point.
  * @param features The vector of features for this data point.
  */
-private[angelml] case class OffsetInstance(
+ private[angel] case class OffsetInstance(
     label: Double,
     weight: Double,
     offset: Double,

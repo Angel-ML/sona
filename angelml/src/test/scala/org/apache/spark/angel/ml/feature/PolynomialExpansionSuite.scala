@@ -21,10 +21,7 @@ import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vectors}
 import org.apache.spark.angel.ml.param.ParamsSuite
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, Vectors}
-import org.apache.spark.angelml.param.ParamsSuite
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.util.TestingUtils._
+import org.apache.spark.angel.ml.util.TestingUtils._
 import org.apache.spark.sql.Row
 
 class PolynomialExpansionSuite extends MLTest with DefaultReadWriteTest {

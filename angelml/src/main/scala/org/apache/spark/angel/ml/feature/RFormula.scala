@@ -186,7 +186,7 @@ class RFormula @Since("1.5.0") (@Since("1.5.0") override val uid: String)
   def setStringIndexerOrderType(value: String): this.type = set(stringIndexerOrderType, value)
 
   /** Whether the formula specifies fitting an intercept. */
-  private[angelml] def hasIntercept: Boolean = {
+  private[angel] def hasIntercept: Boolean = {
     require(isDefined(formula), "Formula must be defined first.")
     RFormulaParser.parse($(formula)).hasIntercept
   }
@@ -332,8 +332,8 @@ object RFormula extends DefaultParamsReadable[RFormula] {
 @Since("1.5.0")
 class RFormulaModel private[feature](
                                       @Since("1.5.0") override val uid: String,
-                                      private[angelml] val resolvedFormula: ResolvedRFormula,
-                                      private[angelml] val pipelineModel: PipelineModel)
+                                      private[angel] val resolvedFormula: ResolvedRFormula,
+                                      private[angel] val pipelineModel: PipelineModel)
   extends Model[RFormulaModel] with RFormulaBase with MLWritable {
 
   @Since("2.0.0")

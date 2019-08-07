@@ -31,7 +31,7 @@ import org.apache.spark.sql.types.{DataType, DoubleType, StructType}
 /**
  * (private[ml])  Trait for parameters for prediction (regression and classification).
  */
-private[angelml] trait PredictorParams extends Params
+ private[angel] trait PredictorParams extends Params
   with HasLabelCol with HasFeaturesCol with HasPredictionCol {
 
   /**
@@ -138,7 +138,7 @@ abstract class Predictor[
    *
    * The default value is VectorUDT, but it may be overridden if FeaturesType is not Vector.
    */
-  private[angelml] def featuresDataType: DataType = new VectorUDT
+  private[angel] def featuresDataType: DataType = new VectorUDT
 
   override def transformSchema(schema: StructType): StructType = {
     validateAndTransformSchema(schema, fitting = true, featuresDataType)

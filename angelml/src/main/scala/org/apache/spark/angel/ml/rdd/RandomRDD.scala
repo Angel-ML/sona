@@ -26,7 +26,7 @@ import org.apache.spark.angel.ml.random.RandomDataGenerator
 import org.apache.spark.rdd.RDD
 import org.apache.spark.util.Utils
 
-private[angelml] class RandomRDDPartition[T](override val index: Int,
+ private[angel] class RandomRDDPartition[T](override val index: Int,
                                              val size: Int,
                                              val generator: RandomDataGenerator[T],
                                              val seed: Long) extends Partition {
@@ -35,7 +35,7 @@ private[angelml] class RandomRDDPartition[T](override val index: Int,
 }
 
 // These two classes are necessary since Range objects in Scala cannot have size > Int.MaxValue
-private[angelml] class RandomRDD[T: ClassTag](sc: SparkContext,
+ private[angel] class RandomRDD[T: ClassTag](sc: SparkContext,
                                               size: Long,
                                               numPartitions: Int,
                                               @transient private val rng: RandomDataGenerator[T],
@@ -56,7 +56,7 @@ private[angelml] class RandomRDD[T: ClassTag](sc: SparkContext,
   }
 }
 
-private[angelml] class RandomVectorRDD(sc: SparkContext,
+ private[angel] class RandomVectorRDD(sc: SparkContext,
                                        size: Long,
                                        vectorSize: Int,
                                        numPartitions: Int,
@@ -79,7 +79,7 @@ private[angelml] class RandomVectorRDD(sc: SparkContext,
   }
 }
 
-private[angelml] object RandomRDD {
+ private[angel] object RandomRDD {
 
   def getPartitions[T](size: Long,
       numPartitions: Int,

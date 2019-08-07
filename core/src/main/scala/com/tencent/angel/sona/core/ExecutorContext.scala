@@ -2,10 +2,11 @@ package com.tencent.angel.sona.core
 
 
 import com.tencent.angel.mlcore.conf.SharedConf
-import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
+import com.tencent.angel.psagent.PSAgent
 import org.apache.spark.internal.CompatibleLogging
 import org.apache.spark.sql.SPKSQLUtils
 
+import scala.language.implicitConversions
 
 case class ExecutorContext(conf: SharedConf, numTask: Int)
   extends PSAgentContext(conf) with Serializable with CompatibleLogging {
@@ -23,7 +24,7 @@ object ExecutorContext {
       psAgent = exeCtx.createAndInitPSAgent
     }
 
-    PSAgentContext.get().getPsAgent.refreshMatrixInfo()
+    com.tencent.angel.psagent.PSAgentContext.get().getPsAgent.refreshMatrixInfo()
 
     psAgent
   }

@@ -43,7 +43,7 @@ import org.apache.spark.rdd.RDD
  * @tparam Agg Specialization of [[DifferentiableLossAggregator]], representing the concrete type
  *             of the aggregator.
  */
-private[angelml] class RDDLossFunction[
+ private[angel] class RDDLossFunction[
     T: ClassTag,
     Agg <: DifferentiableLossAggregator[T, Agg]: ClassTag](
                                                             instances: RDD[T],

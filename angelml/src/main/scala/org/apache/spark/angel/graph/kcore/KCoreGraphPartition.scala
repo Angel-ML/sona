@@ -1,171 +1,201 @@
-/*
- * Tencent is pleased to support the open source community by making Angel available.
- *
- * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- *
- * https://opensource.org/licenses/Apache-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- *
- */
-
-
 package org.apache.spark.angel.graph.kcore
 
-import com.tencent.angel.ml.math2.vector.IntIntVector
-import org.apache.spark.angel.graph.utils.SparkPrivateClassProxy
+import java.util.{Arrays => JArrays}
 
-import scala.collection.JavaConversions._
-import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
+import com.tencent.angel.ml.math2.VFactory
+import com.tencent.angel.ml.math2.vector.LongIntVector
+import it.unimi.dsi.fastutil.ints.IntArrayList
+import it.unimi.dsi.fastutil.longs.{Long2IntOpenHashMap, LongArrayList}
 
-class KCoreGraphPartition(val keys: Array[Int], val adjs: Array[Array[Int]]) extends Serializable {
-  assert(keys.length == adjs.length)
-  private val nodes: Array[Int] = adjs.flatten.union(keys).distinct
-  //  private val LOG = LoggerFactory.getLogger(this.getClass)
+private[kcore]
+case class ReverseIndex(keys: Array[Long],
+                        indptr: Array[Int],
+                        neighbors: Array[Long],
+                        index: Long2IntOpenHashMap)
 
-  private val invertAdjs = {
-    val tempMap = SparkPrivateClassProxy.createOpenHashMap[Int, ArrayBuffer[Int]]()
-    adjs.zipWithIndex.foreach { case (adj, index) =>
-      adj.foreach { nei =>
-        tempMap.changeValue(nei, new ArrayBuffer[Int]() += index, _ += index)
-      }
+private[kcore]
+class KCoreGraphPartition(index: Int,
+                          keys: Array[Long],
+                          indptr: Array[Int],
+                          neighbors: Array[Long],
+                          keyCores: Array[Int],
+                          neiCores: Array[Int],
+                          indices: Array[Long],
+                          hIndices: Array[Int]) extends Serializable {
+
+  def initMsgs(model: KCorePSModel): Int = {
+    val msgs = VFactory.sparseLongKeyIntVector(model.dim)
+    for (i <- keys.indices)
+      msgs.set(keys(i), indptr(i + 1) - indptr(i))
+    model.initMsgs(msgs)
+    msgs.size().toInt
+  }
+
+  def msgsToString(msgs: LongIntVector): String = {
+    val it = msgs.getStorage.entryIterator()
+    val sb = new StringBuilder
+    while (it.hasNext) {
+      val entry = it.next()
+      sb.append(s"${entry.getLongKey}:${entry.getIntValue} ")
     }
-    tempMap
+    sb.toString()
   }
 
-  /*
-  max id
-   */
-  def max: Int = keys.aggregate(Int.MinValue)(math.max, math.max)
+  def process(model: KCorePSModel, numMsgs: Long, isFirstIteration: Boolean): KCoreGraphPartition = {
+    //    println(s"keys: ${keys.mkString(",")} neighbours: ${neighbors.distinct.mkString(",")}")
+    if (numMsgs > indices.length || isFirstIteration) {
+      val inMsgs = model.readMsgs(indices)
 
-  /*
-  sum of cores
-   */
-  def sum(model: KCorePSModel): Double = {
-    model.pull(getKeysCopy).get(keys).map(Coder.decodeCoreNumber).sum
-  }
 
-  /*
-  reset version
-  we have only 6 bit to encode version, when version goes to 127, reset it to 1
-   */
-  def resetVersion(model: KCorePSModel): Unit = {
-    import collection.JavaConversions._
-    val coreWithVersions = model.pull(getKeysCopy)
-    val withNewVersionFunc = Coder.withNewVersion(1)
-    coreWithVersions.getStorage.entryIterator.foreach { entry =>
-      val coreWithVersion = entry.getIntValue
-      if (Coder.isMaxVersion(Coder.decodeVersion(coreWithVersion))) {
-        entry.setValue(withNewVersionFunc(coreWithVersion))
-      } else {
-        entry.setValue(Coder.decodeCoreNumber(coreWithVersion))
-      }
-    }
-    model.updateCoreWithActive(coreWithVersions)
-  }
-
-  private def getKeysCopy: Array[Int] = {
-    val keyCopy = new Array[Int](keys.length)
-    System.arraycopy(keys, 0, keyCopy, 0, keys.length)
-    keyCopy
-  }
-
-  def init(model: KCorePSModel): Unit = {
-    val withVersionFunc = Coder.withVersion(1)
-    val coresWithVersion = adjs.map { adj => withVersionFunc(adj.length) }
-    model.updateCoreWithActive(keys, coresWithVersion)
-  }
-
-  def process(model: KCorePSModel, version: Int, enable: Boolean = false): Int = {
-    val curTime = System.currentTimeMillis()
-    val curCoresWithVersion = model.pull(nodes)
-    println(s"[pull]${nodes.length} nodes, takes ${System.currentTimeMillis() - curTime}ms")
-
-    // h-index
-    val curTime2 = System.currentTimeMillis()
-    val indices = new ArrayBuffer[Int]()
-    val newEstimations = new ArrayBuffer[Int]()
-    for (i <- getActive(curCoresWithVersion, enable, version)) {
-      val newEst = KCoreGraphPartition.hIndex(adjs(i), curCoresWithVersion)
-      if (Coder.decodeCoreNumber(curCoresWithVersion.get(keys(i))) > newEst) {
-        indices += keys(i)
-        newEstimations += newEst
-      }
-    }
-    println(s"[estimate cores]${indices.length} update, takes ${System.currentTimeMillis() - curTime2}ms")
-
-    // update
-    val curTime3 = System.currentTimeMillis()
-    val updateKey = indices.toArray
-    val withVersionFunc = Coder.withVersion(version + 1)
-    model.updateCoreWithActive(updateKey, newEstimations.map(withVersionFunc)(collection.breakOut))
-    println(s"[update]takes ${System.currentTimeMillis() - curTime3}ms")
-    println(s"total = ${System.currentTimeMillis() - curTime}ms")
-    indices.length
-  }
-
-  private def getActive(curCores: IntIntVector, enable: Boolean, version: Int) = {
-    val curTime = System.currentTimeMillis()
-    val active = if (enable) {
-      val activeNodes = curCores.getStorage.entryIterator().flatMap { entry =>
-        if (Coder.decodeVersion(entry.getIntValue) >= version) {
-          Iterator.single(entry.getIntKey)
-        } else {
-          Iterator.empty
+      //      println(s"cores: ${msgsToString(cores)}")
+//      println(s"one inMsgs: ${msgsToString(inMsgs)}")
+      val outMsgs = VFactory.sparseLongKeyIntVector(inMsgs.dim())
+      for (idx <- keys.indices) {
+        val newIndex = if (isFirstIteration) calcOneFirst(idx, inMsgs) else calcOne(idx, inMsgs)
+        if (newIndex < keyCores(idx)) {
+          outMsgs.set(keys(idx), newIndex)
+          keyCores(idx) = newIndex
         }
       }
-      val activeKeys = activeNodes.flatMap { nei =>
-        if (invertAdjs.contains(nei)) {
-          invertAdjs(nei)
-        } else {
-          Iterator.empty
-        }
-      }.toIndexedSeq
-      activeKeys.distinct
+
+      model.writeMsgs(outMsgs)
+
+//      println(s"after calc: keys:${keys.mkString(",")} cores:${keyCores.mkString(",")}")
+
+      new KCoreGraphPartition(index, keys, indptr,
+        neighbors, keyCores, neiCores, indices, hIndices)
     } else {
-      keys.indices
+      val inMsgs = model.readAllMsgs()
+      assert(inMsgs.size() == numMsgs)
+//      println(s"two inMsgs: ${msgsToString(inMsgs)}")
+
+
+      val outMsgs = VFactory.sparseLongKeyIntVector(inMsgs.dim())
+      for (idx <- keys.indices) {
+        val newIndex = calcOne(idx, inMsgs)
+        if (newIndex < keyCores(idx)) {
+          keyCores(idx) = newIndex
+          outMsgs.set(keys(idx), newIndex)
+        }
+      }
+
+//      println(s"after calc: keys:${keys.mkString(",")} cores:${keyCores.mkString(",")}")
+      model.writeMsgs(outMsgs)
+
+      new KCoreGraphPartition(index, keys, indptr,
+        neighbors, keyCores, neiCores, indices, hIndices)
     }
-    println(s"${active.size} active, takes ${System.currentTimeMillis() - curTime}ms")
-    active
   }
 
-  def save(model: KCorePSModel): (Array[Int], Array[Int]) = {
-    val keyCopy = new Array[Int](keys.length)
-    System.arraycopy(keys, 0, keyCopy, 0, keys.length)
-    (keys, model.pull(keyCopy).get(keys).map(Coder.decodeCoreNumber))
-  }
-}
-
-object KCoreGraphPartition {
-
-
-  def apply(keys: Array[Int], values: Array[Array[Int]]): KCoreGraphPartition = {
-    new KCoreGraphPartition(keys, values)
-  }
-
-  // todo: to be improved
-  private def hIndex(nei: Array[Int], vector: IntIntVector): Int = {
-    val map = new mutable.HashMap[Int, Int]()
-    vector.get(nei).foreach { core =>
-      val c = Coder.decodeCoreNumber(core)
-      map(c) = map.getOrElse(c, 0) + 1
+  def calcOne(idx: Int, inMsgs: LongIntVector): Int = {
+    var j = indptr(idx)
+    var flag = false
+    while (j < indptr(idx + 1)) {
+      val t = inMsgs.get(neighbors(j))
+      if (t != 0 && t != neiCores(j)) {
+        neiCores(j) = t
+        flag = true
+      }
+      j += 1
     }
-    val pairs = map.toArray.sortBy(_._1)
-    var s = 0
-    var i = pairs.length - 1
-    while (i >= 0 && {
-      s += pairs(i)._2
-      pairs(i)._1 > s
-    }) {
+
+    if (flag)
+      calcHIndex(neiCores, indptr(idx), indptr(idx + 1))
+    else
+      keyCores(idx)
+  }
+
+  def calcOneFirst(idx: Int, inMsgs: LongIntVector): Int = {
+    keyCores(idx) = inMsgs.get(keys(idx))
+    var j = indptr(idx)
+    while (j < indptr(idx + 1)) {
+      neiCores(j) = inMsgs.get(neighbors(j))
+      j += 1
+    }
+    calcHIndex(neiCores, indptr(idx), indptr(idx + 1))
+  }
+
+  def calcHIndex(citations: Array[Int], from: Int, to: Int): Int = {
+    System.arraycopy(citations, from, hIndices, 0, to - from)
+    val start = 0
+    val end = to - from
+    JArrays.sort(hIndices, 0, end)
+    var i = end - 1
+    var cnt = 1
+    while (i >= start && hIndices(i) >= cnt) {
+      cnt += 1
       i -= 1
     }
-    if (i < 0) s else math.max(s - pairs(i)._2, pairs(i)._1)
+    cnt - 1
   }
+
+  def save(): (Array[Long], Array[Int]) =
+    (keys, keyCores)
+}
+
+
+private[kcore]
+object KCoreGraphPartition {
+  def apply(index: Int, iterator: Iterator[(Long, Iterable[Long])]): KCoreGraphPartition = {
+    val indptr = new IntArrayList()
+    val keys = new LongArrayList()
+    val neighbours = new LongArrayList()
+
+    indptr.add(0)
+    var maxDegree: Int = 0
+    while (iterator.hasNext) {
+      val entry = iterator.next()
+      val (node, ns) = (entry._1, entry._2.toArray.distinct)
+      ns.foreach(n => neighbours.add(n))
+      indptr.add(neighbours.size())
+      keys.add(node)
+      maxDegree = math.max(ns.size, maxDegree)
+    }
+
+    val keysArray = keys.toLongArray()
+    val neighboursArray = neighbours.toLongArray()
+
+    new KCoreGraphPartition(index, keysArray, indptr.toIntArray(),
+      neighboursArray, new Array[Int](keysArray.length),
+      new Array[Int](neighboursArray.length),
+      keysArray.union(neighboursArray).distinct,
+      new Array[Int](maxDegree))
+  }
+
+  def apply(index: Int, keys: Array[Long],
+            indptr: Array[Int],
+            neighbors: Array[Long],
+            keyCores: Array[Int],
+            neiCores: Array[Int],
+            indices: Array[Long],
+            hIndices: Array[Int]): KCoreGraphPartition = {
+    new KCoreGraphPartition(index, keys, indptr,
+      neighbors, keyCores, neiCores, indices, hIndices)
+  }
+
+  //  def makeReverseIndex(keys: Array[Long],
+  //                       indptr: Array[Int],
+  //                       nodes: Array[Long]): ReverseIndex = {
+  //    val cnt = new Long2IntOpenHashMap()
+  //    for (idx <- keys.indices) {
+  //      var j = indptr(idx)
+  //      while (j < indptr(idx + 1)) {
+  //        cnt.addTo(nodes(j), 1)
+  //        j += 1
+  //      }
+  //    }
+  //
+  //    val rkeys = new LongArrayList()
+  //    val rindptr = new IntArrayList()
+  //    val rnodes = new LongArrayList()
+  //    val rindex = new Long2IntOpenHashMap()
+  //
+  //    for (idx <- keys.indices) {
+  //      var j = indptr(idx)
+  //      while (j < indptr(idx + 1)) {
+  //
+  //        j += 1
+  //      }
+  //    }
+  //  }
 }

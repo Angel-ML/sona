@@ -1,13 +1,12 @@
 package org.apache.spark.angel.ml.classification
 
 import com.tencent.angel.sona.core.DriverContext
+
 import org.apache.spark.angel.ml.feature.LabeledPoint
 import org.apache.spark.angel.ml.linalg.Vectors
-import org.apache.spark.angelml.feature.LabeledPoint
-import org.apache.spark.angelml.linalg.Vectors
 import org.apache.spark.{SparkConf, SparkFunSuite}
 import org.apache.spark.sql.{DataFrameReader, SparkSession}
-import org.scalatest.FunSuite
+
 
 
 class AngelClassificationSuite extends SparkFunSuite {
@@ -40,10 +39,10 @@ class AngelClassificationSuite extends SparkFunSuite {
   test("daw_train") {
 //    val driverCtx = DriverContext.get(sparkConf)
 //    driverCtx.startAngelAndPSAgent()
-    val trainData = libsvm.load("./data/angel/census/census_148d_train.libsvm")
+    val trainData = libsvm.load("../data/angel/census/census_148d_train.libsvm")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/daw.json")
+      .setModelJsonFile("./src/test/jsons/daw.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -61,10 +60,10 @@ class AngelClassificationSuite extends SparkFunSuite {
   test("svm_train") {
 //    val driverCtx = DriverContext.get(sparkConf)
 //    driverCtx.startAngelAndPSAgent()
-    val trainData = dummy.load("./data/angel/a9a/a9a_123d_train.dummy")
+    val trainData = dummy.load("./angel/a9a/a9a_123d_train.dummy")
 
     val svm_classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/svm.json")
+      .setModelJsonFile("./src/test/jsons/svm.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -84,7 +83,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = libsvm.load("data/angel/protein/protein_357d_train.libsvm")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/softmax.json")
+      .setModelJsonFile("./src/test/jsons/softmax.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -103,7 +102,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = libsvm.load("data/angel/a9a/a9a_123d_train.libsvm")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/robustreg.json")
+      .setModelJsonFile("./src/test/jsons/robustreg.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -123,7 +122,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = libsvm.load("data/angel/a9a/a9a_123d_train.libsvm")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/mixedlr.json")
+      .setModelJsonFile("./src/test/jsons/mixedlr.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -143,7 +142,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = libsvm.load("data/angel/a9a/a9a_123d_train.libsvm")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/linreg.json")
+      .setModelJsonFile("./src/test/jsons/linreg.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -160,10 +159,10 @@ class AngelClassificationSuite extends SparkFunSuite {
   test("linreg_train") {
 //    val driverCtx = DriverContext.get(sparkConf)
 //    driverCtx.startAngelAndPSAgent()
-    val trainData = libsvm.load("./data/angel/a9a/a9a_123d_train.libsvm")
+    val trainData = libsvm.load("./angel/a9a/a9a_123d_train.libsvm")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/linreg.json")
+      .setModelJsonFile("./src/test/jsons/linreg.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -182,14 +181,14 @@ class AngelClassificationSuite extends SparkFunSuite {
 //    driverCtx.startAngelAndPSAgent()
 //    val trainData = libsvm.load("data/angel/census/census_148d_train.libsvm")
 
-    val Data = spark.sparkContext.textFile("./data/angel/census/census_148d_train.dense").map(_.split(" "))
+    val Data = spark.sparkContext.textFile("./angel/census/census_148d_train.dense").map(_.split(" "))
     val Data_ = Data.map(x => LabeledPoint(x(0).toDouble, Vectors.dense(x.slice(1, x.length-1).map(_.toDouble))))
     val trainData = spark.createDataFrame(Data_)
 
     trainData.show()
 
     val dnn_classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/dnn.json")
+      .setModelJsonFile("./src/test/jsons/dnn.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -210,7 +209,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = dummy.load("data/angel/census/census_148d_train.dummy")
 
     val deepfm_classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/deepfm.json")
+      .setModelJsonFile("./src/test/jsons/deepfm.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -230,7 +229,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = dummy.load("data/angel/census/census_148d_train.dummy")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/deepfm.json")
+      .setModelJsonFile("./src/test/jsons/deepfm.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -250,7 +249,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = dummy.load("data/angel/census/census_148d_train.dummy")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/deepfm.json")
+      .setModelJsonFile("./src/test/jsons/deepfm.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -270,7 +269,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = dummy.load("data/angel/census/census_148d_train.dummy")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/deepfm.json")
+      .setModelJsonFile("./src/test/jsons/deepfm.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)

@@ -19,7 +19,6 @@ package org.apache.spark.angel.ml.feature
 
 import org.apache.spark.angel.ml.Pipeline
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
 import org.apache.spark.sql._
 
 class QuantileDiscretizerSuite extends MLTest with DefaultReadWriteTest {

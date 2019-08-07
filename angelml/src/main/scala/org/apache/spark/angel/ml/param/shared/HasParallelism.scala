@@ -26,7 +26,7 @@ import org.apache.spark.util.ThreadUtils
  * Trait to define a level of parallelism for algorithms that are able to use
  * multithreaded execution, and provide a thread-pool based execution context.
  */
-private[angelml] trait HasParallelism extends Params {
+ private[angel] trait HasParallelism extends Params {
 
   /**
    * The number of threads to use when running parallel algorithms.
@@ -47,7 +47,7 @@ private[angelml] trait HasParallelism extends Params {
    * set to the value of [[parallelism]]. If this param is set to 1, a same-thread executor
    * will be used to run in serial.
    */
-  private[angelml] def getExecutionContext: ExecutionContext = {
+  private[angel] def getExecutionContext: ExecutionContext = {
     getParallelism match {
       case 1 =>
         ThreadUtils.sameThread

@@ -85,7 +85,7 @@ class RowMatrix @Since("1.0.0") (
    * @param v a dense vector whose length must match the number of columns of this matrix
    * @return a dense vector representing the product
    */
-  private[angelml] def multiplyGramianMatrixBy(v: BDV[Double]): BDV[Double] = {
+  private[angel] def multiplyGramianMatrixBy(v: BDV[Double]): BDV[Double] = {
     val n = numCols().toInt
     val vbr = rows.context.broadcast(v)
     rows.treeAggregate(BDV.zeros[Double](n))(
@@ -220,7 +220,7 @@ class RowMatrix @Since("1.0.0") (
    *             dist-eigs: compute the top eigenvalues of the gram matrix distributively)
    * @return SingularValueDecomposition(U, s, V). U = null if computeU = false.
    */
-  private[angelml] def computeSVD(
+  private[angel] def computeSVD(
       k: Int,
       computeU: Boolean,
       rCond: Double,
@@ -597,7 +597,7 @@ class RowMatrix @Since("1.0.0") (
    * @return An n x n sparse upper-triangular matrix of cosine similarities
    *         between columns of this matrix.
    */
-  private[angelml] def columnSimilaritiesDIMSUM(
+  private[angel] def columnSimilaritiesDIMSUM(
       colMags: Array[Double],
       gamma: Double): CoordinateMatrix = {
     require(gamma > 1.0, s"Oversampling should be greater than 1: $gamma")
@@ -674,7 +674,7 @@ class RowMatrix @Since("1.0.0") (
     new CoordinateMatrix(sims, numCols(), numCols())
   }
 
-  private[angelml] override def toBreeze(): BDM[Double] = {
+  private[angel] override def toBreeze(): BDM[Double] = {
     val m = numRows().toInt
     val n = numCols().toInt
     val mat = BDM.zeros[Double](m, n)

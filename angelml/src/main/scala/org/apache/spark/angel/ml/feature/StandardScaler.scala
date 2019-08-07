@@ -149,7 +149,7 @@ object StandardScaler extends DefaultParamsReadable[StandardScaler] {
  * @param mean Mean of the StandardScalerModel
  */
 @Since("1.2.0")
-class StandardScalerModel private[angelml](
+class StandardScalerModel private[angel](
                                             @Since("1.4.0") override val uid: String,
                                             @Since("2.0.0") val std: ml.linalg.Vector,
                                             @Since("2.0.0") val mean: ml.linalg.Vector)

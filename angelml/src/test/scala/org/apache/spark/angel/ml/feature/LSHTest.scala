@@ -20,13 +20,11 @@ package org.apache.spark.angel.ml.feature
 import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.VectorUDT
 import org.apache.spark.angel.ml.util.{MLTestingUtils, SchemaUtils}
-import org.apache.spark.angelml.linalg.VectorUDT
-import org.apache.spark.angelml.util.{MLTestingUtils, SchemaUtils}
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.DataTypes
 
-private[angelml] object LSHTest {
+ private[angel] object LSHTest {
   /**
    * For any locality sensitive function h in a metric space, we meed to verify whether
    * the following property is satisfied.

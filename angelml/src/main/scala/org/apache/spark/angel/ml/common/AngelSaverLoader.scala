@@ -20,7 +20,7 @@ object AngelSaverLoader {
     lazy val conf: SharedConf = SharedConf.fromString(sharedConfStr)
   }
 
-  private[angelml] class AngelModelWriter[Model <: AngelSparkModel](instance: Model)
+  private[angel] class AngelModelWriter[Model <: AngelSparkModel](instance: Model)
     extends MLWriter with Serializable with Logging {
     override protected def saveImpl(path: String): Unit = {
       // 1. Save metadata and Params
@@ -48,7 +48,7 @@ object AngelSaverLoader {
     }
   }
 
-  private[angelml] class AngelModelReader[Model <: AngelSparkModel : ClassTag](implicit psClient: AngelPSClient)
+  private[angel] class AngelModelReader[Model <: AngelSparkModel : ClassTag](implicit psClient: AngelPSClient)
     extends MLReader[Model] with Serializable with Logging {
     private val clz = implicitly[ClassTag[Model]].runtimeClass
 

@@ -7,7 +7,7 @@ import org.netlib.util.{doubleW, intW}
 /**
  * Compute eigen-decomposition.
  */
-private[angelml] object EigenValueDecomposition {
+ private[angel] object EigenValueDecomposition {
   /**
    * Compute the leading k eigenvalues and eigenvectors on a symmetric square matrix using ARPACK.
    * The caller needs to ensure that the input matrix is real symmetric. This function requires

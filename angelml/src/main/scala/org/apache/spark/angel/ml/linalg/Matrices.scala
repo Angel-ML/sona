@@ -43,10 +43,10 @@ sealed trait Matrix extends Serializable {
   val isTransposed: Boolean = false
 
   /** Indicates whether the values backing this matrix are arranged in column major order. */
-  private[angelml] def isColMajor: Boolean = !isTransposed
+  private[angel] def isColMajor: Boolean = !isTransposed
 
   /** Indicates whether the values backing this matrix are arranged in row major order. */
-  private[angelml] def isRowMajor: Boolean = isTransposed
+  private[angel] def isRowMajor: Boolean = isTransposed
 
   /** Converts to a dense array in column major. */
   @Since("2.0.0")
@@ -73,17 +73,17 @@ sealed trait Matrix extends Serializable {
   def rowIter: Iterator[Vector] = this.transpose.colIter
 
   /** Converts to a breeze matrix. */
-  private[angelml] def asBreeze: BM[Double]
+  private[angel] def asBreeze: BM[Double]
 
   /** Gets the (i, j)-th element. */
   @Since("2.0.0")
   def apply(i: Int, j: Int): Double
 
   /** Return the index for the (i, j)-th element in the backing array. */
-  private[angelml] def index(i: Int, j: Int): Int
+  private[angel] def index(i: Int, j: Int): Int
 
   /** Update element at (i, j) */
-  private[angelml] def update(i: Int, j: Int, v: Double): Unit
+  private[angel] def update(i: Int, j: Int, v: Double): Unit
 
   /** Get a deep copy of the matrix. */
   @Since("2.0.0")
@@ -142,7 +142,7 @@ sealed trait Matrix extends Serializable {
    * backing array. For example, an operation such as addition or subtraction will only be
    * performed on the non-zero values in a `SparseMatrix`.
    */
-  private[angelml] def update(f: Double => Double): Matrix
+  private[angel] def update(f: Double => Double): Matrix
 
   /**
    * Applies a function `f` to all the active elements of dense and sparse matrix. The ordering
@@ -173,7 +173,7 @@ sealed trait Matrix extends Serializable {
    * @param colMajor Whether the values of the resulting sparse matrix should be in column major
    *                    or row major order. If `false`, resulting matrix will be row major.
    */
-  private[angelml] def toSparseMatrix(colMajor: Boolean): SparseMatrix
+  private[angel] def toSparseMatrix(colMajor: Boolean): SparseMatrix
 
   /**
    * Converts this matrix to a sparse matrix in column major order.
@@ -199,7 +199,7 @@ sealed trait Matrix extends Serializable {
    * @param colMajor Whether the values of the resulting dense matrix should be in column major
    *                    or row major order. If `false`, resulting matrix will be row major.
    */
-  private[angelml] def toDenseMatrix(colMajor: Boolean): DenseMatrix
+  private[angel] def toDenseMatrix(colMajor: Boolean): DenseMatrix
 
   /**
    * Converts this matrix to a dense matrix while maintaining the layout of the current matrix.
@@ -263,19 +263,19 @@ sealed trait Matrix extends Serializable {
   }
 
   /** Gets the size of the dense representation of this `Matrix`. */
-  private[angelml] def getDenseSizeInBytes: Long = {
+  private[angel] def getDenseSizeInBytes: Long = {
     Matrices.getDenseSize(numCols, numRows)
   }
 
   /** Gets the size of the minimal sparse representation of this `Matrix`. */
-  private[angelml] def getSparseSizeInBytes(colMajor: Boolean): Long = {
+  private[angel] def getSparseSizeInBytes(colMajor: Boolean): Long = {
     val nnz = numNonzeros
     val numPtrs = if (colMajor) numCols + 1L else numRows + 1L
     Matrices.getSparseSize(nnz, numPtrs)
   }
 
   /** Gets the current size in bytes of this `Matrix`. Useful for testing */
-  private[angelml] def getSizeInBytes: Long
+  private[angel] def getSizeInBytes: Long
 }
 
 /**
@@ -333,7 +333,7 @@ class DenseMatrix @Since("2.0.0") (
     Seq(numRows, numCols, toArray).##
   }
 
-  private[angelml] def asBreeze: BM[Double] = {
+  private[angel] def asBreeze: BM[Double] = {
     if (!isTransposed) {
       new BDM[Double](numRows, numCols, values)
     } else {
@@ -342,17 +342,17 @@ class DenseMatrix @Since("2.0.0") (
     }
   }
 
-  private[angelml] def apply(i: Int): Double = values(i)
+  private[angel] def apply(i: Int): Double = values(i)
 
   override def apply(i: Int, j: Int): Double = values(index(i, j))
 
-  private[angelml] def index(i: Int, j: Int): Int = {
+  private[angel] def index(i: Int, j: Int): Int = {
     require(i >= 0 && i < numRows, s"Expected 0 <= i < $numRows, got i = $i.")
     require(j >= 0 && j < numCols, s"Expected 0 <= j < $numCols, got j = $j.")
     if (!isTransposed) i + numRows * j else j + numCols * i
   }
 
-  private[angelml] def update(i: Int, j: Int, v: Double): Unit = {
+  private[angel] def update(i: Int, j: Int, v: Double): Unit = {
     values(index(i, j)) = v
   }
 
@@ -361,7 +361,7 @@ class DenseMatrix @Since("2.0.0") (
   private[spark] def map(f: Double => Double) = new DenseMatrix(numRows, numCols, values.map(f),
     isTransposed)
 
-  private[angelml] def update(f: Double => Double): DenseMatrix = {
+  private[angel] def update(f: Double => Double): DenseMatrix = {
     val len = values.length
     var i = 0
     while (i < len) {
@@ -410,7 +410,7 @@ class DenseMatrix @Since("2.0.0") (
    *
    * @param colMajor Whether the resulting `SparseMatrix` values will be in column major order.
    */
-  private[angelml] override def toSparseMatrix(colMajor: Boolean): SparseMatrix = {
+  private[angel] override def toSparseMatrix(colMajor: Boolean): SparseMatrix = {
     if (!colMajor) this.transpose.toSparseColMajor.transpose
     else {
       val spVals: MArrayBuilder[Double] = new MArrayBuilder.ofDouble
@@ -441,7 +441,7 @@ class DenseMatrix @Since("2.0.0") (
    *
    * @param colMajor Whether the resulting `DenseMatrix` values will be in column major order.
    */
-  private[angelml] override def toDenseMatrix(colMajor: Boolean): DenseMatrix = {
+  private[angel] override def toDenseMatrix(colMajor: Boolean): DenseMatrix = {
     if (isRowMajor && colMajor) {
       new DenseMatrix(numRows, numCols, this.toArray, isTransposed = false)
     } else if (isColMajor && !colMajor) {
@@ -465,13 +465,13 @@ class DenseMatrix @Since("2.0.0") (
     }
   }
 
-  private[angelml] def getSizeInBytes: Long = Matrices.getDenseSize(numCols, numRows)
+  private[angel] def getSizeInBytes: Long = Matrices.getDenseSize(numCols, numRows)
 }
 
 @Since("2.0.0")
 object DenseMatrix {
 
-  private[angelml] def unapply(dm: DenseMatrix): Option[(Int, Int, Array[Double], Boolean)] =
+  private[angel] def unapply(dm: DenseMatrix): Option[(Int, Int, Array[Double], Boolean)] =
     Some((dm.numRows, dm.numCols, dm.values, dm.isTransposed))
 
   /**
@@ -641,7 +641,7 @@ class SparseMatrix @Since("2.0.0") (
     case _ => false
   }
 
-  private[angelml] def asBreeze: BM[Double] = {
+  private[angel] def asBreeze: BM[Double] = {
      if (!isTransposed) {
        new BSM[Double](values, numRows, numCols, colPtrs, rowIndices)
      } else {
@@ -655,7 +655,7 @@ class SparseMatrix @Since("2.0.0") (
     if (ind < 0) 0.0 else values(ind)
   }
 
-  private[angelml] def index(i: Int, j: Int): Int = {
+  private[angel] def index(i: Int, j: Int): Int = {
     require(i >= 0 && i < numRows, s"Expected 0 <= i < $numRows, got i = $i.")
     require(j >= 0 && j < numCols, s"Expected 0 <= j < $numCols, got j = $j.")
     if (!isTransposed) {
@@ -665,7 +665,7 @@ class SparseMatrix @Since("2.0.0") (
     }
   }
 
-  private[angelml] def update(i: Int, j: Int, v: Double): Unit = {
+  private[angel] def update(i: Int, j: Int, v: Double): Unit = {
     val ind = index(i, j)
     if (ind < 0) {
       throw new NoSuchElementException("The given row and column indices correspond to a zero " +
@@ -682,7 +682,7 @@ class SparseMatrix @Since("2.0.0") (
   private[spark] def map(f: Double => Double) =
     new SparseMatrix(numRows, numCols, colPtrs, rowIndices, values.map(f), isTransposed)
 
-  private[angelml] def update(f: Double => Double): SparseMatrix = {
+  private[angel] def update(f: Double => Double): SparseMatrix = {
     val len = values.length
     var i = 0
     while (i < len) {
@@ -733,7 +733,7 @@ class SparseMatrix @Since("2.0.0") (
    * @param colMajor Whether or not the resulting `SparseMatrix` values are in column major
    *                    order.
    */
-  private[angelml] override def toSparseMatrix(colMajor: Boolean): SparseMatrix = {
+  private[angel] override def toSparseMatrix(colMajor: Boolean): SparseMatrix = {
     if (isColMajor && !colMajor) {
       // it is col major and we want row major, use breeze to remove explicit zeros
       val breezeTransposed = asBreeze.asInstanceOf[BSM[Double]].t
@@ -779,7 +779,7 @@ class SparseMatrix @Since("2.0.0") (
    *
    * @param colMajor Whether the resulting `DenseMatrix` values are in column major order.
    */
-  private[angelml] override def toDenseMatrix(colMajor: Boolean): DenseMatrix = {
+  private[angel] override def toDenseMatrix(colMajor: Boolean): DenseMatrix = {
     if (colMajor) new DenseMatrix(numRows, numCols, this.toArray)
     else new DenseMatrix(numRows, numCols, this.transpose.toArray, isTransposed = true)
   }
@@ -816,14 +816,14 @@ class SparseMatrix @Since("2.0.0") (
     }
   }
 
-  private[angelml] def getSizeInBytes: Long = Matrices.getSparseSize(numActives, colPtrs.length)
+  private[angel] def getSizeInBytes: Long = Matrices.getSparseSize(numActives, colPtrs.length)
 }
 
 
 @Since("2.0.0")
 object SparseMatrix {
 
-  private[angelml] def unapply(
+  private[angel] def unapply(
        sm: SparseMatrix): Option[(Int, Int, Array[Int], Array[Int], Array[Double], Boolean)] =
     Some((sm.numRows, sm.numCols, sm.colPtrs, sm.rowIndices, sm.values, sm.isTransposed))
 
@@ -991,6 +991,7 @@ object SparseMatrix {
         val entries = dVec.values.zipWithIndex
         val nnzVals = entries.filter(v => v._1 != 0.0)
         SparseMatrix.fromCOO(n, n, nnzVals.map(v => (v._2, v._2, v._1)))
+      case _ => throw new Exception("Vector Type Error!")
     }
   }
 }
@@ -1036,7 +1037,7 @@ object Matrices {
    * @param breeze a breeze matrix
    * @return a Matrix instance
    */
-  private[angelml] def fromBreeze(breeze: BM[Double]): Matrix = {
+  private[angel] def fromBreeze(breeze: BM[Double]): Matrix = {
     breeze match {
       case dm: BDM[Double] =>
         new DenseMatrix(dm.rows, dm.cols, dm.data, dm.isTranspose)
@@ -1267,7 +1268,7 @@ object Matrices {
     }
   }
 
-  private[angelml] def getSparseSize(numActives: Long, numPtrs: Long): Long = {
+  private[angel] def getSparseSize(numActives: Long, numPtrs: Long): Long = {
     /*
       Sparse matrices store two int arrays, one double array, two ints, and one boolean:
       8 * values.length + 4 * rowIndices.length + 4 * colPtrs.length + arrayHeader * 3 + 2 * 4 + 1
@@ -1278,7 +1279,7 @@ object Matrices {
     doubleBytes * numActives + intBytes * numActives + intBytes * numPtrs + arrayHeader * 3L + 9L
   }
 
-  private[angelml] def getDenseSize(numCols: Long, numRows: Long): Long = {
+  private[angel] def getDenseSize(numCols: Long, numRows: Long): Long = {
     /*
       Dense matrices store one double array, two ints, and one boolean:
       8 * values.length + arrayHeader + 2 * 4 + 1

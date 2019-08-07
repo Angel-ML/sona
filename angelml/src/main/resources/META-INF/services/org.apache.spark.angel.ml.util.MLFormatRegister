@@ -1,1 +1,1 @@
-org.apache.spark.angelml.regression.InternalLinearRegressionModelWriter
+org.apache.spark.angel.ml.regression.InternalLinearRegressionModelWriter

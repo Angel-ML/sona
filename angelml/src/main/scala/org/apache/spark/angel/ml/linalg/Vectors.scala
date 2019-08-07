@@ -29,6 +29,8 @@ import scala.annotation.varargs
 import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
 import scala.{specialized => spec}
+import scala.language.implicitConversions
+
 
 /**
   * Represents a numeric vector, whose index type is Int and value type is Double.
@@ -141,7 +143,7 @@ object Vectors {
     * @param values  value array, must have the same length as indices.
     */
   @Since("2.0.0")
-  def sparse[@spec(Int, Long) K : ClassTag](size: Long, indices: Array[K], values: Array[Double]): Vector =
+  def sparse[@spec(Int, Long) K: ClassTag](size: Long, indices: Array[K], values: Array[Double]): Vector =
     implicitly[ClassTag[K]].runtimeClass match {
       case intType if classOf[Int] == intType =>
         new IntSparseVector(size, indices.asInstanceOf[Array[Int]], values)
@@ -156,7 +158,7 @@ object Vectors {
     * @param elements vector elements in (index, value) pairs.
     */
   @Since("2.0.0")
-  def sparse[@spec(Int, Long) K <% Ordered[K] :ClassTag](size: Long, elements: Seq[(K, Double)]): Vector = {
+  def sparse[@spec(Int, Long) K <% Ordered[K] : ClassTag](size: Long, elements: Seq[(K, Double)]): Vector = {
     val (indices, values) = elements.sortBy(_._1).unzip
     implicitly[ClassTag[K]].runtimeClass match {
       case intType if classOf[Int] == intType =>
@@ -173,7 +175,7 @@ object Vectors {
     * @param elements vector elements in (index, value) pairs.
     */
   @Since("2.0.0")
-  def sparse[K : ClassTag](size: Long, elements: JavaIterable[(K, JavaDouble)]): Vector = {
+  def sparse[K: ClassTag](size: Long, elements: JavaIterable[(K, JavaDouble)]): Vector = {
     implicitly[ClassTag[K]].runtimeClass match {
       case intType if classOf[JavaInteger] == intType =>
         sparse(size, elements.asScala.map { case (i: JavaInteger, x) => (i.intValue(), x.doubleValue()) }.toSeq)
@@ -338,7 +340,7 @@ object Vectors {
   /**
     * Returns the squared distance between DenseVector and SparseVector.
     */
-  private[angelml] def sqdist[K](v1Indices: Array[K], v1Values: Array[Double], v2Values: Array[Double]): Double = {
+  private[angel] def sqdist[K](v1Indices: Array[K], v1Values: Array[Double], v2Values: Array[Double]): Double = {
     var kv1 = 0
     var kv2 = 0
 
@@ -364,8 +366,8 @@ object Vectors {
     squaredDistance
   }
 
-  private[angelml] def sqdist[K1 <% Ordered[K1], K2 <% Ordered[K2]](v1Indices: Array[K1], v1Values: Array[Double],
-                                                                    v2Indices: Array[K2], v2Values: Array[Double]): Double = {
+  private[angel] def sqdist[K1 <% Ordered[K1], K2 <% Ordered[K2]](v1Indices: Array[K1], v1Values: Array[Double],
+                                                                  v2Indices: Array[K2], v2Values: Array[Double]): Double = {
     val nnzv1 = v1Indices.length
     val nnzv2 = v2Indices.length
 
@@ -398,11 +400,11 @@ object Vectors {
   /**
     * Check equality between sparse/dense vectors
     */
-  private[angelml] def equals[K1, K2](
-                                       v1Indices: IndexedSeq[K1],
-                                       v1Values: Array[Double],
-                                       v2Indices: IndexedSeq[K2],
-                                       v2Values: Array[Double]): Boolean = {
+  private[angel] def equals[K1, K2](
+                                     v1Indices: IndexedSeq[K1],
+                                     v1Values: Array[Double],
+                                     v2Indices: IndexedSeq[K2],
+                                     v2Values: Array[Double]): Boolean = {
     val v1Size = v1Values.length
     val v2Size = v2Values.length
 

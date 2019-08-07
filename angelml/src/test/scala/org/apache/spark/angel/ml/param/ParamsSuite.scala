@@ -23,8 +23,6 @@ import org.apache.spark.SparkFunSuite
 import org.apache.spark.angel.ml.{Estimator, Transformer}
 import org.apache.spark.angel.ml.linalg.{Vector, Vectors}
 import org.apache.spark.angel.ml.util.MyParams
-import org.apache.spark.angelml.{Estimator, Transformer}
-import org.apache.spark.angelml.linalg.{Vector, Vectors}
 import org.apache.spark.sql.Dataset
 
 class ParamsSuite extends SparkFunSuite {

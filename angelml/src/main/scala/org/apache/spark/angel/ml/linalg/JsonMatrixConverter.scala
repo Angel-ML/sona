@@ -20,7 +20,7 @@ import org.json4s.DefaultFormats
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{compact, render, parse => parseJson}
 
-private[angelml] object JsonMatrixConverter {
+ private[angel] object JsonMatrixConverter {
 
   /** Unique class name for identifying JSON object encoded by this class. */
   val className = "matrix"

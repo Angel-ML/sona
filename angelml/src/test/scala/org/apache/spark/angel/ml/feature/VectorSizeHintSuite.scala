@@ -21,9 +21,6 @@ import org.apache.spark.angel.ml.attribute.AttributeGroup
 import org.apache.spark.angel.ml.{Pipeline, linalg}
 import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.Pipeline
-import org.apache.spark.angelml.linalg.{Vector, Vectors}
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
 import org.apache.spark.sql.execution.streaming.MemoryStream
 import org.apache.spark.sql.streaming.StreamTest
 import org.apache.spark.sql.types.UDTRegistration
@@ -200,7 +197,7 @@ class VectorSizeHintStreamingSuite extends StreamTest {
   test("Test assemble vectors with size hint in streaming.") {
     val a = Vectors.dense(0, 1, 2)
     val b = Vectors.sparse(4, Array(0, 3), Array(3, 6))
-    UDTRegistration.register("org.apache.spark.angelml.linalg.Vector", "org.apache.spark.angelml.linalg.VectorUDT")
+    UDTRegistration.register("org.apache.spark.angel.ml.linalg.Vector", "org.apache.spark.angel.ml.linalg.VectorUDT")
 
     val stream = MemoryStream[(linalg.Vector, linalg.Vector)]//todo
     val streamingDF = stream.toDS.toDF("a", "b")

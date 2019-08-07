@@ -22,9 +22,6 @@ import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.{VectorUDT, Vectors}
 import org.apache.spark.angel.ml.param.ParamsSuite
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.attribute.{AttributeGroup, BinaryAttribute, NominalAttribute}
-import org.apache.spark.angelml.linalg.{Vector, VectorUDT, Vectors}
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
 import org.apache.spark.sql.{Encoder, Row}
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
 import org.apache.spark.sql.functions.col

@@ -23,10 +23,6 @@ import org.apache.spark.angel.ml.linalg.{DenseVector, IntSparseVector, Vectors}
 import org.apache.spark.angel.ml.param.ParamsSuite
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLlibTestSparkContext}
 import org.apache.spark.{SparkException, SparkFunSuite}
-import org.apache.spark.angelml.attribute.{Attribute, AttributeGroup, NominalAttribute, NumericAttribute}
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, Vector, Vectors}
-import org.apache.spark.angelml.util.DefaultReadWriteTest
-import org.apache.spark.angelml.util.MLlibTestSparkContext
 import org.apache.spark.sql.{Dataset, Row}
 import org.apache.spark.sql.functions.{col, udf}
 

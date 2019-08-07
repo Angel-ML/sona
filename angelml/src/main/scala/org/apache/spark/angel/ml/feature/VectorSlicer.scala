@@ -129,6 +129,7 @@ final class VectorSlicer @Since("1.5.0") (@Since("1.5.0") override val uid: Stri
         case features: DenseVector => Vectors.dense(inds.map(i => features.apply(i)))
         case features: IntSparseVector => features.slice(inds.map(i => i.toInt))
         case features: LongSparseVector => features.slice(inds)
+        case _ => throw new Exception("Vector Type Error!")
       }
     }
     dataset.withColumn($(outputCol), slicer(dataset($(inputCol))), outputAttr.toMetadata())

@@ -293,7 +293,7 @@ object ChiSqSelector extends DefaultParamsReadable[ChiSqSelector] {
   * Model fitted by [[ChiSqSelector]].
   */
 @Since("1.6.0")
-final class ChiSqSelectorModel private[angelml](
+final class ChiSqSelectorModel private[angel](
                                             @Since("1.6.0") override val uid: String,
                                             val selectedFeatures: Array[Int])
   extends Model[ChiSqSelectorModel] with ChiSqSelectorParams with MLWritable {

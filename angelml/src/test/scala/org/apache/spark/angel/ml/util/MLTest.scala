@@ -23,7 +23,6 @@ import org.apache.spark.angel.ml.{PredictionModel, Transformer}
 import org.apache.spark.angel.ml.linalg.Vector
 import org.scalatest.Suite
 import org.apache.spark.{DebugFilesystem, SparkConf, SparkContext}
-import org.apache.spark.angelml.{PredictionModel, Transformer}
 import org.apache.spark.sql.{DataFrame, Dataset, Encoder, Row}
 import org.apache.spark.sql.execution.streaming.MemoryStream
 import org.apache.spark.sql.functions.col
@@ -38,12 +37,12 @@ trait MLTest extends StreamTest with TempDirectory { self: Suite =>
   @transient var sc: SparkContext = _
   @transient var checkpointDir: String = _
 
-  UDTRegistration.register("org.apache.spark.angelml.linalg.Vector", "org.apache.spark.angelml.linalg.VectorUDT")
-  UDTRegistration.register("org.apache.spark.angelml.linalg.DenseVector", "org.apache.spark.angelml.linalg.VectorUDT")
-  UDTRegistration.register("org.apache.spark.angelml.linalg.SparseVector", "org.apache.spark.angelml.linalg.VectorUDT")
-  UDTRegistration.register("org.apache.spark.angelml.linalg.Matrix", "org.apache.spark.angelml.linalg.MatrixUDT")
-  UDTRegistration.register("org.apache.spark.angelml.linalg.DenseMatrix", "org.apache.spark.angelml.linalg.MatrixUDT")
-  UDTRegistration.register("org.apache.spark.angelml.linalg.SparseMatrix", "org.apache.spark.angelml.linalg.MatrixUDT")
+  UDTRegistration.register("org.apache.spark.angel.ml.linalg.Vector", "org.apache.spark.angel.ml.linalg.VectorUDT")
+  UDTRegistration.register("org.apache.spark.angel.ml.linalg.DenseVector", "org.apache.spark.angel.ml.linalg.VectorUDT")
+  UDTRegistration.register("org.apache.spark.angel.ml.linalg.SparseVector", "org.apache.spark.angel.ml.linalg.VectorUDT")
+  UDTRegistration.register("org.apache.spark.angel.ml.linalg.Matrix", "org.apache.spark.angel.ml.linalg.MatrixUDT")
+  UDTRegistration.register("org.apache.spark.angel.ml.linalg.DenseMatrix", "org.apache.spark.angel.ml.linalg.MatrixUDT")
+  UDTRegistration.register("org.apache.spark.angel.ml.linalg.SparseMatrix", "org.apache.spark.angel.ml.linalg.MatrixUDT")
 
 //  protected override def sparkConf = {
 //    new SparkConf()

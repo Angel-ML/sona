@@ -32,7 +32,7 @@ import org.apache.spark.sql.functions.{col, lit, udf}
 import org.apache.spark.sql.types.{DoubleType, StructField, StructType}
 
 /** Private trait for params and common methods for MultiHotEncoderEstimator and MultiHotEncoderModel */
-private[angelml] trait MultiHotEncoderBase extends Params with HasHandleInvalid
+ private[angel] trait MultiHotEncoderBase extends Params with HasHandleInvalid
     with HasInputCols with HasOutputCols {
 
   /**
@@ -205,7 +205,7 @@ object MultiHotEncoderEstimator extends DefaultParamsReadable[MultiHotEncoderEst
  *                       The array contains one value for each input column, in order.
  */
 @Since("2.3.0")
-class MultiHotEncoderModel private[angelml](
+class MultiHotEncoderModel private[angel](
     @Since("2.3.0") override val uid: String,
     @Since("2.3.0") val categorySizes: Array[Int])
   extends Model[MultiHotEncoderModel] with MultiHotEncoderBase with MLWritable {

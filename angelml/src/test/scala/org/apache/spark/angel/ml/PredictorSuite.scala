@@ -22,11 +22,6 @@ import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.angel.ml.param.ParamMap
 import org.apache.spark.angel.ml.param.shared.HasWeightCol
 import org.apache.spark.angel.ml.util.{Identifiable, MLlibTestSparkContext}
-import org.apache.spark.angelml.linalg._
-import org.apache.spark.angelml.param.ParamMap
-import org.apache.spark.angelml.param.shared.HasWeightCol
-import org.apache.spark.angelml.util._
-import org.apache.spark.angelml.util.MLlibTestSparkContext
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._

@@ -163,7 +163,7 @@ class CoordinateMatrix @Since("1.0.0") (
   }
 
   /** Collects data and assembles a local matrix. */
-  private[angelml] override def toBreeze(): BDM[Double] = {
+  private[angel] override def toBreeze(): BDM[Double] = {
     val m = numRows().toInt
     val n = numCols().toInt
     val mat = BDM.zeros[Double](m, n)

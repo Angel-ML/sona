@@ -23,6 +23,8 @@ import com.tencent.angel.ml.core.utils.PSMatrixUtils
 import com.tencent.angel.ml.math2.VFactory
 import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
 import com.tencent.angel.ml.math2.vector.LongIntVector
+import com.tencent.angel.mlcore.conf.MLCoreConf
+import com.tencent.angel.model.output.format.ColIdValueTextRowFormat
 import com.tencent.angel.sona.context.PSContext
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet
 import org.apache.spark.rdd.RDD
@@ -138,10 +140,13 @@ object Features {
     println(s"sparseDim=$sparseDim denseDim=$denseDim")
 
     // Create an index matrix on servers to mapping from sparse index to dense index
-    val sparseToDense = PSMatrixUtils.createPSMatrixCtx("sparseToDense", 1, sparseDim, RowType.T_INT_SPARSE_LONGKEY)
+    // ML_MATRIX_OUTPUT_FORMAT
+    val sparseToDense = PSMatrixUtils.createPSMatrixCtx("sparseToDense", 1, sparseDim,
+      RowType.T_INT_SPARSE_LONGKEY, "")
     val sparseToDenseMatrixId = PSMatrixUtils.createPSMatrix(sparseToDense)
 
-    val denseToSparse = PSMatrixUtils.createPSMatrixCtx("denseToSparse", 1, denseDim, RowType.T_LONG_DENSE)
+    val denseToSparse = PSMatrixUtils.createPSMatrixCtx("denseToSparse", 1, denseDim,
+      RowType.T_LONG_DENSE, "")
     val denseToSparseMatrixId = PSMatrixUtils.createPSMatrix(denseToSparse)
 
     // Function to initialize sparseToDenseMatrix and denseToSparseMatrix
@@ -185,8 +190,8 @@ object Features {
       }
 
       val pullIndex = VFactory.denseLongVector(set.toLongArray())
-      val sparseToDenseIndex = PSMatrixUtils.getRowWithIndex(1, sparseToDenseMatrixId, 0, pullIndex)
-        .asInstanceOf[LongIntVector]
+      val sparseToDenseIndex = PSMatrixUtils.getRowWithIndex(1, sparseToDenseMatrixId, 0,
+        pullIndex)(0, 0.00001).asInstanceOf[LongIntVector]
 
       val size = corpus.size
       var i = 0
@@ -216,8 +221,8 @@ object Features {
         i += 1
       }
 
-      val sparseToDenseIndex = PSMatrixUtils.getRowWithIndex(1, sparseToDenseMatrixId, 0, VFactory.denseLongVector(indices))
-        .asInstanceOf[LongIntVector]
+      val sparseToDenseIndex = PSMatrixUtils.getRowWithIndex(1, sparseToDenseMatrixId, 0,
+        VFactory.denseLongVector(indices))(0, 0.00001).asInstanceOf[LongIntVector]
       stringsWithInts.map(f => (sparseToDenseIndex.get(f._2), f._1)).iterator
     }
 

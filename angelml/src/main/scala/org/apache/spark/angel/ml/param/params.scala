@@ -119,7 +119,7 @@ class Param[T](val parent: String, val name: String, val doc: String, val isVali
   }
 }
 
-private[angelml] object Param {
+ private[angel] object Param {
 
   /** Decodes a param value from JSON. */
   def jsonDecode[T](json: String): T = {
@@ -890,10 +890,10 @@ trait Params extends Identifiable with Serializable {
   }
 
   /** Internal param map for user-supplied values. */
-  private[angelml] val paramMap: ParamMap = ParamMap.empty
+  private[angel] val paramMap: ParamMap = ParamMap.empty
 
   /** Internal param map for default values. */
-  private[angelml] val defaultParamMap: ParamMap = ParamMap.empty
+  private[angel] val defaultParamMap: ParamMap = ParamMap.empty
 
   /** Validates that the input param belongs to this instance. */
   private def shouldOwn(param: Param[_]): Unit = {
@@ -930,11 +930,11 @@ trait Params extends Identifiable with Serializable {
   }
 }
 
-private[angelml] object Params {
+ private[angel] object Params {
   /**
    * Sets a default param value for a `Params`.
    */
-  private[angelml] final def setDefault[T](params: Params, param: Param[T], value: T): Unit = {
+  private[angel] final def setDefault[T](params: Params, param: Param[T], value: T): Unit = {
     params.defaultParamMap.put(param -> value)
   }
 }
@@ -953,7 +953,7 @@ abstract class JavaParams extends Params
  * A param to value map.
  */
 @Since("1.2.0")
-final class ParamMap private[angelml](private val map: mutable.Map[Param[Any], Any])
+final class ParamMap private[angel](private val map: mutable.Map[Param[Any], Any])
   extends Serializable {
 
   /* DEVELOPERS: About validating parameter values
@@ -987,7 +987,7 @@ final class ParamMap private[angelml](private val map: mutable.Map[Param[Any], A
   }
 
   /** Put param pairs with a `java.util.List` of values for Python. */
-  private[angelml] def put(paramPairs: JList[ParamPair[_]]): this.type = {
+  private[angel] def put(paramPairs: JList[ParamPair[_]]): this.type = {
     put(paramPairs.asScala: _*)
   }
 
@@ -1091,7 +1091,7 @@ final class ParamMap private[angelml](private val map: mutable.Map[Param[Any], A
   }
 
   /** Java-friendly method for Python API */
-  private[angelml] def toList: java.util.List[ParamPair[_]] = {
+  private[angel] def toList: java.util.List[ParamPair[_]] = {
     this.toSeq.asJava
   }
 

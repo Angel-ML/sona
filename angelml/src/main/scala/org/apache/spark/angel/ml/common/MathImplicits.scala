@@ -4,6 +4,8 @@ import com.tencent.angel.ml.math2.VFactory
 import com.tencent.angel.ml.math2.vector._
 import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.{DenseVector, IntSparseVector, LongSparseVector}
+import scala.language.implicitConversions
+
 
 object MathImplicits {
 

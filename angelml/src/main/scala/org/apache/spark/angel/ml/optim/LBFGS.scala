@@ -74,7 +74,7 @@ class LBFGS(private var gradient: Gradient, private var updater: Updater)
   /*
    * Get the convergence tolerance of iterations.
    */
-  private[angelml] def getConvergenceTol(): Double = {
+  private[angel] def getConvergenceTol(): Double = {
     this.convergenceTol
   }
 
@@ -91,7 +91,7 @@ class LBFGS(private var gradient: Gradient, private var updater: Updater)
   /**
    * Get the maximum number of iterations for L-BFGS. Defaults to 100.
    */
-  private[angelml] def getNumIterations(): Int = {
+  private[angel] def getNumIterations(): Int = {
     this.maxNumIterations
   }
 
@@ -108,7 +108,7 @@ class LBFGS(private var gradient: Gradient, private var updater: Updater)
   /**
    * Get the regularization parameter.
    */
-  private[angelml] def getRegParam(): Double = {
+  private[angel] def getRegParam(): Double = {
     this.regParam
   }
 
@@ -134,7 +134,7 @@ class LBFGS(private var gradient: Gradient, private var updater: Updater)
   /**
    * Returns the updater, limited to internal use.
    */
-  private[angelml] def getUpdater(): Updater = {
+  private[angel] def getUpdater(): Updater = {
     updater
   }
 

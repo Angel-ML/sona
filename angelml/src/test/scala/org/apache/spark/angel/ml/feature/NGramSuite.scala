@@ -20,7 +20,6 @@ package org.apache.spark.angel.ml.feature
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
 
 import scala.beans.BeanInfo
-import org.apache.spark.angelml.util.MLTest
 import org.apache.spark.sql.{DataFrame, Row}
 
 

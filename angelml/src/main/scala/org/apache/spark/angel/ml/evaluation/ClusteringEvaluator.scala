@@ -639,6 +639,7 @@ private[evaluation] object CosineSilhouette extends Silhouette {
           case d: DenseVector => Vectors.dense(d.values.map(_ / norm))
           case s: IntSparseVector => Vectors.sparse(s.size.toInt, s.indices, s.values.map(_ / norm))
           case s: LongSparseVector => Vectors.sparse(s.size.toInt, s.indices, s.values.map(_ / norm))
+          case _ => throw new Exception("Vector Type Error!")
         }
       }
     }

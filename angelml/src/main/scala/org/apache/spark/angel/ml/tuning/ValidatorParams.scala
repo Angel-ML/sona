@@ -32,7 +32,7 @@ import org.apache.spark.sql.types.StructType
 /**
  * Common params for [[TrainValidationSplitParams]] and [[CrossValidatorParams]].
  */
-private[angelml] trait ValidatorParams extends HasSeed with Params {
+ private[angel] trait ValidatorParams extends HasSeed with Params {
 
   /**
    * param for the estimator to be validated
@@ -86,7 +86,7 @@ private[angelml] trait ValidatorParams extends HasSeed with Params {
   }
 }
 
-private[angelml] object ValidatorParams {
+ private[angel] object ValidatorParams {
   /**
    * Check that [[ValidatorParams.evaluator]] and [[ValidatorParams.estimator]] are Writable.
    * This does not check [[ValidatorParams.estimatorParamMaps]].

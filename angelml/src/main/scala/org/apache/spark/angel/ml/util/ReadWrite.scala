@@ -159,7 +159,7 @@ trait MLFormatRegister extends MLWriterFormat {
   @Since("2.4.0")
   def stageName(): String
 
-  private[angelml] def shortName(): String = s"${format()}+${stageName()}"
+  private[angel] def shortName(): String = s"${format()}+${stageName()}"
 }
 
 /**
@@ -406,14 +406,14 @@ trait DefaultParamsReadable[T] extends MLReadable[T] {
  *
  * @param instance object to save
  */
-private[angelml] class DefaultParamsWriter(instance: Params) extends MLWriter {
+ private[angel] class DefaultParamsWriter(instance: Params) extends MLWriter {
 
   override protected def saveImpl(path: String): Unit = {
     DefaultParamsWriter.saveMetadata(instance, path, sc)
   }
 }
 
-private[angelml] object DefaultParamsWriter {
+ private[angel] object DefaultParamsWriter {
 
   /**
    * Saves metadata + Params to: path + "/metadata"
@@ -487,7 +487,7 @@ private[angelml] object DefaultParamsWriter {
  * @tparam T ML instance type
  * TODO: Consider adding check for correct class name.
  */
-private[angelml] class DefaultParamsReader[T] extends MLReader[T] {
+ private[angel] class DefaultParamsReader[T] extends MLReader[T] {
 
   override def load(path: String): T = {
     val metadata = DefaultParamsReader.loadMetadata(path, sc)
@@ -499,7 +499,7 @@ private[angelml] class DefaultParamsReader[T] extends MLReader[T] {
   }
 }
 
-private[angelml] object DefaultParamsReader {
+ private[angel] object DefaultParamsReader {
 
   /**
    * All info from metadata file.
@@ -656,7 +656,7 @@ private[angelml] object DefaultParamsReader {
 /**
  * Default Meta-Algorithm read and write implementation.
  */
-private[angelml] object MetaAlgorithmReadWrite {
+ private[angel] object MetaAlgorithmReadWrite {
   /**
    * Examine the given estimator (which may be a compound estimator) and extract a mapping
    * from UIDs to corresponding `Params` instances.
@@ -686,7 +686,7 @@ private[angelml] object MetaAlgorithmReadWrite {
   }
 }
 
-private[angelml] class FileSystemOverwrite extends Logging {
+ private[angel] class FileSystemOverwrite extends Logging {
 
   def handleOverwrite(path: String, shouldOverwrite: Boolean, sc: SparkContext): Unit = {
     val hadoopConf = sc.hadoopConfiguration

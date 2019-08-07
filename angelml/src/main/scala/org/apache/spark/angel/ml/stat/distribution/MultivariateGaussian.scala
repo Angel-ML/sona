@@ -44,7 +44,7 @@ class MultivariateGaussian @Since("2.0.0") (
   require(mean.size == cov.numCols, "Mean vector length must match covariance matrix size")
 
   /** Private constructor taking Breeze types */
-  private[angelml] def this(mean: BDV[Double], cov: BDM[Double]) = {
+  private[angel] def this(mean: BDV[Double], cov: BDM[Double]) = {
     this(Vectors.fromBreeze(mean), Matrices.fromBreeze(cov))
   }
 
@@ -74,12 +74,12 @@ class MultivariateGaussian @Since("2.0.0") (
   }
 
   /** Returns density of this multivariate Gaussian at given point, x */
-  private[angelml] def pdf(x: BV[Double]): Double = {
+  private[angel] def pdf(x: BV[Double]): Double = {
     math.exp(logpdf(x))
   }
 
   /** Returns the log-density of this multivariate Gaussian at given point, x */
-  private[angelml] def logpdf(x: BV[Double]): Double = {
+  private[angel] def logpdf(x: BV[Double]): Double = {
     val delta = x - breezeMu
     val v = rootSigmaInv * delta
     u + v.t * v * -0.5

@@ -34,7 +34,7 @@ import org.apache.spark.storage.StorageLevel
  * @param rowsPerPart Number of rows per partition, which may be less at the bottom edge.
  * @param colsPerPart Number of columns per partition, which may be less at the right edge.
  */
-private[angelml] class GridPartitioner(
+ private[angel] class GridPartitioner(
     val rows: Int,
     val cols: Int,
     val rowsPerPart: Int,
@@ -96,7 +96,7 @@ private[angelml] class GridPartitioner(
   }
 }
 
-private[angelml] object GridPartitioner {
+ private[angel] object GridPartitioner {
 
   /** Creates a new [[GridPartitioner]] instance. */
   def apply(rows: Int, cols: Int, rowsPerPart: Int, colsPerPart: Int): GridPartitioner = {
@@ -174,7 +174,7 @@ class BlockMatrix @Since("1.3.0") (
   @Since("1.3.0")
   val numColBlocks = math.ceil(numCols() * 1.0 / colsPerBlock).toInt
 
-  private[angelml] def createPartitioner(): GridPartitioner =
+  private[angel] def createPartitioner(): GridPartitioner =
     GridPartitioner(numRowBlocks, numColBlocks, suggestedNumPartitions = blocks.partitions.length)
 
   private lazy val blockInfo = blocks.mapValues(block => (block.numRows, block.numCols)).cache()
@@ -334,7 +334,7 @@ class BlockMatrix @Since("1.3.0") (
   }
 
   /** Collects data and assembles a local dense breeze matrix (for test only). */
-  private[angelml] def toBreeze(): BDM[Double] = {
+  private[angel] def toBreeze(): BDM[Double] = {
     val localMat = toLocalMatrix()
     new BDM[Double](localMat.numRows, localMat.numCols, localMat.toArray)
   }
@@ -351,7 +351,7 @@ class BlockMatrix @Since("1.3.0") (
    * operators such as (a, b) => -a + b
    * TODO: Make the use of zero matrices more storage efficient.
    */
-  private[angelml] def blockMap(
+  private[angel] def blockMap(
       other: BlockMatrix,
       binMap: (BM[Double], BM[Double]) => BM[Double]): BlockMatrix = {
     require(numRows() == other.numRows(), "Both matrices must have the same number of rows. " +

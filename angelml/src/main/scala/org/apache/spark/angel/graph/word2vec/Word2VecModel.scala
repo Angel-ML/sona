@@ -1,100 +1,218 @@
-/*
- * Tencent is pleased to support the open source community by making Angel available.
- *
- * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- *
- * https://opensource.org/licenses/Apache-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- *
- */
-
-
 package org.apache.spark.angel.graph.word2vec
 
-import com.tencent.angel.exception.AngelException
-import com.tencent.angel.ml.matrix.psf.get.base.GetFunc
-import com.tencent.angel.ml.matrix.psf.update.base.UpdateFunc
-import com.tencent.angel.spark.ml.embedding.NEModel
-import com.tencent.angel.spark.ml.psf.embedding.w2v._
+import java.io.IOException
+
+import com.tencent.angel.ml.matrix.MatrixMeta
+import com.tencent.angel.model.{MatrixLoadContext, MatrixSaveContext, ModelLoadContext, ModelSaveContext}
+import com.tencent.angel.sona.context.PSContext
+import com.tencent.angel.sona.models.PSMatrix
+import org.apache.hadoop.fs.Path
+import org.apache.spark.SparkContext
+import org.apache.spark.angel.graph.utils.NEModel.logTime
+import org.apache.spark.angel.graph.utils.{MatrixMetaUtils, NEModel}
+import org.apache.spark.angel.ml.Model
+import org.apache.spark.angel.ml.param.ParamMap
+import org.apache.spark.angel.ml.util.{DefaultParamsReader, DefaultParamsWriter, MLReadable, MLReader, MLWritable, MLWriter}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.{DataFrame, Dataset, SparkSession}
 
-import scala.util.Random
+class Word2VecModel(override val uid: String, private var psMatrix: PSMatrix)
+  extends Model[Word2VecModel] with Word2VecParams with MLWritable {
+  private val partDim: Int = getEmbeddingDim / getNumPSPart
+  var matMeta: MatrixMeta = _
 
-
-class Word2VecModel(numNode: Int,
-                    dimension: Int,
-                    numPart: Int,
-                    maxLength: Int,
-                    model: String,
-                    numNodesPerRow: Int,
-                    seed: Int)
-  extends NEModel(numNode, dimension, numPart, numNodesPerRow, 2, false, seed) {
-
-  def this(param: Param) {
-    this(param.maxIndex, param.embeddingDim, param.numPSPart, param.maxLength, param.model, -1, param.seed)
+  if (psMatrix != null) {
+    val metaOpt = PSContext.instance().getMatrixMeta(psMatrix.id)
+    if (metaOpt.nonEmpty) {
+      matMeta = metaOpt.get
+      setEmbeddingMatrixName(matMeta.getName)
+    }
   }
 
-  val modelId: Int = model match {
-    case "skipgram" => 0
-    case "cbow" => 1
-    case _ => throw new AngelException("model type should be cbow or skipgram")
+  def this(uid: String) = {
+    this(uid, null)
   }
 
-  def train(corpus: RDD[Array[Int]], param: Param, path: String): Unit = {
-    psfUpdate(getInitFunc(corpus.getNumPartitions, numNode, maxLength, param.negSample, param.windowSize))
-    val iterator = buildDataBatches(corpus, param.batchSize)
-    train(iterator, param.negSample, param.numEpoch, param.learningRate, param.checkpointInterval, path)
+  def setPSMatrix(psMatrix: PSMatrix): this.type = {
+    this.psMatrix = psMatrix
+    if (psMatrix != null) {
+      val metaOpt = PSContext.instance().getMatrixMeta(psMatrix.id)
+      if (metaOpt.nonEmpty) {
+        matMeta = metaOpt.get
+        setEmbeddingMatrixName(matMeta.getName)
+      }
+    }
+
+    this
   }
 
-  override def getDotFunc(data: NEDataSet, batchSeed: Int, ns: Int, partitionId: Int): GetFunc = {
-    val param = new DotParam(matrixId, seed, partitionId, modelId, data.asInstanceOf[W2VDataSet].sentences)
-    new Dot(param)
+  def getPSMatrix: PSMatrix = {
+    this.psMatrix
   }
 
-  override def getAdjustFunc(data: NEDataSet, batchSeed: Int, ns: Int, grad: Array[Float], partitionId: Int): UpdateFunc = {
-    val param = new AdjustParam(matrixId, seed, partitionId, modelId, grad, data.asInstanceOf[W2VDataSet].sentences)
-    new Adjust(param)
+  def getEmbeddingRDD: RDD[String] = {
+    NEModel.getEmbeddingRDD(psMatrix, getMaxIndex, partDim, order = 2)
+  }
+
+  /**
+    * Returns an `MLWriter` instance for this ML instance.
+    */
+  override def write: MLWriter = new Word2VecModel.Word2VecWriter(this)
+
+  /**
+    * Transforms the input dataset.
+    */
+  override def transform(dataset: Dataset[_]): DataFrame = {
+    logInfo(s"${classOf[Word2VecModel].getSimpleName} cannot transform a dataset, do nothing here!")
+
+    dataset.toDF()
+  }
+
+  /**
+    * :: DeveloperApi ::
+    *
+    * Check transform validity and derive the output schema from the input schema.
+    *
+    * We check validity for interactions between parameters during `transformSchema` and
+    * raise an exception if any parameter value is invalid. Parameter value checks which
+    * do not depend on other parameters are handled by `Param.validate()`.
+    *
+    * Typical implementation should first conduct verification on schema change and parameter
+    * validity, including complex parameter interaction checks.
+    */
+  override def transformSchema(schema: StructType): StructType = {
+    logInfo(s"${classOf[Word2VecModel].getSimpleName} do not transformSchema, just forward!")
+    schema
+  }
+
+  override def copy(extra: ParamMap): Word2VecModel = {
+    val copied = new Word2VecModel(uid, psMatrix)
+    copyValues(copied, extra).setParent(parent)
   }
 }
 
-object Word2VecModel {
+object Word2VecModel extends MLReadable[Word2VecModel] {
 
-  def buildDataBatches(trainSet: RDD[Array[Int]], batchSize: Int): Iterator[RDD[NEDataSet]] = {
-    new Iterator[RDD[NEDataSet]] with Serializable {
-      override def hasNext(): Boolean = true
+  class Word2VecWriter(instance: Word2VecModel) extends MLWriter {
+    private val partDim: Int = instance.getEmbeddingDim / instance.getNumPSPart
+    private val psMatrix: PSMatrix = instance.psMatrix
 
-      override def next(): RDD[NEDataSet] = {
-        trainSet.mapPartitions { iter =>
-          val shuffledIter = Random.shuffle(iter)
-          asWord2VecBatch(shuffledIter, batchSize)
-        }
+    /**
+      * `save()` handles overwriting and then calls this method.  Subclasses should override this
+      * method to implement the actual saving of the instance.
+      */
+    override protected def saveImpl(path: String): Unit = {
+      // 1. deleteIfExists
+      val basePath = new Path(path)
+      val ss = SparkSession.builder().getOrCreate()
+      val fs = basePath.getFileSystem(ss.sparkContext.hadoopConfiguration)
+      if (fs.exists(basePath)) {
+        fs.delete(basePath, true)
       }
+
+      // 2. save params
+      val params = new Path(path, "params")
+      NEModel.logTime(s"saving model to ${params.toString}")
+      val paramsWriter = new DefaultParamsWriter(instance)
+      paramsWriter.save(params.toString)
+
+      // 3. save embedding rdd
+      //      val embeddingRDD = new Path(path, "embedding_rdd")
+      //      val startTime = System.currentTimeMillis()
+      //      NEModel.logTime(s"saving model RDD to ${embeddingRDD.toString}")
+      //
+      //      val rdd = NEModel.getEmbeddingRDD(psMatrix, instance.getMaxIndex, partDim, order = 2)
+      //      rdd.saveAsTextFile(embeddingRDD.toString)
+
+      // 4 save psMatrix
+      val embedding = new Path(path, "embedding")
+      val startTime = System.currentTimeMillis()
+      logTime(s"saving model PS Matrix to ${embedding.toString}")
+
+      val matMeta = PSContext.instance().getMatrixMeta(psMatrix.id)
+      if (matMeta.isEmpty) {
+        throw new Exception("Cannot get MatrixMeta! ")
+      } else {
+        val name = matMeta.get.getName
+        val msc = new MatrixSaveContext(name)
+
+
+        val qualifiedOutputPath = if (embedding.toString.startsWith("hdfs:/")) {
+          embedding
+        } else {
+          getQualifiedOutputPath(embedding.toString, sc)
+        }
+        if (fs.exists(qualifiedOutputPath)) {
+          if (shouldOverwrite) {
+            logInfo(s"Path $path already exists. It will be overwritten.")
+            // TODO: Revert back to the original content if save is not successful.
+            fs.delete(qualifiedOutputPath, true)
+          } else {
+            throw new IOException(s"Path $path already exists. To overwrite it, " +
+              s"please use write.overwrite().save(path) for Scala and use " +
+              s"write().overwrite().save(path) for Java and Python.")
+          }
+        }
+
+        val saveContext = new ModelSaveContext(qualifiedOutputPath.toString)
+        saveContext.addMatrix(msc)
+
+        PSContext.getOrCreate(SparkContext.getOrCreate()).save(saveContext)
+      }
+
+      NEModel.logTime(s"saving finished, cost ${(System.currentTimeMillis() - startTime) / 1000.0}s")
+    }
+
+    def getQualifiedOutputPath(path: String, sc: SparkContext): Path = {
+      val hadoopConf = sc.hadoopConfiguration
+      val outputPath = new Path(path)
+      val fs = outputPath.getFileSystem(hadoopConf)
+      outputPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
     }
   }
 
-  def asWord2VecBatch(iter: Iterator[Array[Int]], batchSize: Int): Iterator[NEDataSet] = {
-    val sentences = new Array[Array[Int]](batchSize)
-    new Iterator[NEDataSet] {
-      override def hasNext: Boolean = iter.hasNext
+  private class Word2VecModelReader extends MLReader[Word2VecModel] {
 
-      override def next(): NEDataSet = {
-        var pos = 0
-        while (iter.hasNext && pos < batchSize) {
-          sentences(pos) = iter.next()
-          pos += 1
-        }
-        if (pos < batchSize) W2VDataSet(sentences.take(pos)) else W2VDataSet(sentences)
+    /**
+      * Loads the ML component from the input path.
+      */
+    override def load(path: String): Word2VecModel = {
+      // 1. check if exists
+      val basePath = new Path(path)
+      val ss = SparkSession.builder().getOrCreate()
+      val fs = basePath.getFileSystem(ss.sparkContext.hadoopConfiguration)
+      if (fs.exists(basePath)) {
+        throw new Exception(s"${basePath.toString} is not exists")
       }
+
+      // 2. read params
+      val params = new Path(path, "params")
+      NEModel.logTime(s"load params from ${params.toString}")
+
+      val paramsReader = new DefaultParamsReader[Word2VecModel]
+      val model = paramsReader.load(params.toString)
+
+      // 3. read embedding
+      val embedding = new Path(path, "embedding")
+      NEModel.logTime(s"load embedding from ${embedding.toString}")
+
+      val embedMatPath = new Path(embedding.toString, model.getEmbeddingMatrixName)
+      val mc = MatrixMetaUtils.readMatrixContext(embedMatPath, fs)
+      val psMatrix = PSMatrix.matrix(mc)
+
+      val loadCtx = new ModelLoadContext(embedding.toString)
+      val matrixContext = new MatrixLoadContext(mc.getName)
+      loadCtx.addMatrix(matrixContext)
+      PSContext.instance().load(loadCtx)
+
+      model.setPSMatrix(psMatrix)
     }
   }
 
-  case class W2VDataSet(sentences: Array[Array[Int]]) extends NEDataSet
+  /**
+    * Returns an `MLReader` instance for this class.
+    */
+  override def read: MLReader[Word2VecModel] = new Word2VecModelReader
 
 }

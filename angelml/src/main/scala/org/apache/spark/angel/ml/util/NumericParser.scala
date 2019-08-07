@@ -14,7 +14,7 @@ import scala.collection.mutable.ListBuffer
  *  - array: an array of numbers stored as `[v0,v1,...,vn]`
  *  - tuple: a list of numbers, arrays, or tuples stored as `(...)`
  */
-private[angelml] object NumericParser {
+ private[angel] object NumericParser {
 
   /** Parses a string into a Double, an Array[Double], or a Seq[Any]. */
   def parse(s: String): Any = {

@@ -26,7 +26,7 @@ import org.apache.spark.sql.types._
 /**
  * Represents a parsed R formula.
  */
-private[angelml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
+ private[angel] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
   /**
    * Resolves formula terms into column names. A schema is necessary for inferring the meaning
    * of the special '.' term. Duplicate terms will be removed during resolution.
@@ -125,7 +125,7 @@ private[angelml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
  *              of column names; non-interaction terms as length 1 Seqs.
  * @param hasIntercept whether the formula specifies fitting with an intercept.
  */
-private[angelml] case class ResolvedRFormula(
+ private[angel] case class ResolvedRFormula(
   label: String, terms: Seq[Seq[String]], hasIntercept: Boolean) {
 
   override def toString: String = {
@@ -144,30 +144,30 @@ private[angelml] case class ResolvedRFormula(
  * R formula terms. See the R formula docs here for more information:
  * http://stat.ethz.ch/R-manual/R-patched/library/stats/html/formula.html
  */
-private[angelml] sealed trait Term
+ private[angel] sealed trait Term
 
 /** A term that may be part of an interaction, e.g. 'x' in 'x:y' */
-private[angelml] sealed trait InteractableTerm extends Term
+ private[angel] sealed trait InteractableTerm extends Term
 
 /* R formula reference to all available columns, e.g. "." in a formula */
-private[angelml] case object Dot extends InteractableTerm
+ private[angel] case object Dot extends InteractableTerm
 
 /* R formula reference to a column, e.g. "+ Species" in a formula */
-private[angelml] case class ColumnRef(value: String) extends InteractableTerm
+ private[angel] case class ColumnRef(value: String) extends InteractableTerm
 
 /* R formula interaction of several columns, e.g. "Sepal_Length:Species" in a formula */
-private[angelml] case class ColumnInteraction(terms: Seq[InteractableTerm]) extends Term
+ private[angel] case class ColumnInteraction(terms: Seq[InteractableTerm]) extends Term
 
 /* R formula intercept toggle, e.g. "+ 0" in a formula */
-private[angelml] case class Intercept(enabled: Boolean) extends Term
+ private[angel] case class Intercept(enabled: Boolean) extends Term
 
 /* R formula deletion of a variable, e.g. "- Species" in a formula */
-private[angelml] case class Deletion(term: Term) extends Term
+ private[angel] case class Deletion(term: Term) extends Term
 
 /**
  * Limited implementation of R formula parsing. Currently supports: '~', '+', '-', '.', ':'.
  */
-private[angelml] object RFormulaParser extends RegexParsers {
+ private[angel] object RFormulaParser extends RegexParsers {
   private val intercept: Parser[Intercept] =
     "([01])".r ^^ { case a => Intercept(a == "1") }
 

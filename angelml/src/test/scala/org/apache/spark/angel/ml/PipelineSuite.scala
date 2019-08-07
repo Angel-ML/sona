@@ -23,16 +23,11 @@ import org.mockito.Matchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatest.mock.MockitoSugar.mock
 import org.apache.spark.SparkFunSuite
+import org.apache.spark.angel.ml.Pipeline.SharedReadWrite
 import org.apache.spark.angel.ml.feature.MinMaxScaler
 import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.angel.ml.param.{IntParam, ParamMap}
 import org.apache.spark.angel.ml.util.{DefaultParamsReader, DefaultParamsWriter, DefaultReadWriteTest, MLReadable, MLReader, MLTestingUtils, MLWritable, MLWriter, MLlibTestSparkContext}
-import org.apache.spark.angelml.Pipeline.SharedReadWrite
-import org.apache.spark.angelml.feature.{HashingTF, MinMaxScaler}
-import org.apache.spark.angelml.linalg.Vectors
-import org.apache.spark.angelml.param.{IntParam, ParamMap}
-import org.apache.spark.angelml.util._
-import org.apache.spark.angelml.util.MLlibTestSparkContext
 import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.types.StructType
 

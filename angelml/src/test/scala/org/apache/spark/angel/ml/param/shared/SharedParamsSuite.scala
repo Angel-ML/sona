@@ -19,7 +19,7 @@ package org.apache.spark.angel.ml.param.shared
 
 import org.apache.spark.SparkFunSuite
 import org.apache.spark.angel.ml.param.{ParamMap, Params}
-import org.apache.spark.angelml.param.ParamMap
+
 
 class SharedParamsSuite extends SparkFunSuite {
 

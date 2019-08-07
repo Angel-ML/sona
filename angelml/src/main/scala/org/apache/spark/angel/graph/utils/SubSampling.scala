@@ -47,7 +47,7 @@ object SubSampling {
     val freqRDD = data.flatMap(sentence => sentence).map(w => (w, 1)).reduceByKey(_ + _)
 
     // Create a matrix on server to maintain the frequence for each word
-    val freqMatrix = PSMatrixUtils.createPSMatrixCtx("freq", 1, denseDim, RowType.T_INT_DENSE)
+    val freqMatrix = PSMatrixUtils.createPSMatrixCtx("freq", 1, denseDim, RowType.T_INT_DENSE, "")
     val freqMatrixId = PSMatrixUtils.createPSMatrix(freqMatrix)
 
     // Function to initialize the frequence matrix
@@ -91,8 +91,8 @@ object SubSampling {
       }
 
       val indices = VFactory.denseIntVector(pullIndices.toIntArray())
-      val freqIndex = PSMatrixUtils.getRowWithIndex(1, freqMatrixId, 0, indices)
-        .asInstanceOf[IntIntVector]
+      val freqIndex = PSMatrixUtils.getRowWithIndex(1, freqMatrixId, 0,
+        indices)(0, 0.00001).asInstanceOf[IntIntVector]
 
       // Second, calculate probability for each word
       val zw = new Int2DoubleOpenHashMap()

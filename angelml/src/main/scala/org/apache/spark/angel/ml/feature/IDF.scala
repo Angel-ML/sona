@@ -216,7 +216,7 @@ object IDF extends DefaultParamsReadable[IDF] {
   * Model fitted by [[IDF]].
   */
 @Since("1.4.0")
-class IDFModel private[angelml](
+class IDFModel private[angel](
                             @Since("1.4.0") override val uid: String,
                             val idf: ml.linalg.Vector)
   extends Model[IDFModel] with IDFBase with MLWritable {

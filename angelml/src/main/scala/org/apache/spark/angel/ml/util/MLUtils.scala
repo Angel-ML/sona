@@ -29,7 +29,7 @@ import scala.reflect.ClassTag
 @Since("0.8.0")
 object MLUtils extends Logging {
 
-  private[angelml] lazy val EPSILON = {
+  private[angel] lazy val EPSILON = {
     var eps = 1.0
     while ((1.0 + (eps / 2.0)) != 1.0) {
       eps /= 2.0
@@ -703,7 +703,7 @@ object MLUtils extends Logging {
     * @param precision desired relative precision for the squared distance
     * @return squared distance between v1 and v2 within the specified precision
     */
-  private[angelml] def fastSquaredDistance(v1: linalg.Vector,
+  private[angel] def fastSquaredDistance(v1: linalg.Vector,
                                            norm1: Double,
                                            v2: linalg.Vector,
                                            norm2: Double,

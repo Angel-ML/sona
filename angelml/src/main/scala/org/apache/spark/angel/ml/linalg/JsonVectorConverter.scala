@@ -21,7 +21,7 @@ import org.json4s.DefaultFormats
 import org.json4s.JsonDSL._
 import org.json4s.jackson.JsonMethods.{compact, parse => parseJson, render}
 
-private[angelml] object JsonVectorConverter {
+ private[angel] object JsonVectorConverter {
 
   /**
    * Parses the JSON representation of a vector into a [[Vector]].

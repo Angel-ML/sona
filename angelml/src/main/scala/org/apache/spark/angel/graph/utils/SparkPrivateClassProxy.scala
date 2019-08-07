@@ -1,5 +1,6 @@
 package org.apache.spark.angel.graph.utils
 
+import org.apache.spark.RangePartitioner
 import org.apache.spark.rdd.RDD
 import org.apache.spark.util.CollectionsUtils
 import org.apache.spark.util.collection.{OpenHashMap, OpenHashSet}

@@ -235,7 +235,7 @@ object Interaction extends DefaultParamsReadable[Interaction] {
  *                    count is equal to the number of categories. For numeric features the count
  *                    should be set to 1.
  */
-private[angelml] class FeatureEncoder(numFeatures: Array[Int]) extends Serializable {
+ private[angel] class FeatureEncoder(numFeatures: Array[Int]) extends Serializable {
   assert(numFeatures.forall(_ > 0), "Features counts must all be positive.")
 
   /** The size of the output vector. */

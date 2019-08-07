@@ -22,10 +22,7 @@ import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.angel.ml.param.ParamsSuite
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.linalg.{Vector, Vectors}
-import org.apache.spark.angelml.param.ParamsSuite
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest}
-import org.apache.spark.angelml.util.TestingUtils._
+import org.apache.spark.angel.ml.util.TestingUtils._
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder
 import org.apache.spark.sql.functions.col

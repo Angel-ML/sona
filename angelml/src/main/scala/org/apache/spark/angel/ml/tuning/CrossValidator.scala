@@ -40,7 +40,7 @@ import org.apache.spark.util.ThreadUtils
 /**
  * Params for [[CrossValidator]] and [[CrossValidatorModel]].
  */
-private[angelml] trait CrossValidatorParams extends ValidatorParams {
+ private[angel] trait CrossValidatorParams extends ValidatorParams {
   /**
    * Param for number of folds for cross validation.  Must be &gt;= 2.
    * Default: 3
@@ -249,14 +249,14 @@ object CrossValidator extends MLReadable[CrossValidator] {
  *                   `CrossValidator.estimatorParamMaps`, in the corresponding order.
  */
 @Since("1.2.0")
-class CrossValidatorModel private[angelml](
+class CrossValidatorModel private[angel](
     @Since("1.4.0") override val uid: String,
     @Since("1.2.0") val bestModel: Model[_],
     @Since("1.5.0") val avgMetrics: Array[Double])
   extends Model[CrossValidatorModel] with CrossValidatorParams with MLWritable {
 
   /** A Python-friendly auxiliary constructor. */
-  private[angelml] def this(uid: String, bestModel: Model[_], avgMetrics: JList[Double]) = {
+  private[angel] def this(uid: String, bestModel: Model[_], avgMetrics: JList[Double]) = {
     this(uid, bestModel, avgMetrics.asScala.toArray)
   }
 

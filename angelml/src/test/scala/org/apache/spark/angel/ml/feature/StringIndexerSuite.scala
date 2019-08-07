@@ -20,8 +20,6 @@ package org.apache.spark.angel.ml.feature
 import org.apache.spark.angel.ml.attribute.{Attribute, NominalAttribute}
 import org.apache.spark.angel.ml.param.ParamsSuite
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLTest, MLTestingUtils}
-import org.apache.spark.angelml.attribute.{Attribute, NominalAttribute}
-import org.apache.spark.angelml.util.{DefaultReadWriteTest, MLTest, MLTestingUtils}
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.types.{DoubleType, StringType, StructField, StructType}

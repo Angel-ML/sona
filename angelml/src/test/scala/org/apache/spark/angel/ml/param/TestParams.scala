@@ -19,7 +19,6 @@ package org.apache.spark.angel.ml.param
 
 import org.apache.spark.angel.ml.param.shared.{HasHandleInvalid, HasInputCol, HasMaxIter}
 import org.apache.spark.angel.ml.util.Identifiable
-import org.apache.spark.angelml.param.shared.{HasHandleInvalid, HasInputCol, HasMaxIter}
 
 /** A subclass of Params for testing. */
 class TestParams(override val uid: String) extends Params with HasHandleInvalid with HasMaxIter

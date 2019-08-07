@@ -38,7 +38,7 @@ import org.apache.spark.sql.types.{StructField, StructType}
 import org.apache.spark.util.collection.OpenHashSet
 
 /** Private trait for params for VectorIndexer and VectorIndexerModel */
-private[angelml] trait VectorIndexerParams extends Params with HasInputCol with HasOutputCol
+ private[angel] trait VectorIndexerParams extends Params with HasInputCol with HasOutputCol
   with HasHandleInvalid {
 
   /**
@@ -217,6 +217,7 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
       v match {
         case dv: DenseVector => addDenseVector(dv)
         case sv: IntSparseVector => addSparseVector(sv)
+        case _ => throw new Exception("Vector Type Error!")
       }
     }
 
@@ -293,7 +294,7 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
  *                      If a feature is not in this map, it is treated as continuous.
  */
 @Since("1.4.0")
-class VectorIndexerModel private[angelml](
+class VectorIndexerModel private[angel](
     @Since("1.4.0") override val uid: String,
     @Since("1.4.0") val numFeatures: Int,
     @Since("1.4.0") val categoryMaps: Map[Int, Map[Double, Int]])
@@ -412,6 +413,7 @@ class VectorIndexerModel private[angelml](
           }
           if (hasInvalid) null else tmpv
         case _: LongSparseVector => throw MLException("LongSparseVector not support VectorIndexer")
+        case _ => throw new Exception("Vector Type Error!")
       }
     }
     f

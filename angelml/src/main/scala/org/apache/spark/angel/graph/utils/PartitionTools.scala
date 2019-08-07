@@ -116,9 +116,12 @@ object PartitionTools {
       override def numPartitions: Int = numPartition
 
       override def getPartition(key: Any): Int = {
-        require(key.isInstanceOf[(Long, Long)], s"Using 2D partition, the RDD key should be a (Long, Long) tuple")
-        val k = key.asInstanceOf[(Long, Long)]
-        PartitionStrategy.EdgePartition2D.getPartition(k._1, k._2, numPartitions)
+        // require(key.isInstanceOf[(Long, Long)], s"Using 2D partition, the RDD key should be a (Long, Long) tuple")
+        key match {
+          case (x1: Long, x2: Long) =>
+            PartitionStrategy.EdgePartition2D.getPartition(x1, x2, numPartitions)
+          case _ => throw new Exception(s"Using 2D partition, the RDD key should be a (Long, Long) tuple")
+        }
       }
     }
   }

@@ -22,9 +22,7 @@ import org.apache.spark.SparkFunSuite
 import org.apache.spark.angel.ml.linalg.{Matrices, Matrix, Vectors}
 import org.apache.spark.angel.ml.util.MLlibTestSparkContext
 import org.apache.spark.internal.Logging
-import org.apache.spark.angelml.linalg.{Matrices, Matrix, Vectors}
-import org.apache.spark.angelml.util.TestingUtils._
-import org.apache.spark.angelml.util.MLlibTestSparkContext
+import org.apache.spark.angel.ml.util.TestingUtils._
 import org.apache.spark.sql.{DataFrame, Row}
 
 

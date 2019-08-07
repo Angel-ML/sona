@@ -153,7 +153,7 @@ import org.apache.spark.broadcast.Broadcast
  * @param bcFeaturesMean The broadcast mean values of the features.
  * @param bcCoefficients The broadcast coefficients corresponding to the features.
  */
-private[angelml] class LeastSquaresAggregator(
+ private[angel] class LeastSquaresAggregator(
     labelStd: Double,
     labelMean: Double,
     fitIntercept: Boolean,

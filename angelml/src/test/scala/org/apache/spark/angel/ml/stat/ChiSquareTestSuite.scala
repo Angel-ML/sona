@@ -25,12 +25,8 @@ import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.angel.ml.stat.test.ChiSqTest
 import org.apache.spark.angel.ml.util.{DefaultReadWriteTest, MLlibTestSparkContext}
 import org.apache.spark.{SparkException, SparkFunSuite}
-import org.apache.spark.angelml.feature.LabeledPoint
-import org.apache.spark.angelml.linalg.{Vector, Vectors}
-import org.apache.spark.angelml.util.DefaultReadWriteTest
-import org.apache.spark.angelml.util.TestingUtils._
-import org.apache.spark.angelml.stat.test.ChiSqTest
-import org.apache.spark.angelml.util.MLlibTestSparkContext
+import org.apache.spark.angel.ml.util.TestingUtils._
+
 
 class ChiSquareTestSuite
   extends SparkFunSuite with MLlibTestSparkContext with DefaultReadWriteTest {

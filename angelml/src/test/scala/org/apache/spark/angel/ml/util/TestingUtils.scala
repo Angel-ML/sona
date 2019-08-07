@@ -18,7 +18,6 @@
 package org.apache.spark.angel.ml.util
 
 import org.apache.spark.angel.ml.linalg.{Matrix, Vector}
-import org.apache.spark.angelml.linalg.Matrix
 import org.scalatest.exceptions.TestFailedException
 
 object TestingUtils {

@@ -23,7 +23,6 @@ import java.util.List
 
 import com.google.common.io.Files
 import org.apache.spark.SparkFunSuite
-import org.apache.spark.angelml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, Vectors}
 import org.apache.spark.angel.ml.linalg.SQLDataTypes.VectorType
 import org.apache.spark.angel.ml.linalg.{DenseVector, IntSparseVector, LongSparseVector, Vector, Vectors}
 import org.apache.spark.angel.ml.util.MLlibTestSparkContext
