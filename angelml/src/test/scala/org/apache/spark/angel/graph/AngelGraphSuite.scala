@@ -21,7 +21,6 @@ class AngelGraphSuite extends SparkFunSuite {
   private val storageLevel: StorageLevel = StorageLevel.MEMORY_ONLY
   private var numEdge: Long = -1
   private var maxNodeId: Long = -1
-  private var data: DataFrame = _
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -51,7 +50,7 @@ class AngelGraphSuite extends SparkFunSuite {
     }.repartition(numPartition).values.persist(storageLevel)
 
     val schema = StructType(Array(StructField("src", IntegerType), StructField("dst", IntegerType)))
-    data = spark.createDataFrame(rdd, schema)
+    val data = spark.createDataFrame(rdd, schema)
 
     numEdge = data.count()
     maxNodeId = data.rdd.map { case Row(src: Int, dst: Int) => math.max(src, dst) }.max().toLong + 1
@@ -64,7 +63,7 @@ class AngelGraphSuite extends SparkFunSuite {
 
   test("line1") {
     val input = "./data/angel/bc/edge"
-    readData(input)
+    val data = readData(input)
     data.printSchema()
     data.show(10)
 

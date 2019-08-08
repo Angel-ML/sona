@@ -37,8 +37,14 @@ class AngelClassificationSuite extends SparkFunSuite {
   }
 
   test("daw_train") {
-//    val driverCtx = DriverContext.get(sparkConf)
-//    driverCtx.startAngelAndPSAgent()
+    spark = SparkSession.builder()
+      .master("local[2]")
+      .appName("AngelClassification")
+      .getOrCreate()
+
+    libsvm = spark.read.format("libsvmex")
+    dummy = spark.read.format("dummy")
+
     val trainData = libsvm.load("../data/angel/census/census_148d_train.libsvm")
 
     val classifier = new AngelClassifier()
@@ -51,10 +57,7 @@ class AngelClassificationSuite extends SparkFunSuite {
 
     val model = classifier.fit(trainData)
 
-
     model.write.overwrite().save("trained_models/daw")
-
-//    driverCtx.stopAngelAndPSAgent()
   }
 
   test("svm_train") {
