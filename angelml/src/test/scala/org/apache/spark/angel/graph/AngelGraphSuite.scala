@@ -49,17 +49,23 @@ class AngelGraphSuite extends SparkFunSuite {
       }
     }.repartition(numPartition).values.persist(storageLevel)
 
+    numEdge = rdd.count()
+    maxNodeId = rdd.map { case Row(src: Int, dst: Int) => math.max(src, dst) }.max().toLong + 1
+
     val schema = StructType(Array(StructField("src", IntegerType), StructField("dst", IntegerType)))
     val data = spark.createDataFrame(rdd, schema)
-
-    numEdge = data.count()
-    maxNodeId = data.rdd.map { case Row(src: Int, dst: Int) => math.max(src, dst) }.max().toLong + 1
 
     println(s"numEdge=$numEdge maxNodeId=$maxNodeId")
 
     data
   }
 
+  test("readData") {
+    val input = "./data/angel/bc/edge"
+    val data = readData(input)
+    data.printSchema()
+    data.show(10)
+  }
 
   test("line1") {
     val input = "./data/angel/bc/edge"
