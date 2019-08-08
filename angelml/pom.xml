@@ -20,12 +20,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.spark.angel</groupId>
-    <artifactId>sona_2.11</artifactId>
+    <artifactId>sona</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>spark-on-angel-angelml</artifactId>
+  <artifactId>angelml</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.spark.angel</groupId>
       <artifactId>core</artifactId>
-      <version>${parent.version}</version>
+      <version>${project.parent.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.json4s</groupId>
@@ -52,7 +52,7 @@
     <dependency>
       <groupId>com.tencent.angel</groupId>
       <artifactId>angel-format</artifactId>
-      <version>${angel.version}</version>
+      <version>0.1.0-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>org.json4s</groupId>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>com.tencent.angel</groupId>
       <artifactId>angel-mlcore</artifactId>
-      <version>${angel.version}</version>
+      <version>0.1.0-SNAPSHOT</version>
       <exclusions>
         <exclusion>
           <groupId>org.json4s</groupId>
@@ -112,6 +112,21 @@
     <dependency>
       <groupId>com.tencent.angel</groupId>
       <artifactId>angel-ps-mllib</artifactId>
+      <version>${angel.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.json4s</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.tencent.angel</groupId>
+      <artifactId>angel-ps-graph</artifactId>
       <version>${angel.version}</version>
       <exclusions>
         <exclusion>

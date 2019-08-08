@@ -4,7 +4,7 @@ import java.util
 
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.conf.AngelConf
-import com.tencent.angel.matrix.MatrixContext
+import com.tencent.angel.ml.matrix.MatrixContext
 import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.mlcore.network.EnvContext
 import com.tencent.angel.ml.core.variable.{CILSImpl, PSVariable}

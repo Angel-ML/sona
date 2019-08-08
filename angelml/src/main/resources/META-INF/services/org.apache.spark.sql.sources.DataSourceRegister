@@ -1,4 +1,4 @@
-org.apache.spark.angelml.source.libsvm.LibSVMFileFormat
-org.apache.spark.angelml.source.libffm.LibFFMFileFormat
-org.apache.spark.angelml.source.dummy.DummyFileFormat
-org.apache.spark.angelml.source.image.ImageFileFormat
+org.apache.spark.angel.ml.source.libsvm.LibSVMFileFormat
+org.apache.spark.angel.ml.source.libffm.LibFFMFileFormat
+org.apache.spark.angel.ml.source.dummy.DummyFileFormat
+org.apache.spark.angel.ml.source.image.ImageFileFormat

@@ -1,7 +1,7 @@
 package com.tencent.angel.sona.psf
 
-import com.tencent.angel.matrix.psf.aggr.enhance.UnaryAggrFunc
-import com.tencent.angel.ps.storage.vector.ServerRow
+import com.tencent.angel.ml.matrix.psf.aggr.enhance.UnaryAggrFunc
+import com.tencent.angel.ps.storage.vector.{ServerRow, ServerRowUtils}
 
 class StatsFunc(matrixId: Int) extends UnaryAggrFunc(matrixId, 0) {
 
@@ -14,6 +14,6 @@ class StatsFunc(matrixId: Int) extends UnaryAggrFunc(matrixId, 0) {
   }
 
   override protected def processRow(row: ServerRow): Double = {
-    row.getSplit.getSize
+    ServerRowUtils.getVector(row).getSize
   }
 }

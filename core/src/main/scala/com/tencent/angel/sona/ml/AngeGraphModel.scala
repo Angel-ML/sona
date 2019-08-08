@@ -1,14 +1,13 @@
 package com.tencent.angel.sona.ml
 
 import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
-import com.tencent.angel.mlcore.data.DataBlock
 import com.tencent.angel.mlcore.network.{Graph, PlaceHolder}
 import com.tencent.angel.mlcore.utils.JsonUtils
 import com.tencent.angel.mlcore.variable.{VariableManager, VariableProvider}
 import com.tencent.angel.ml.core.variable.CILSImpl
 import com.tencent.angel.mlcore.{GraphModel, PredictResult}
 import com.tencent.angel.ml.core.PSVariableProvider
-import com.tencent.angel.ml.math2.utils.LabeledData
+import com.tencent.angel.ml.math2.utils.{DataBlock, LabeledData}
 import com.tencent.angel.sona.data.LocalMemoryDataBlock
 
 
