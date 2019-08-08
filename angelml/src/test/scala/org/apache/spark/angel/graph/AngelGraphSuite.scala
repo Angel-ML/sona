@@ -1,7 +1,9 @@
 package org.apache.spark.angel.graph
 
 import com.tencent.angel.sona.core.DriverContext
+import org.apache.spark.angel.graph.kcore.KCore
 import org.apache.spark.angel.graph.line.LINE
+import org.apache.spark.angel.graph.utils.GraphIO
 import org.apache.spark.angel.ml.feature.LabeledPoint
 import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.rdd.RDD
@@ -91,4 +93,23 @@ class AngelGraphSuite extends SparkFunSuite {
 
     model.write.overwrite().save("trained_models/lineModels")
   }
+
+  test("kcore1") {
+    val input = "./data/angel/bc/edge"
+    val output = "trained_models/kcore1/edge"
+    val partitionNum = 3
+    val storageLevel = StorageLevel.MEMORY_ONLY
+    val psPartitionNum = 2
+
+    val df = GraphIO.load(input, isWeighted = false)
+
+    val kcore = new KCore()
+      .setPartitionNum(partitionNum)
+      .setStorageLevel(storageLevel)
+      .setPSPartitionNum(psPartitionNum)
+
+    val mapping = kcore.transform(df)
+    GraphIO.save(mapping, output)
+  }
+
 }
