@@ -60,13 +60,14 @@ object AngelSaverLoader {
       val dataPath = new Path(path, "data").toString
       val data = sparkSession.read.format("parquet").load(dataPath)
       val Row(confString: String, modelName: String) = data.select("sharedConfStr", "angelModelName").head()
-      SharedConf.fromString(confString)
 
       val cstr = clz.getConstructor(classOf[String], classOf[String])
       val model = cstr.newInstance(metadata.uid, modelName).asInstanceOf[Model]
 
+      val sharedConf = SharedConf.fromString(confString)
       val angelModelPath = new Path(path, "angel").toString
       val sparkEnvContext = model.sparkEnvContext
+      model.angelModel.updateConf(sharedConf)
       model.angelModel
         .buildNetwork()
         .createMatrices(sparkEnvContext)

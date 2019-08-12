@@ -2,6 +2,7 @@ package org.apache.spark.angel.ml.param
 
 import java.io.File
 
+import com.tencent.angel.conf.AngelConf
 import com.tencent.angel.mlcore.conf.MLCoreConf
 import com.tencent.angel.mlcore.utils.{JsonUtils, MLException}
 import org.apache.hadoop.conf.Configuration
@@ -20,14 +21,30 @@ trait AngelGraphParams extends Params with AngelDataParams with HasModelType
   def setModelJsonFile(value: String): this.type = setInternal(modelJsonFile, value)
 
   override def updateFromJson(): this.type = {
-    val jsonFile: String = getModelJsonFile
-    // require(jsonFile != null && jsonFile.nonEmpty, "json file not set, please set a model json")
-    val hadoopConf: Configuration = new Configuration
-    if (new File(jsonFile).exists()) {
-     JsonUtils.parseAndUpdateJson(getModelJsonFile, sharedConf, hadoopConf)
-    } else {
-      throw MLException("json file not exists!")
+    try {
+      var jsonFile: String = getModelJsonFile
+      // require(jsonFile != null && jsonFile.nonEmpty, "json file not set, please set a model json")
+
+      if (jsonFile == null || jsonFile.isEmpty) {
+        jsonFile = sharedConf.get(AngelConf.ANGEL_ML_CONF)
+      }
+
+      val hadoopConf: Configuration = new Configuration
+      if (new File(jsonFile).exists()) {
+        JsonUtils.parseAndUpdateJson(getModelJsonFile, sharedConf, hadoopConf)
+      } else {
+        throw MLException("json file not exists!")
+      }
+
+    } catch {
+      case e: Exception =>
+        e.printStackTrace()
+        throw e
+      case ae: AssertionError =>
+        ae.printStackTrace()
+        throw ae
     }
+
 
     this
   }

@@ -1,6 +1,8 @@
 package org.apache.spark.angel.graph.louvain
 
 import com.tencent.angel.ml.math2.vector.LongIntVector
+import com.tencent.angel.sona.context.PSContext
+import org.apache.spark.SparkContext
 import org.apache.spark.angel.graph.params._
 import org.apache.spark.angel.graph.utils.NodeIndexer
 import org.apache.spark.angel.ml.Transformer
@@ -61,6 +63,10 @@ class Louvain(override val uid: String) extends Transformer
     val nodes = rawEdges.flatMap { case ((src, dst), _) =>
       Iterator(src, dst)
     }.distinct($(partitionNum))
+
+    // Start PS and init the model
+    println("start to run ps")
+    PSContext.getOrCreate(SparkContext.getOrCreate())
 
     val reIndexer = new NodeIndexer()
     reIndexer.train($(psPartitionNum), nodes)
