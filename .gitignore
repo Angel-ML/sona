@@ -45,4 +45,4 @@ src/test/results/
 hs_err_pid*
 trained_models/
 predict_results/
-dist/
+dist/target
