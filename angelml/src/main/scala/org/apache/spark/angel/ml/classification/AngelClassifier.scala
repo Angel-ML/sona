@@ -114,7 +114,7 @@ class AngelClassifier(override val uid: String)
 
     // 3.2 better modelType default value for sona
     if (getModelSize == -1) {
-      if (example.size < 1e-6) {
+      if (example.size < 1e6) {
         setDefault(modelType, RowType.T_DOUBLE_DENSE.toString)
       } else if (example.size < Int.MaxValue) {
         setDefault(modelType, RowType.T_DOUBLE_SPARSE.toString)
