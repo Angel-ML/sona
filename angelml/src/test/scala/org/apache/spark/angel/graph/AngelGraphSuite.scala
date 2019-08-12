@@ -1,5 +1,10 @@
 package org.apache.spark.angel.graph
 
+
+import org.apache.spark.angel.graph.line.LINE
+import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+
 import com.tencent.angel.sona.core.DriverContext
 import javassist.bytecode.SignatureAttribute.ArrayType
 import org.apache.spark.angel.graph.kcore.KCore
@@ -12,6 +17,7 @@ import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{DataType, IntegerType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, DataFrameReader, Row, SparkSession}
+
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext, SparkFunSuite}
 
@@ -66,14 +72,22 @@ class AngelGraphSuite extends SparkFunSuite {
   }
 
   test("readData") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = readData(input)
     data.printSchema()
     data.show(10)
   }
 
+  test("line: default params ") {
+    val line = new LINE()
+    assert(line.getNumEpoch === 10)
+    assert(line.getStepSize === 0.00001)
+    assert(line.getSrcNodeIdCol === "src")
+    assert(line.getDstNodeIdCol === "dst")
+  }
+
   test("line1") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = readData(input)
     data.printSchema()
     data.show(10)
