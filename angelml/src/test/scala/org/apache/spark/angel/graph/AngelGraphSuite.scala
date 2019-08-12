@@ -1,3 +1,4 @@
+
 package org.apache.spark.angel.graph
 
 
@@ -127,6 +128,25 @@ class AngelGraphSuite extends SparkFunSuite {
 
     val mapping = kCore.transform(data)
     GraphIO.save(mapping, "trained_models/kCoreAlgo")
+  }
+  
+  
+  test("kcore1") {
+    val input = "./data/angel/bc/edge"
+    val output = "trained_models/kcore1/edge"
+    val partitionNum = 3
+    val storageLevel = StorageLevel.MEMORY_ONLY
+    val psPartitionNum = 2
+
+    val df = GraphIO.load(input, isWeighted = false)
+
+    val kcore = new KCore()
+      .setPartitionNum(partitionNum)
+      .setStorageLevel(storageLevel)
+      .setPSPartitionNum(psPartitionNum)
+
+    val mapping = kcore.transform(df)
+    GraphIO.save(mapping, output)
   }
 
   test("louvain") {
