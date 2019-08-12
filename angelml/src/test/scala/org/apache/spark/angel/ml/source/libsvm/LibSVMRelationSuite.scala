@@ -65,17 +65,19 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("select as int sparse vector") {
-    val df = spark.read.format("libsvm").load(path)
+    val df = spark.read.format("libsvmex").load(path)
     assert(df.columns(0) == "label")
     assert(df.columns(1) == "features")
     val row1 = df.first()
     assert(row1.getDouble(0) == 1.0)
-    val v = row1.getAs[IntSparseVector](1)
+    val xx = row1.get(1)
+    val v = xx.asInstanceOf[IntSparseVector]
+//    val v = row1.getAs[IntSparseVector](1)
     assert(v == Vectors.sparse(6, Seq((0, 1.0), (2, 2.0), (4, 3.0))))
   }
 
   test("select as long sparse vector") {
-    val df = spark.read.format("libsvm").option("keyType", "long").load(path)
+    val df = spark.read.format("libsvmex").option("keyType", "long").load(path)
     assert(df.columns(0) == "label")
     assert(df.columns(1) == "features")
     val row1 = df.first()
@@ -85,7 +87,7 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("select as dense vector") {
-    val df = spark.read.format("libsvm").options(Map("vectorType" -> "dense"))
+    val df = spark.read.format("libsvmex").options(Map("vectorType" -> "dense"))
       .load(path)
     assert(df.columns(0) == "label")
     assert(df.columns(1) == "features")
@@ -98,14 +100,14 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("illegal vector types") {
     val e = intercept[IllegalArgumentException] {
-      spark.read.format("libsvm").options(Map("VectorType" -> "sparser")).load(path)
+      spark.read.format("libsvmex").options(Map("VectorType" -> "sparser")).load(path)
     }.getMessage
     assert(e.contains("Invalid value `sparser` for parameter `vectorType`. Expected " +
       "types are `sparse` and `dense`."))
   }
 
   test("select a vector with specifying the longer dimension") {
-    val df = spark.read.option("numFeatures", "100").format("libsvm")
+    val df = spark.read.option("numFeatures", "100").format("libsvmex")
       .load(path)
     val row1 = df.first()
     val v = row1.getAs[IntSparseVector](1)
@@ -113,19 +115,19 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("case insensitive option") {
-    val df = spark.read.option("NuMfEaTuReS", "100").format("libsvm").load(path)
+    val df = spark.read.option("NuMfEaTuReS", "100").format("libsvmex").load(path)
     assert(df.first().getAs[IntSparseVector](1) ==
       Vectors.sparse(100, Seq((0, 1.0), (2, 2.0), (4, 3.0))))
   }
 
   test("write libsvm data and read it again") {
-    val df = spark.read.format("libsvm").load(path)
+    val df = spark.read.format("libsvmex").load(path)
     val writePath = Utils.createTempDir().getPath
 
     // TODO: Remove requirement to coalesce by supporting multiple reads.
-    df.coalesce(1).write.format("libsvm").mode(SaveMode.Overwrite).save(writePath)
+    df.coalesce(1).write.format("libsvmex").mode(SaveMode.Overwrite).save(writePath)
 
-    val df2 = spark.read.format("libsvm").load(writePath)
+    val df2 = spark.read.format("libsvmex").load(writePath)
     val row1 = df2.first()
     val v = row1.getAs[IntSparseVector](1)
     assert(v == Vectors.sparse(6, Seq((0, 1.0), (2, 2.0), (4, 3.0))))
@@ -134,7 +136,7 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("write libsvm data failed due to invalid schema") {
     val df = spark.read.format("text").load(path)
     intercept[IOException] {
-      df.write.format("libsvm").save(path + "_2")
+      df.write.format("libsvmex").save(path + "_2")
     }
   }
 
@@ -151,16 +153,16 @@ class LibSVMRelationSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val writePath = Utils.createTempDir().getPath
 
-    df.coalesce(1).write.format("libsvm").mode(SaveMode.Overwrite).save(writePath)
+    df.coalesce(1).write.format("libsvmex").mode(SaveMode.Overwrite).save(writePath)
 
-    val df2 = spark.read.format("libsvm").load(writePath)
+    val df2 = spark.read.format("libsvmex").load(writePath)
     val row1 = df2.first()
     val v = row1.getAs[IntSparseVector](1)
     assert(v == Vectors.sparse(3, Seq((0, 2.0), (1, 3.0))))
   }
 
   test("select features from libsvm relation") {
-    val df = spark.read.format("libsvm").load(path)
+    val df = spark.read.format("libsvmex").load(path)
     df.select("features").rdd.map { case Row(d: Vector) => d }.first
     df.select("features").collect
   }

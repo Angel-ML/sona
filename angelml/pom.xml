@@ -30,6 +30,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.spark</groupId>
+      <artifactId>spark-mllib_2.11</artifactId>
+      <version>${spark.version}</version>
+    </dependency>
+    <dependency>
       <groupId>it.unimi.dsi</groupId>
       <artifactId>fastutil</artifactId>
       <version>7.1.0</version>
@@ -62,6 +67,10 @@
           <groupId>io.netty</groupId>
           <artifactId>*</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-common</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -92,6 +101,14 @@
           <groupId>io.netty</groupId>
           <artifactId>*</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>spark-mllib_2.11</artifactId>
+          <groupId>org.apache.spark</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>spark-core_2.11</artifactId>
+          <groupId>org.apache.spark</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -99,6 +116,14 @@
       <artifactId>angel-ps-psf</artifactId>
       <version>${angel.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-core_2.11</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-mllib_2.11</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.json4s</groupId>
           <artifactId>*</artifactId>
@@ -115,6 +140,14 @@
       <version>${angel.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-core_2.11</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-mllib_2.11</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.json4s</groupId>
           <artifactId>*</artifactId>
         </exclusion>
@@ -129,6 +162,14 @@
       <artifactId>angel-ps-graph</artifactId>
       <version>${angel.version}</version>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-core_2.11</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.spark</groupId>
+          <artifactId>spark-mllib_2.11</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>org.json4s</groupId>
           <artifactId>*</artifactId>

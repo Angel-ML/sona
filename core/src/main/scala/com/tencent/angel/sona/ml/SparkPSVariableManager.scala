@@ -50,7 +50,7 @@ class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: Shared
   override def loadALL[T](envCtx: EnvContext[T], path: String, conf: Configuration): Unit = {
     envCtx match {
       case SparkEnvContext(client: AngelPSClient) if client != null =>
-        val loadContext = new ModelLoadContext()
+        val loadContext = new ModelLoadContext(path)
         getALLVariables.foreach { variable =>
           loadContext.addMatrix(new MatrixLoadContext(variable.name, path))
         }

@@ -29,17 +29,19 @@
     <modules>
         <module>core</module>
         <module>angelml</module>
+        <module>dist</module>
     </modules>
 
     <properties>
         <scala.binary.version>2.11</scala.binary.version>
         <scala.version>2.11.8</scala.version>
-        <spark.version>2.4.0</spark.version>
+        <spark.version>2.3.0</spark.version>
         <angel.version>3.0.0-SNAPSHOT</angel.version>
         <breeze.version>0.13</breeze.version>
         <!-- Modules that copy jars to the build directory should do so under this location. -->
         <jars.target.dir>${project.build.directory}/scala-${scala.binary.version}/jars</jars.target.dir>
-        <json4s.version>3.5.3</json4s.version>
+        <!--json4s.version>3.5.3</json4s.version-->
+        <json4s.version>3.2.11</json4s.version>
         <java.version>1.8</java.version>
     </properties>
 
@@ -136,9 +138,14 @@
         </dependency-->
         <dependency>
             <groupId>org.json4s</groupId>
-            <artifactId>json4s-native_2.11</artifactId>
+            <artifactId>json4s-native_${scala.binary.version}</artifactId>
             <version>${json4s.version}</version>
         </dependency>
+        <!--dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-jackson_${scala.binary.version}</artifactId>
+            <version>${json4s.version}</version>
+        </dependency-->
         <dependency>
             <groupId>org.codehaus.jettison</groupId>
             <artifactId>jettison</artifactId>
@@ -161,6 +168,10 @@
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-client</artifactId>
                 </exclusion>
+                <!--exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-jackson_2.11</artifactId>
+                </exclusion-->
             </exclusions>
         </dependency>
         <dependency>
@@ -178,12 +189,22 @@
                     <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-client</artifactId>
                 </exclusion>
+                <!--exclusion>
+                    <groupId>org.json4s</groupId>
+                    <artifactId>json4s-jackson_2.11</artifactId>
+                </exclusion-->
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
             <version>2.7.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
