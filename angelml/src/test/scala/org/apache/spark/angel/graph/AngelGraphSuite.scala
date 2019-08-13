@@ -2,22 +2,13 @@
 package org.apache.spark.angel.graph
 
 
-import org.apache.spark.angel.graph.line.LINE
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
-
-import com.tencent.angel.sona.core.DriverContext
-import javassist.bytecode.SignatureAttribute.ArrayType
 import org.apache.spark.angel.graph.kcore.KCore
 import org.apache.spark.angel.graph.line.LINE
 import org.apache.spark.angel.graph.louvain.Louvain
 import org.apache.spark.angel.graph.utils.GraphIO
-import org.apache.spark.angel.graph.word2vec.{Word2Vec, Word2VecModel}
-import org.apache.spark.angel.ml.feature.LabeledPoint
-import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.types.{DataType, IntegerType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, DataFrameReader, Row, SparkSession}
+import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext, SparkFunSuite}
@@ -87,7 +78,7 @@ class AngelGraphSuite extends SparkFunSuite {
     assert(line.getDstNodeIdCol === "dst")
   }
 
-  test("line1") {
+  test("line2") {
     val input = "../data/angel/bc/edge"
     val data = readData(input)
     data.printSchema()
@@ -115,7 +106,7 @@ class AngelGraphSuite extends SparkFunSuite {
   }
 
   test("kcore") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = GraphIO.load(input, isWeighted = false, 0, 1, sep = " ")
     data.printSchema()
     data.show(10)
@@ -130,28 +121,10 @@ class AngelGraphSuite extends SparkFunSuite {
     val mapping = kCore.transform(data)
     GraphIO.save(mapping, "trained_models/kCoreAlgo")
   }
-  
-  
-  test("kcore1") {
-    val input = "./data/angel/bc/edge"
-    val output = "trained_models/kcore1/edge"
-    val partitionNum = 3
-    val storageLevel = StorageLevel.MEMORY_ONLY
-    val psPartitionNum = 2
 
-    val df = GraphIO.load(input, isWeighted = false)
-
-    val kcore = new KCore()
-      .setPartitionNum(partitionNum)
-      .setStorageLevel(storageLevel)
-      .setPSPartitionNum(psPartitionNum)
-
-    val mapping = kcore.transform(df)
-    GraphIO.save(mapping, output)
-  }
 
   test("louvain") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = GraphIO.load(input, isWeighted = false, 0, 1, sep = " ")
     data.printSchema()
     data.show(10)

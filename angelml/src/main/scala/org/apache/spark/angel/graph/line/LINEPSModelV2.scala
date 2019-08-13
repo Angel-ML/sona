@@ -130,11 +130,11 @@ class LINEPSModelV2(embeddingMatName: String,
     psMatrix.psfUpdate(new LINEAdjust(new LINEAdjustParam(matrixId, inputUpdates, outputUpdates, order)))
     val pushTime = System.currentTimeMillis() - start
 
-    //if(batchId % 100 == 0) {
-    NEModel.logTime(s"loss=$loss sampleTime=${sampleTime} getEmbeddingTime=${getEmbeddingTime} " +
-      s"dotTime=${dotTime} gradientTime=${gradientTime} calUpdateTime=${calUpdateTime} " +
-      s"pushTime=${pushTime}")
-    //}
+    if (batchId % 100 == 0) {
+      NEModel.logTime(s"loss=$loss sampleTime=${sampleTime} getEmbeddingTime=${getEmbeddingTime} " +
+        s"dotTime=${dotTime} gradientTime=${gradientTime} calUpdateTime=${calUpdateTime} " +
+        s"pushTime=${pushTime}")
+    }
 
     (loss.toFloat, dots.length.toLong, Array(sampleTime, getEmbeddingTime, dotTime, gradientTime, calUpdateTime, pushTime))
   }
