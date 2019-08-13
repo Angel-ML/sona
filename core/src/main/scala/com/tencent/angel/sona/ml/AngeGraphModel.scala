@@ -13,12 +13,12 @@ import com.tencent.angel.sona.data.LocalMemoryDataBlock
 
 class AngeGraphModel(conf: SharedConf, val numTask: Int) extends GraphModel(conf) {
   private implicit val sharedConf: SharedConf = conf
-  override val isSparseFormat: Boolean = conf.getBoolean(MLCoreConf.ML_IS_DATA_SPARSE)
+  override val isSparseFormat: Boolean = conf.get(MLCoreConf.ML_IS_DATA_SPARSE, "false").toBoolean
 
   // protected val placeHolder: PlaceHolder = new PlaceHolder(conf)
   override protected implicit val variableManager: VariableManager = SparkPSVariableManager.get(isSparseFormat, conf)
   private implicit val cilsImpl: CILSImpl = new SparkCILSImpl(conf)
-  override protected val variableProvider: VariableProvider = new PSVariableProvider(dataFormat, modelType)
+  override protected val variableProvider: VariableProvider = new PSVariableProvider(dataFormat, sharedConf)
 
   override implicit val graph: Graph = new Graph(variableProvider, conf, numTask)
 
