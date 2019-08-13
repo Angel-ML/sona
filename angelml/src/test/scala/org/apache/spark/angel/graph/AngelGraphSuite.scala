@@ -67,7 +67,7 @@ class AngelGraphSuite extends SparkFunSuite {
     data.show(10)
   }
 
-  test("line1") {
+  test("line2") {
     val input = "./data/angel/bc/edge"
     val data = readData(input)
     data.printSchema()
@@ -84,6 +84,7 @@ class AngelGraphSuite extends SparkFunSuite {
       .setMaxIndex(maxNodeId.toInt)
       .setSrcNodeIdCol("src")
       .setDstNodeIdCol("dst")
+      .setVersion("v2")
 
     val model = line.fit(data)
 
