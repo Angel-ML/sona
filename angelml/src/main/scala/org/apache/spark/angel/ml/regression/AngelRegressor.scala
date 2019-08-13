@@ -207,7 +207,8 @@ class AngelRegressor(override val uid: String)
       globalRunStat.setLoadTime(finishedLoad - startLoad)
     } else {
       val startInit = System.currentTimeMillis()
-      angelModel.init(SparkEnvContext(null))
+      val sec = SparkEnvContext(null)
+      angelModel.init(sec)
       val finishedInit = System.currentTimeMillis()
       globalRunStat.setInitTime(finishedInit - startInit)
     }
