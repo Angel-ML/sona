@@ -5,7 +5,7 @@ import com.tencent.angel.ml.core.PSOptimizerProvider
 import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.mlcore.variable.VarState
 import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
-import com.tencent.angel.psagent.PSAgent
+import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
 import com.tencent.angel.sona.core._
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.spark.angel.ml.evaluation.evaluating.RegressionSummaryImpl
@@ -194,6 +194,7 @@ class AngelRegressor(override val uid: String)
 
     val startCreate = System.currentTimeMillis()
     angelModel.createMatrices(sparkEnvCtx)
+    PSAgentContext.get().getPsAgent.refreshMatrixInfo()
     val finishedCreate = System.currentTimeMillis()
     globalRunStat.setCreateTime(finishedCreate - startCreate)
 
