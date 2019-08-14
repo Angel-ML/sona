@@ -21,7 +21,7 @@ import com.tencent.angel.conf.AngelConf
 import com.tencent.angel.ps.storage.matrix.PartitionSourceArray
 import com.tencent.angel.sona.context.PSContext
 import org.apache.spark.angel.graph.embedding.Param
-import org.apache.spark.angel.graph.embedding.word2vec.Word2VecModel
+import org.apache.spark.angel.graph.embedding.line2.LINEModel
 import org.apache.spark.angel.graph.utils.{Features, SparkUtils, SubSampling}
 import org.apache.spark.angel.ml.util.ArgsUtil
 import org.apache.spark.rdd.RDD
@@ -30,53 +30,69 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.util.Random
 
-object Word2vecExample {
-
+object LINEExample2 {
   def main(args: Array[String]): Unit = {
     val params = ArgsUtil.parse(args)
+    val conf = new SparkConf().setMaster("yarn-cluster").setAppName("LINE")
 
-    val conf = new SparkConf()
-    val sc   = new SparkContext(conf)
+    val oldModelInput = params.getOrElse("oldmodelpath", null)
+    if(oldModelInput != null) {
+      conf.set(s"spark.hadoop.${AngelConf.ANGEL_LOAD_MODEL_PATH}", oldModelInput)
+    }
+
+    val sc = new SparkContext(conf)
 
     conf.set(AngelConf.ANGEL_PS_PARTITION_SOURCE_CLASS, classOf[PartitionSourceArray].getName)
     conf.set(AngelConf.ANGEL_PS_BACKUP_MATRICES, "")
+    conf.set(AngelConf.ANGEL_PS_BACKUP_INTERVAL_MS, "100000000")
+    conf.set("io.file.buffer.size", "16000000");
+    conf.set("spark.hadoop.io.file.buffer.size", "16000000");
+
+    val executorJvmOptions = " -verbose:gc -XX:-PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:<LOG_DIR>/gc.log " +
+      "-XX:+UseG1GC -XX:MaxGCPauseMillis=1000 -XX:G1HeapRegionSize=32M " +
+      "-XX:InitiatingHeapOccupancyPercent=50 -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 "
+    println(s"executorJvmOptions = ${executorJvmOptions}")
+    conf.set("spark.executor.extraJavaOptions", executorJvmOptions)
 
     PSContext.getOrCreate(sc)
 
-    val input = params.getOrElse("input", "")
+    val input = params.getOrElse("input", null)
     val output = params.getOrElse("output", "")
+
     val embeddingDim = params.getOrElse("embedding", "10").toInt
     val numNegSamples = params.getOrElse("negative", "5").toInt
-    val windowSize = params.getOrElse("window", "10").toInt
     val numEpoch = params.getOrElse("epoch", "10").toInt
+
     val stepSize = params.getOrElse("stepSize", "0.1").toFloat
     val batchSize = params.getOrElse("batchSize", "10000").toInt
     val numPartitions = params.getOrElse("numParts", "10").toInt
     val withSubSample = params.getOrElse("subSample", "true").toBoolean
     val withRemapping = params.getOrElse("remapping", "true").toBoolean
-    val modelType = params.getOrElse("modelType", "cbow")
-    val checkpointInterval = params.getOrElse("interval", "10").toInt
+    val order = params.get("order").fold(2)(_.toInt)
+    val saveModelInterval = params.getOrElse("saveModelInterval", "10").toInt
+    val checkpointInterval = params.getOrElse("checkpointInterval", "2").toInt
+
 
     val numCores = SparkUtils.getNumCores(conf)
 
     // The number of partition is more than the cores. We do this to achieve dynamic load balance.
     val numDataPartitions = (numCores * 6.25).toInt
+    println(s"numDataPartitions=$numDataPartitions")
 
     val data = sc.textFile(input)
     data.persist(StorageLevel.DISK_ONLY)
 
     var corpus: RDD[Array[Int]] = null
-    var denseToString: Option[RDD[(Int, String)]] = None
 
     if (withRemapping) {
       val temp = Features.corpusStringToInt(data)
       corpus = temp._1
-      denseToString = Some(temp._2)
+      temp._2.map(f => s"${f._1}:${f._2}").saveAsTextFile(output + "/mapping")
     } else {
       corpus = Features.corpusStringToIntWithoutRemapping(data)
     }
 
-    val (maxWordId, docs) = if (withSubSample) {
+    val(maxNodeId, docs) = if (withSubSample) {
       corpus.persist(StorageLevel.DISK_ONLY)
       val subsampleTmp = SubSampling.sampling(corpus)
       (subsampleTmp._1, subsampleTmp._2.repartition(numDataPartitions))
@@ -84,12 +100,15 @@ object Word2vecExample {
       val tmp = corpus.repartition(numDataPartitions)
       (tmp.map(_.max).max().toLong + 1, tmp)
     }
-    docs.persist(StorageLevel.DISK_ONLY)
+    val edges = docs.map{
+      arr =>
+        (arr(0), arr(1))
+    }
 
-    val numDocs = docs.count()
-    val numTokens = docs.map(_.length).sum().toLong
-    val maxLength = docs.map(_.length).max()
-    println(s"numDocs=$numDocs maxWordId=$maxWordId numTokens=$numTokens maxLength=$maxLength")
+    edges.persist(StorageLevel.DISK_ONLY)
+
+    val numEdge = edges.count()
+    println(s"numEdge=$numEdge maxNodeId=$maxNodeId")
 
     corpus.unpersist()
     data.unpersist()
@@ -97,25 +116,28 @@ object Word2vecExample {
     val param = new Param()
       .setLearningRate(stepSize)
       .setEmbeddingDim(embeddingDim)
-      .setWindowSize(windowSize)
       .setBatchSize(batchSize)
       .setSeed(Random.nextInt())
       .setNumPSPart(Some(numPartitions))
       .setNumEpoch(numEpoch)
       .setNegSample(numNegSamples)
-      .setMaxIndex(maxWordId)
-      .setNumRowDataSet(numDocs)
-      .setMaxLength(maxLength)
-      .setModel(modelType)
+      .setMaxIndex(maxNodeId)
+      .setNumRowDataSet(numEdge)
+      .setOrder(order)
       .setModelCPInterval(checkpointInterval)
+      .setModelSaveInterval(saveModelInterval)
 
-    val model = new Word2VecModel(param)
-    model.train(docs, param, output + "/embedding")
-    model.save(output + "/embedding", numEpoch)
-    denseToString.map(rdd => rdd.map(f => s"${f._1}:${f._2}").saveAsTextFile(output + "/mapping"))
+    val model = new LINEModel(param)
+    if(oldModelInput != null) {
+      println(s"load old model from path ${oldModelInput}")
+    } else {
+      model.randomInitialize(Random.nextInt())
+    }
+
+    model.train(edges, param, output)
+    model.save(output, numEpoch)
 
     PSContext.stop()
     sc.stop()
   }
-
 }

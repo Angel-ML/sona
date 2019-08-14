@@ -1,29 +1,43 @@
+/*
+ * Tencent is pleased to support the open source community by making Angel available.
+ *
+ * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/Apache-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ */
+
+
 package org.apache.spark.angel.examples.graph
 
 import com.tencent.angel.conf.AngelConf
 import com.tencent.angel.ps.storage.matrix.PartitionSourceArray
 import com.tencent.angel.sona.context.PSContext
-import org.apache.spark.angel.graph.line.LINE
+import org.apache.spark.angel.graph.embedding.Param
+import org.apache.spark.angel.graph.embedding.line.LINEModel
 import org.apache.spark.angel.graph.utils.{Features, SparkUtils, SubSampling}
 import org.apache.spark.angel.ml.util.ArgsUtil
-import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{Row, SparkSession}
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
 import org.apache.spark.storage.StorageLevel
+import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.util.Random
 
 object LINEExample {
+
   def main(args: Array[String]): Unit = {
     val params = ArgsUtil.parse(args)
 
-    val spark = SparkSession.builder()
-      .master(s"yarn-cluster")
-      .appName("LINE")
-      .getOrCreate()
-    val sc = spark.sparkContext
-    val conf = spark.sparkContext.getConf
+    val conf = new SparkConf().setMaster("yarn-cluster").setAppName("LINE")
+    val sc = new SparkContext(conf)
 
     conf.set(AngelConf.ANGEL_PS_PARTITION_SOURCE_CLASS, classOf[PartitionSourceArray].getName)
     conf.set(AngelConf.ANGEL_PS_BACKUP_MATRICES, "")
@@ -74,11 +88,8 @@ object LINEExample {
     }
     val edges = docs.map{
       arr =>
-        Row(arr(0), arr(1))
+        (arr(0), arr(1))
     }
-
-    val schema = StructType(Array(StructField("src", IntegerType), StructField("dst", IntegerType)))
-    val df = spark.createDataFrame(edges, schema)
 
     edges.persist(StorageLevel.DISK_ONLY)
 
@@ -88,27 +99,22 @@ object LINEExample {
     corpus.unpersist()
     data.unpersist()
 
-
-
-    val line = new LINE()
-      .setStepSize(stepSize)
+    val param = new Param()
+      .setLearningRate(stepSize)
       .setEmbeddingDim(embeddingDim)
       .setBatchSize(batchSize)
-      .setNumPSPart(numPartitions)
+      .setSeed(Random.nextInt())
+      .setNumPSPart(Some(numPartitions))
       .setNumEpoch(numEpoch)
       .setNegSample(numNegSamples)
-      .setMaxIndex(maxNodeId.toInt)//todo???
+      .setMaxIndex(maxNodeId)
       .setNumRowDataSet(numEdge)
       .setOrder(order)
-      .setSrcNodeIdCol("src")
-      .setDstNodeIdCol("dst")
-//      .setModelCPInterval(checkpointInterval)
+      .setModelCPInterval(checkpointInterval)
 
-    val model = line.fit(df)
-    line.write.overwrite().save(output + "/lineAlgo")
-
-//    model.train(edges, param, output + "/embedding")
-//    model.save(output + "/embedding", numEpoch)
+    val model = new LINEModel(param)
+    model.train(edges, param, output + "/embedding")
+    model.save(output + "/embedding", numEpoch)
 
     PSContext.stop()
     sc.stop()

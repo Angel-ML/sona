@@ -1,13 +1,29 @@
+/*
+ * Tencent is pleased to support the open source community by making Angel available.
+ *
+ * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/Apache-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ */
+
 package org.apache.spark.angel.graph
 
 import org.apache.spark.angel.graph.kcore.KCore
-import org.apache.spark.angel.graph.line.LINE
 import org.apache.spark.angel.graph.louvain.Louvain
 import org.apache.spark.angel.graph.utils.{Features, GraphIO}
-import org.apache.spark.angel.graph.word2vec.{Word2Vec, Word2VecModel}
+import org.apache.spark.angel.graph.word2vec.Word2Vec
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.{DataFrame, DataFrameReader, Row, SparkSession}
+import org.apache.spark.sql.types.{ArrayType, IntegerType, StructField, StructType}
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext, SparkFunSuite}
 
@@ -62,40 +78,14 @@ class AngelGraphSuite extends SparkFunSuite {
   }
 
   test("readData") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = readData(input)
     data.printSchema()
     data.show(10)
-  }
-
-  test("line1") {
-    val input = "./data/angel/bc/edge"
-    val data = readData(input)
-    data.printSchema()
-    data.show(10)
-
-    val line = new LINE()
-      .setStepSize(0.025)
-      .setEmbeddingDim(32)
-      .setBatchSize(1024)
-      .setNumPSPart(2)
-      .setNumEpoch(2)
-      .setNegSample(5)
-      .setOrder(2)
-      .setMaxIndex(maxNodeId.toInt)
-      .setSrcNodeIdCol("src")
-      .setDstNodeIdCol("dst")
-
-    val model = line.fit(data)
-
-    line.write.overwrite().save("trained_models/lineAlgo")
-
-    //todo???
-//    model.write.overwrite().save("trained_models/lineModels")
   }
 
   test("kcore") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = GraphIO.load(input, isWeighted = false, 0, 1, sep = " ")
     data.printSchema()
     data.show(10)
@@ -111,8 +101,9 @@ class AngelGraphSuite extends SparkFunSuite {
     GraphIO.save(mapping, "trained_models/kCoreAlgo")
   }
 
+
   test("louvain") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = GraphIO.load(input, isWeighted = false, 0, 1, sep = " ")
     data.printSchema()
     data.show(10)
@@ -136,51 +127,6 @@ class AngelGraphSuite extends SparkFunSuite {
     GraphIO.save(mapping, "trained_models/louvainAlgo")
   }
 
-  test("word2vec") {
-    val input = "./data/angel/text8/text8.split.head"
-    val data = sc.textFile(input)
-    data.cache()
-
-    //    val (corpus) = corpusStringToIntWithoutRemapping(sc.textFile(input))
-    val (corpus, _) = Features.corpusStringToInt(sc.textFile(input))
-    val docs = corpus.repartition(1)
-
-    val schema = StructType(Array(StructField("input", ArrayType(IntegerType, false))))
-
-    val df = spark.createDataFrame(docs.map{case arr:Array[Int] => Row(arr)}, schema)
-    df.show(1)
-
-    docs.cache()
-    docs.count()
-    data.unpersist()
-
-    val numDocs = docs.count()
-    val maxWordId = docs.map(_.max).max() + 1
-    val numTokens = docs.map(_.length).sum().toLong
-    val maxLength = docs.map(_.length).max()
-
-    println(s"numDocs=$numDocs maxWordId=$maxWordId numTokens=$numTokens")
-
-    val word2vec = new Word2Vec()
-      .setEmbeddingDim(10)
-      .setBatchSize(100)
-      .setModel("cbow")
-      .setNegSample(5)
-      .setMaxIndex(maxWordId)
-      .setMaxLength(maxLength)
-      .setCheckpointInterval(1000)
-      .setNumEpoch(5)
-      .setNumPSPart(1)
-      .setPartitionNum(5)
-      .setStepSize(1.0)
-      .setWindowSize(5)
-      .setInput("input")
-      .setNodesNumPerRow(5)
-      .setEmbeddingMatrixName("Word2Vec")
-
-    val model = word2vec.fit(df)
-//    model.write.overwrite().save("trained_models/word2vecAlgo")
-  }
 
   def corpusStringToIntWithoutRemapping(data: RDD[String]): RDD[Array[Int]] = {
     data.filter(f => f != null && f.length > 0)
