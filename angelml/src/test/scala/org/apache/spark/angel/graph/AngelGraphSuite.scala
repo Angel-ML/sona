@@ -1,9 +1,24 @@
+/*
+ * Tencent is pleased to support the open source community by making Angel available.
+ *
+ * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/Apache-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ */
 
 package org.apache.spark.angel.graph
 
 
 import org.apache.spark.angel.graph.kcore.KCore
-import org.apache.spark.angel.graph.line.LINE
 import org.apache.spark.angel.graph.louvain.Louvain
 import org.apache.spark.angel.graph.utils.GraphIO
 import org.apache.spark.rdd.RDD
@@ -68,41 +83,6 @@ class AngelGraphSuite extends SparkFunSuite {
     val data = readData(input)
     data.printSchema()
     data.show(10)
-  }
-
-  test("line: default params ") {
-    val line = new LINE()
-    assert(line.getNumEpoch === 10)
-    assert(line.getStepSize === 0.00001)
-    assert(line.getSrcNodeIdCol === "src")
-    assert(line.getDstNodeIdCol === "dst")
-  }
-
-  test("line2") {
-    val input = "../data/angel/bc/edge"
-    val data = readData(input)
-    data.printSchema()
-    data.show(10)
-
-    val line = new LINE()
-      .setStepSize(0.025)
-      .setEmbeddingDim(32)
-      .setBatchSize(1024)
-      .setNumPSPart(2)
-      .setNumEpoch(2)
-      .setNegSample(5)
-      .setOrder(2)
-      .setMaxIndex(maxNodeId.toInt)
-      .setSrcNodeIdCol("src")
-      .setDstNodeIdCol("dst")
-      .setVersion("v2")
-
-    val model = line.fit(data)
-
-    line.write.overwrite().save("trained_models/lineAlgo")
-
-    //todo???
-//    model.write.overwrite().save("trained_models/lineModels")
   }
 
   test("kcore") {

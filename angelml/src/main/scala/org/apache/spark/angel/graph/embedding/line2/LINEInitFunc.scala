@@ -15,7 +15,7 @@
  *
  */
 
-package org.apache.spark.angel.graph.line
+package org.apache.spark.angel.graph.embedding.line2
 
 import java.util.UUID
 
@@ -24,8 +24,8 @@ import com.tencent.angel.ps.storage.partition.RowBasedPartition
 import com.tencent.angel.ps.storage.vector.ServerIntAnyRow
 import io.netty.buffer.ByteBuf
 
-import scala.util.Random
 import scala.collection.JavaConversions._
+import scala.util.Random
 
 class LINEInitFunc(var order:Int, var dim:Int) extends PSMatrixInit {
 

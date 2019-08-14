@@ -16,74 +16,118 @@
  */
 
 
-package org.apache.spark.angel.graph.line
+package org.apache.spark.angel.graph.embedding.line2
+
+import java.text.SimpleDateFormat
+import java.util.Date
 
 import com.tencent.angel.ml.math2.utils.RowType
 import com.tencent.angel.ml.matrix.MatrixContext
+import com.tencent.angel.model.output.format.SnapshotFormat
+import com.tencent.angel.model.{MatrixLoadContext, MatrixSaveContext, ModelLoadContext, ModelSaveContext}
 import com.tencent.angel.sona.context.PSContext
+import com.tencent.angel.sona.models.PSMatrix
 import it.unimi.dsi.fastutil.ints.{Int2IntOpenHashMap, Int2ObjectOpenHashMap}
-import org.apache.spark.angel.graph.line.LINEPSModelV1.{LINEDataSet, buildDataBatches}
-import org.apache.spark.angel.graph.utils.NEModel
-import org.apache.spark.angel.graph.utils.NEModel.NEDataSet
+import org.apache.hadoop.fs.Path
+import org.apache.spark.SparkContext
+import org.apache.spark.angel.graph.embedding.NEModel.NEDataSet
+import org.apache.spark.angel.graph.embedding.line.LINEModel.{LINEDataSet, buildDataBatches}
+import org.apache.spark.angel.graph.embedding.{FastSigmoid, Param}
 import org.apache.spark.angel.psf.embedding.NEModelRandomize.RandomizeUpdateParam
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SparkSession
 
 import scala.util.Random
 
+class LINEModel(numNode: Int,
+                dimension: Int,
+                numPart: Int,
+                numNodesPerRow: Int = -1,
+                order: Int = 1,
+                seed: Int = Random.nextInt) extends Serializable {
 
-class LINEPSModelV2(embeddingMatName: String,
-                    numNode: Int,
-                    dimension: Int,
-                    numPart: Int,
-                    numEpoch: Int,
-                    learningRate: Double,
-                    negSample: Int,
-                    batchSize: Int,
-                    order: Int = 2,
-                    seed: Int = Random.nextInt)
-  extends NEModel(numNode, dimension, numPart, -1, order, true, seed) with Serializable {
+  val matrixName = "embedding"
+  // Create one ps matrix to hold the input vectors and the output vectors for all node
+  val mc: MatrixContext = new MatrixContext(matrixName, 1, numNode)
+  mc.setMaxRowNumInBlock(1)
+  mc.setMaxColNumInBlock(numNode / numPart)
+  mc.setRowType(RowType.T_ANY_INTKEY_DENSE)
+  mc.setValueType(classOf[LINENode])
+  mc.setInitFunc(new LINEInitFunc(order, dimension))
 
-  def getMatrixContext: MatrixContext = {
-    // Create one ps matrix to hold the input vectors and the output vectors for all node
-    val mc: MatrixContext = new MatrixContext(embeddingMatName, 1, numNode)
-    mc.setMaxRowNumInBlock(1)
-    mc.setMaxColNumInBlock(numNode / numPart)
-    mc.setRowType(RowType.T_ANY_INTKEY_DENSE)
-    mc.setValueType(classOf[LINENode])
+  val psMatrix: PSMatrix = PSMatrix.matrix(mc)
+  val matrixId: Int = psMatrix.id
 
-    mc
+  // initialize embeddings
+  def randomInitialize(seed: Int) = {
+    val beforeRandomize = System.currentTimeMillis()
+    psMatrix.psfUpdate(new LINEModelRandomize(new RandomizeUpdateParam(matrixId, dimension / numPart, dimension, order, seed))).get()
+    logTime(s"Model successfully Randomized, cost ${(System.currentTimeMillis() - beforeRandomize) / 1000.0}s")
   }
 
-  def train(trainSet: RDD[(Int, Int)]): this.type = {
+  private val rand = new Random(seed)
+
+  def this(param: Param) {
+    this(param.maxIndex, param.embeddingDim, param.numPSPart, param.nodesNumPerRow, param.order, param.seed)
+  }
+
+  def train(trainSet: RDD[(Int, Int)], params: Param, path: String): this.type = {
     // Get mini-batch data set
-    val trainBatches = buildDataBatches(trainSet, batchSize)
+    val trainBatches = buildDataBatches(trainSet, params.batchSize)
+
+    val numEpoch = params.numEpoch
+    val learningRate = params.learningRate
+    val checkpointInterval = params.checkpointInterval
+    val saveModelInterval = params.saveModelInterval
+    val negative = params.negSample
+
+    var startTs = System.currentTimeMillis()
+
+    // Before training, checkpoint the model
+    psMatrix.checkpoint(0)
+    logTime(s"Write checkpoint use time=${System.currentTimeMillis() - startTs}")
 
     for (epoch <- 1 to numEpoch) {
+      val alpha = learningRate
       val data = trainBatches.next()
       val numPartitions = data.getNumPartitions
       val middle = data.mapPartitionsWithIndex((partitionId, iterator) =>
-        sgdForPartition(partitionId, iterator, numPartitions, negSample, learningRate.toFloat),
+        sgdForPartition(partitionId, iterator, numPartitions, negative, alpha),
         preservesPartitioning = true
       ).collect()
       val loss = middle.map(f => f._1).sum / middle.map(_._2).sum.toFloat
       val array = new Array[Long](6)
       middle.foreach(f => f._3.zipWithIndex.foreach(t => array(t._2) += t._1))
 
-      NEModel.logTime(s"epoch=$epoch " +
+      logTime(s"epoch=$epoch " +
         f"loss=$loss%2.4f " +
         s"sampleTime=${array(0)} getEmbeddingTime=${array(1)} " +
         s"dotTime=${array(2)} gradientTime=${array(3)} calUpdateTime=${array(4)} pushTime=${array(5)} " +
         s"total=${middle.map(_._2).sum.toFloat} lossSum=${middle.map(_._1).sum} ")
+
+      if (epoch % checkpointInterval == 0 && epoch < numEpoch) {
+        logTime(s"Epoch=${epoch}, checkpoint the model")
+        startTs = System.currentTimeMillis()
+        psMatrix.checkpoint(epoch)
+        logTime(s"checkpoint use time=${System.currentTimeMillis() - startTs}")
+      }
+
+      if (epoch % saveModelInterval == 0 && epoch < numEpoch) {
+        logTime(s"Epoch=${epoch}, save the model")
+        startTs = System.currentTimeMillis()
+        save(path, epoch)
+        logTime(s"save use time=${System.currentTimeMillis() - startTs}")
+      }
     }
 
     this
   }
 
-  private def sgdForPartition(partitionId: Int,
-                              iterator: Iterator[NEDataSet],
-                              numPartitions: Int,
-                              negative: Int,
-                              alpha: Float): Iterator[(Float, Long, Array[Long])] = {
+  def sgdForPartition(partitionId: Int,
+                      iterator: Iterator[NEDataSet],
+                      numPartitions: Int,
+                      negative: Int,
+                      alpha: Float): Iterator[(Float, Long, Array[Long])] = {
 
     PSContext.instance()
     iterator.zipWithIndex.map { case (batch, index) =>
@@ -91,11 +135,11 @@ class LINEPSModelV2(embeddingMatName: String,
     }
   }
 
-  private def sgdForBatch(partitionId: Int,
-                          batch: LINEDataSet,
-                          negative: Int,
-                          batchId: Int,
-                          alpha: Float, seed: Int): (Float, Long, Array[Long]) = {
+  def sgdForBatch(partitionId: Int,
+                  batch: LINEDataSet,
+                  negative: Int,
+                  batchId: Int,
+                  alpha: Float, seed: Int): (Float, Long, Array[Long]) = {
     var start = 0L
 
     start = System.currentTimeMillis()
@@ -130,22 +174,22 @@ class LINEPSModelV2(embeddingMatName: String,
     psMatrix.psfUpdate(new LINEAdjust(new LINEAdjustParam(matrixId, inputUpdates, outputUpdates, order)))
     val pushTime = System.currentTimeMillis() - start
 
-    if (batchId % 100 == 0) {
-      NEModel.logTime(s"loss=$loss sampleTime=${sampleTime} getEmbeddingTime=${getEmbeddingTime} " +
-        s"dotTime=${dotTime} gradientTime=${gradientTime} calUpdateTime=${calUpdateTime} " +
-        s"pushTime=${pushTime}")
+    if(batchId % 10 == 0) {
+    logTime(s"loss=$loss sampleTime=${sampleTime} getEmbeddingTime=${getEmbeddingTime} " +
+      s"dotTime=${dotTime} gradientTime=${gradientTime} calUpdateTime=${calUpdateTime} " +
+      s"pushTime=${pushTime}")
     }
 
-    (loss.toFloat, dots.length.toLong, Array(sampleTime, getEmbeddingTime, dotTime, gradientTime, calUpdateTime, pushTime))
+    (loss, dots.length.toLong, Array(sampleTime, getEmbeddingTime, dotTime, gradientTime, calUpdateTime, pushTime))
   }
 
-  private def getEmbedding(srcNodes: Array[Int], destNodes: Array[Int], negativeSamples: Array[Array[Int]], negative: Int) = {
+  def getEmbedding(srcNodes: Array[Int], destNodes: Array[Int], negativeSamples: Array[Array[Int]], negative: Int) = {
     psMatrix.psfGet(new LINEGetEmbedding(new LINEGetEmbeddingParam(matrixId, srcNodes, destNodes,
       negativeSamples, order, negative))).asInstanceOf[LINEGetEmbeddingResult].getResult
   }
 
-  private def dot(srcNodes: Array[Int], destNodes: Array[Int], negativeSamples: Array[Array[Int]],
-                  srcFeats: Int2ObjectOpenHashMap[Array[Float]], targetFeats: Int2ObjectOpenHashMap[Array[Float]], negative: Int): Array[Float] = {
+  def dot(srcNodes: Array[Int], destNodes: Array[Int], negativeSamples: Array[Array[Int]],
+          srcFeats: Int2ObjectOpenHashMap[Array[Float]], targetFeats: Int2ObjectOpenHashMap[Array[Float]], negative: Int): Array[Float] = {
     val dots: Array[Float] = new Array[Float]((1 + negative) * srcNodes.length)
     if (order == 1) {
       var docIndex = 0
@@ -180,29 +224,29 @@ class LINEPSModelV2(embeddingMatName: String,
     }
   }
 
-  private def arraysDot(x: Array[Float], y: Array[Float]): Float = {
+  def arraysDot(x: Array[Float], y: Array[Float]): Float = {
     var dotValue = 0.0f
-    x.indices.foreach(i => dotValue += x(i) * y(i))
+    (0 until x.length).foreach(i => dotValue += x(i) * y(i))
     dotValue
   }
 
-  private def axpy(y: Array[Float], x: Array[Float], a: Float): Unit = {
-    x.indices.foreach(i => y(i) += a * x(i))
+  def axpy(y: Array[Float], x: Array[Float], a: Float) = {
+    (0 until x.length).foreach(i => y(i) += a * x(i))
   }
 
-  private def div(x: Array[Float], f: Float): Unit = {
-    x.indices.foreach(i => x(i) = x(i) / f)
+  def div(x: Array[Float], f: Float): Unit = {
+    (0 until x.length).foreach(i => x(i) = x(i) / f)
   }
 
-  private def adjust(srcNodes: Array[Int], destNodes: Array[Int], negativeSamples: Array[Array[Int]],
-                     srcFeats: Int2ObjectOpenHashMap[Array[Float]], targetFeats: Int2ObjectOpenHashMap[Array[Float]],
-                     negative: Int, dots: Array[Float]) = {
+  def adjust(srcNodes: Array[Int], destNodes: Array[Int], negativeSamples: Array[Array[Int]],
+             srcFeats: Int2ObjectOpenHashMap[Array[Float]], targetFeats: Int2ObjectOpenHashMap[Array[Float]],
+             negative: Int, dots: Array[Float]) = {
     if (order == 1) {
       val inputUpdateCounter = new Int2IntOpenHashMap(srcFeats.size())
       val inputUpdates = new Int2ObjectOpenHashMap[Array[Float]](srcFeats.size())
 
       var docIndex = 0
-      srcNodes.indices.foreach { i =>
+      for (i <- 0 until srcNodes.length) {
         // Src node grad
         val neule = new Array[Float](dimension)
 
@@ -249,7 +293,7 @@ class LINEPSModelV2(embeddingMatName: String,
       val outputUpdates = new Int2ObjectOpenHashMap[Array[Float]](targetFeats.size())
 
       var docIndex = 0
-      srcNodes.indices.foreach { i =>
+      for (i <- 0 until srcNodes.length) {
         // Src node grad
         val neule = new Array[Float](dimension)
 
@@ -297,8 +341,8 @@ class LINEPSModelV2(embeddingMatName: String,
     }
   }
 
-  private def merge(inputUpdateCounter: Int2IntOpenHashMap, inputUpdates: Int2ObjectOpenHashMap[Array[Float]],
-                    nodeId: Int, g: Float, update: Array[Float]): Int = {
+  def merge(inputUpdateCounter: Int2IntOpenHashMap, inputUpdates: Int2ObjectOpenHashMap[Array[Float]],
+            nodeId: Int, g: Float, update: Array[Float]) = {
     var grads: Array[Float] = inputUpdates.get(nodeId)
     if (grads == null) {
       grads = new Array[Float](dimension)
@@ -311,7 +355,41 @@ class LINEPSModelV2(embeddingMatName: String,
     inputUpdateCounter.addTo(nodeId, 1)
   }
 
-  private def negativeSample(nodeIds: Array[Int], sampleNum: Int, seed: Int): Array[Array[Int]] = {
+  def checkpoint(checkpointId:Int): Unit = {
+    val saveContext = new ModelSaveContext()
+    saveContext.addMatrix(new MatrixSaveContext(matrixName, classOf[SnapshotFormat].getTypeName))
+    PSContext.instance().checkpoint(checkpointId, saveContext)
+  }
+
+  def save(modelPathRoot: String, epoch: Int): Unit = {
+    save(new Path(modelPathRoot, s"CP_$epoch").toString)
+  }
+
+  def save(modelPath: String): Unit = {
+    logTime(s"saving model to $modelPath")
+    val ss = SparkSession.builder().getOrCreate()
+    deleteIfExists(modelPath, ss)
+
+    val saveContext = new ModelSaveContext(modelPath)
+    saveContext.addMatrix(new MatrixSaveContext(matrixName, classOf[TextLINEModelOutputFormat].getTypeName))
+    PSContext.instance().save(saveContext)
+  }
+
+  def destroy(): Unit ={
+    psMatrix.destroy()
+  }
+
+  def load(modelPath: String): Unit = {
+    val startTime = System.currentTimeMillis()
+    logTime(s"load model from $modelPath")
+
+    val loadContext = new ModelLoadContext(modelPath)
+    loadContext.addMatrix(new MatrixLoadContext(matrixName))
+    PSContext.getOrCreate(SparkContext.getOrCreate()).load(loadContext)
+    logTime(s"model load time=${System.currentTimeMillis() - startTime} ms")
+  }
+
+  def negativeSample(nodeIds: Array[Int], sampleNum: Int, seed: Int) = {
     //val seed = UUID.randomUUID().hashCode()
     val rand = new Random(seed)
     val sampleNodes = new Array[Array[Int]](nodeIds.length)
@@ -332,9 +410,35 @@ class LINEPSModelV2(embeddingMatName: String,
     sampleNodes
   }
 
-  override def randomInitialize(seed: Int): Unit = {
-    val beforeRandomize = System.currentTimeMillis()
-    psMatrix.psfUpdate(new LINEModelRandomize(new RandomizeUpdateParam(matrixId, dimension / numPart, dimension, order, seed))).get()
-    NEModel.logTime(s"Model successfully Randomized, cost ${(System.currentTimeMillis() - beforeRandomize) / 1000.0}s")
+  private def getAvailableExecutorNum(ss: SparkSession): Int = {
+    math.max(ss.sparkContext.statusTracker.getExecutorInfos.length - 1, 1)
+  }
+
+  private def deleteIfExists(modelPath: String, ss: SparkSession): Unit = {
+    val path = new Path(modelPath)
+    val fs = path.getFileSystem(ss.sparkContext.hadoopConfiguration)
+    if (fs.exists(path)) {
+      fs.delete(path, true)
+    }
+  }
+
+  def logTime(msg: String): Unit = {
+    val time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date)
+    println(s"[$time] $msg")
+  }
+
+  def doGrad(dots: Array[Float], negative: Int, alpha: Float): Float = {
+    var loss = 0.0f
+    for (i <- dots.indices) {
+      val prob = FastSigmoid.sigmoid(dots(i))
+      if (i % (negative + 1) == 0) {
+        dots(i) = alpha * (1 - prob)
+        loss -= FastSigmoid.log(prob)
+      } else {
+        dots(i) = -alpha * FastSigmoid.sigmoid(dots(i))
+        loss -= FastSigmoid.log(1 - prob)
+      }
+    }
+    loss
   }
 }
