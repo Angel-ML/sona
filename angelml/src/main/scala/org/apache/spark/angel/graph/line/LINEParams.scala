@@ -9,7 +9,7 @@ import org.apache.spark.sql.types.StructType
 trait LINEParams extends HasMaxIndex with HasPartitionNum with HasEmbeddingDim with HasNegSample with HasStepSize
   with HasBatchSize with HasNumEpoch with HasSampleRate with HasNumPSPart with HasEmbeddingMatrixName with HasOrder
   with HasNodesNumPerRow with HasNumRowDataSet with HasSeed with HasSrcNodeIdCol with HasDstNodeIdCol
-  with HasOutputNodeIdCol with HasVersion with Params {
+  with HasOutputNodeIdCol with HasVersion with HasModelSaveInterval with HasCheckpointInterval with HasOutput with Params {
 
   final def setNumEpoch(epoch: Int): this.type = {
     set(numEpoch, epoch)
@@ -21,6 +21,12 @@ trait LINEParams extends HasMaxIndex with HasPartitionNum with HasEmbeddingDim w
 
   final def setStepSize(ss: Double): this.type = {
     set(stepSize, ss)
+
+    this
+  }
+
+  final def setCheckpointInterval(interval: Int): this.type = {
+    set(checkpointInterval, interval)
 
     this
   }

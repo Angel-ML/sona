@@ -34,6 +34,7 @@ import com.tencent.angel.sona.models.impl.PSMatrixImpl
 
 abstract class PSMatrix extends PSModel {
   val id: Int
+  val name: String
   val rows: Int
   val columns: Long
   val rowType: RowType
@@ -159,7 +160,7 @@ abstract class PSMatrix extends PSModel {
 
   def asyncPsfUpdate(func: UpdateFunc): Future[VoidResult]
 
-  def checkpoint(): Future[VoidResult]
+  def checkpoint(epochId:Int = 0)
 
   def destroy()
 }
@@ -174,7 +175,7 @@ object PSMatrix {
     require(rowType.isSparse, s"Sparse rowType required, $rowType provided")
     val matrixMeta = PSContext.instance()
       .createSparseMatrix(rows, cols, range, -1, -1, rowType, additionalConfiguration)
-    new PSMatrixImpl(matrixMeta.getId, rows, cols, rowType)
+    new PSMatrixImpl(matrixMeta.getId, matrixMeta.getName, rows, cols, rowType)
   }
 
   @deprecated("use dense directly", "2.0.0")
@@ -233,12 +234,12 @@ object PSMatrix {
     require(rowType.isDense, s"Dense towType required, $rowType provided")
     val matrixMeta = PSContext.instance()
       .createDenseMatrix(rows, cols, rowInBlock, colInBlock, rowType, additionalConfiguration)
-    new PSMatrixImpl(matrixMeta.getId, rows, cols, rowType)
+    new PSMatrixImpl(matrixMeta.getId, matrixMeta.getName, rows, cols, rowType)
   }
 
   def matrix(mc: MatrixContext): PSMatrix = {
     val matrixMeta = PSContext.instance().createMatrix(mc)
-    new PSMatrixImpl(matrixMeta.getId, matrixMeta.getRowNum, matrixMeta.getColNum, matrixMeta.getRowType)
+    new PSMatrixImpl(matrixMeta.getId, matrixMeta.getName, matrixMeta.getRowNum, matrixMeta.getColNum, matrixMeta.getRowType)
   }
 
   /**

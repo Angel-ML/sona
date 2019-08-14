@@ -24,6 +24,7 @@ import com.tencent.angel.ml.math2.utils.RowType
 import com.tencent.angel.ml.matrix.{MatrixContext, MatrixMeta}
 import com.tencent.angel.model.{ModelLoadContext, ModelSaveContext}
 import com.tencent.angel.sona.models.PSVector
+import com.tencent.angel.spark.context.AngelPSContext
 import org.apache.spark._
 
 import scala.collection.Map
@@ -34,23 +35,23 @@ abstract class PSContext {
 
   protected def stop()
 
-  def createMatrix(matrixContext: MatrixContext): MatrixMeta
+  def createMatrix(matrixContext : MatrixContext): MatrixMeta
 
   def createMatrix(rows: Int, cols: Long, validIndexNum: Long, rowInBlock: Int, colInBlock: Long,
-                   rowType: RowType, additionalConfiguration: Map[String, String] = Map()): MatrixMeta
+                   rowType: RowType, additionalConfiguration:Map[String, String] = Map()): MatrixMeta
 
   def createDenseMatrix(rows: Int, cols: Long, rowInBlock: Int, colInBlock: Long,
                         rowType: RowType = RowType.T_DOUBLE_DENSE,
-                        additionalConfiguration: Map[String, String] = Map()): MatrixMeta
+                        additionalConfiguration:Map[String, String] = Map()): MatrixMeta
 
   def createSparseMatrix(rows: Int, cols: Long, range: Long, rowInBlock: Int, colInBlock: Long,
                          rowType: RowType = RowType.T_DOUBLE_SPARSE,
-                         additionalConfiguration: Map[String, String] = Map()): MatrixMeta
+                         additionalConfiguration:Map[String, String] = Map()): MatrixMeta
 
   def destroyMatrix(matrixId: Int)
 
   def createVector(dim: Long, t: RowType, poolCapacity: Int, range: Long,
-                   additionalConfiguration: Map[String, String] = Map()): PSVector
+                   additionalConfiguration:Map[String, String] = Map()): PSVector
 
   def duplicateVector(originVector: PSVector): PSVector
 
@@ -64,7 +65,11 @@ abstract class PSContext {
 
   def save(ctx: ModelSaveContext)
 
+  def checkpoint(checkpointId: Int, ctx: ModelSaveContext)
+
   def load(ctx: ModelLoadContext)
+
+  def recover(checkpointId: Int, ctx: ModelLoadContext)
 }
 
 object PSContext {

@@ -169,3 +169,24 @@ trait HasSampleRate extends Params {
 
 }
 
+trait HasModelSaveInterval extends Params {
+  final val modelSaveInterval = new IntParam(this, "modelSaveInterval", "modelSaveInterval")
+
+  final def getModelSaveInterval: Int = $(modelSaveInterval)
+
+  setDefault(modelSaveInterval, 10)
+
+  final def setModelSaveInterval(num: Int): this.type = set(modelSaveInterval, num)
+}
+
+trait HasOutput extends Params {
+  final val output = new Param[String](this, "output", "output")
+
+  final def getOutput: String = $(output)
+
+  setDefault(output, "")
+
+  final def setOutput(out: String): this.type = set(output, out)
+}
+
+

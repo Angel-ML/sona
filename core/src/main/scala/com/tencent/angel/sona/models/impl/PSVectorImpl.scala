@@ -21,7 +21,6 @@ package com.tencent.angel.sona.models.impl
 import java.util.concurrent.Future
 
 import org.apache.spark.SparkException
-
 import com.tencent.angel.exception.AngelException
 import com.tencent.angel.ml.math2.vector.Vector
 import com.tencent.angel.ml.math2.utils.RowType
@@ -31,8 +30,9 @@ import com.tencent.angel.ml.matrix.psf.update.base.{UpdateFunc, VoidResult}
 import com.tencent.angel.ml.matrix.psf.update.enhance.map.MapInPlace
 import com.tencent.angel.ml.matrix.psf.update.enhance.map.func.{Set => SetFunc}
 import com.tencent.angel.psagent.matrix.{MatrixClient, MatrixClientFactory, ResponseType, Result}
-import com.tencent.angel.sona.context.{AngelPSContext, PSContext}
+import com.tencent.angel.sona.context.PSContext
 import com.tencent.angel.sona.models.PSVector
+import com.tencent.angel.spark.context.AngelPSContext
 
 /**
   * PSVector is a vector store on the PS nodes
