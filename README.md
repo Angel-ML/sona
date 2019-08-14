@@ -1,8 +1,26 @@
 # SONA Overview
 Spark On Angel (SONA), arming Spark with a powerful Parameter Server, which enable Spark to train very big models
 
-![sona_fig01](docs/imgs/sona_fig01.png)
+Similar to Spark MLlib, Spark on Angel is a standalone machine learning library built on Spark (yet it does not rely on Spark MLlib). SONA was based on RDD APIs and only included model training step in previous versions. In Angel 3.0, we introduce various new features to SONA:
+- Integration of feature engineering into SONA. Instead of simply borrowing Spark’s feature engineering operators, we add support for long index vector to all the operators to enable training of high dimensional sparse models. 
+- Seamless connection with automatic hyperparameter tuning.
+- Spark-fashion APIs that introduce no cost for Spark users to switch to Angel.
+- Support for two new data formats: LibFFM and Dummy.
 
+| ![sona_fig01](docs/imgs/sona_fig01.png) |
+|  :----:    |
+| *Figure 1: Architecture of SONA*   |
+
+We also develop a variety of new algorithms on SONA, such as Deep & Cross Network (DCN) and 
+Attention Factorization Machines (AFM). As can be seen from Figure 2, there are significant differences 
+between algorithms on SONA and those on Spark: algorithms on SONA are mainly designated for recommendations 
+and graph embedding, while algorithms on Spark tend to be more general-purpose. 
+
+| ![sona_fig02](docs/imgs/sona_fig02.png) |
+|  :----:    |
+| *Figure 2: Algorithms comparison of Spark and Angel*   |
+
+![](docs/imgs/sparkonangel.gif)
 
 ## Quick Start
 
