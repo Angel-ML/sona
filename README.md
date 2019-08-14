@@ -9,7 +9,7 @@ Spark On Angel (SONA), arming Spark with a powerful Parameter Server, which enab
 ## Algorithms
 - machine learning algorithms:
     + Traditional Machine Learning Methods
-        - [Logistic Regression(LR)](docs/LR.md)
+        - [Logistic Regression(LR)](https://github.com/Angel-ML/angel/blob/master/docs/algo/angel_or_spark_on_angel.md)
         - [Support Vector Machine(SVM)](docs/SVM.md)
         - [Factorization Machine(FM)](docs/FM.md)
         - [Linear Regression](docs/LReg.md)
