@@ -1,15 +1,18 @@
 package org.apache.spark.angel.graph.word2vec
 
 
+import com.tencent.angel.exception.AngelException
 import com.tencent.angel.ml.math2.utils.RowType
 import com.tencent.angel.ml.matrix.MatrixContext
+import com.tencent.angel.ml.matrix.psf.get.base.GetFunc
+import com.tencent.angel.ml.matrix.psf.update.base.UpdateFunc
 import com.tencent.angel.sona.context.PSContext
-import org.apache.spark.angel.psf.embedding.CBowModel
 import org.apache.spark.angel.psf.embedding.bad._
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap
 import org.apache.spark.angel.graph.utils.NEModel
 import org.apache.spark.angel.graph.utils.NEModel.NEDataSet
 import org.apache.spark.angel.graph.word2vec.Word2vecPSModel.W2VDataSet
+import org.apache.spark.angel.psf.embedding.NEDot.NEDotResult
+import org.apache.spark.angel.psf.embedding.w2v.{Adjust, AdjustParam, Dot, DotParam}
 import org.apache.spark.rdd.RDD
 
 import scala.util.Random
@@ -26,74 +29,57 @@ class Word2vecPSModel(embeddingMatName: String,
                       maxLength: Int,
                       learningRate: Double,
                       batchSize: Int,
-                      numNodesPerRow: Int = -1,
+                      numNodesPerRow: Int,
                       seed: Int)
   extends NEModel(numNode, dimension, numPart, numNodesPerRow, 2, false, seed) {
 
-  private val maxNodesPerRow: Int = 100000
+  lazy val modelId: Int = model match {
+    case "skipgram" => 0
+    case "cbow" => 1
+    case _ => throw new AngelException("model type should be cbow or skipgram")
+  }
 
   private def sgdForBatch(partitionId: Int,
+                          seed: Int,
                           batchId: Int,
                           negative: Int,
-                          window: Int,
-                          alpha: Float,
                           batch: NEDataSet): (Double, Long, Array[Long]) = {
-
     var (start, end) = (0L, 0L)
-    val seed = 2017
 
-    // calculate index
+    // dot
     start = System.currentTimeMillis()
-    val model = new CBowModel(window, negative, alpha, numNode, dimension)
-    val sentences = batch.asInstanceOf[W2VDataSet].sentences
-    val indices = model.indicesForCbow(sentences, seed)
+    val dots = psfGet(getDotFunc(batch, seed, negative, partitionId))
+      .asInstanceOf[NEDotResult].result
     end = System.currentTimeMillis()
-    val calcuIndexTime = end - start
+    val dotTime = end - start
 
-    // pull
+    // gradient
     start = System.currentTimeMillis()
-    val pullParams = new W2VPullParam(psMatrix.id, indices, numNodesPerRow, dimension)
-    val result = psMatrix.psfGet(new W2VPull(pullParams)).asInstanceOf[W2VPullResult]
+    val loss = doGrad(dots, negative, learningRate.toFloat)
     end = System.currentTimeMillis()
-    val pullTime = end - start
+    val gradientTime = end - start
 
-    val index = new Int2IntOpenHashMap()
-    index.defaultReturnValue(-1)
-    for (i <- 0 until indices.length) index.put(indices(i), i)
-    val deltas = new Array[Float](result.layers.length)
-
-    // cbow
+    // adjust
     start = System.currentTimeMillis()
-    val loss = model.cbow(sentences, seed, result.layers, index, deltas)
+    psfUpdate(getAdjustFunc(batch, seed, negative, dots, partitionId))
     end = System.currentTimeMillis()
-    val cbowTime = end - start
+    val adjustTime = end - start
 
-    // push
-    start = System.currentTimeMillis()
-    val pushParams = new W2VPushParam(psMatrix.id, indices, deltas, numNodesPerRow, dimension)
-    psfUpdate(new W2VPush(pushParams))
-    end = System.currentTimeMillis()
-    val pushTime = end - start
+    // return loss
+    if ((batchId + 1) % 100 == 0)
+      NEModel.logTime(s"batchId=$batchId dotTime=$dotTime gradientTime=$gradientTime adjustTime=$adjustTime")
 
-    //    val batchSize = batch.asInstanceOf[W2VDataSet].sentences.map(_.length).sum
-    //    println(s"${loss._1/loss._2} learnRate=$alpha length=${loss._2} batchSize=$batchSize")
-    (loss._1, loss._2.toLong, Array(calcuIndexTime, pullTime, cbowTime, pushTime))
+    (loss, dots.length.toLong, Array(dotTime, gradientTime, adjustTime))
   }
 
   private def sgdForPartition(partitionId: Int,
                               iterator: Iterator[NEDataSet],
-                              window: Int,
                               negative: Int,
                               alpha: Float): Iterator[(Double, Long, Array[Long])] = {
     PSContext.instance()
-    val r = iterator.zipWithIndex.map(batch => sgdForBatch(partitionId, batch._2,
-      window, negative, alpha, batch._1))
-      .reduce { (f1, f2) =>
-        (f1._1 + f2._1,
-          f1._2 + f2._2,
-          f1._3.zip(f2._3).map(f => f._1 + f._2))
-      }
-    Iterator.single(r)
+    iterator.zipWithIndex.map { case (batch, index) =>
+      sgdForBatch(partitionId, rand.nextInt(), index, negSample, batch)
+    }
   }
 
   def train(corpus: RDD[Array[Int]]): Unit = {
@@ -102,33 +88,34 @@ class Word2vecPSModel(embeddingMatName: String,
 
     for (epoch <- 1 to numEpoch) {
       val data = trainBatches.next()
+      // val numPartitions = data.getNumPartitions
       val middle = data.mapPartitionsWithIndex((partitionId, iterator) =>
-        sgdForPartition(partitionId, iterator, windowSize, negSample, learningRate.toFloat),
-        true).reduce { case (f1, f2) =>
-        (f1._1 + f2._1, f1._2 + f2._2, f1._3.zip(f2._3).map(f => f._1 + f._2))
-      }
-      val loss = middle._1 / middle._2.toDouble
-      val array = middle._3
+        sgdForPartition(partitionId, iterator, negSample, learningRate.toFloat),
+        preservesPartitioning = true
+      ).collect()
+      val loss = middle.map(f => f._1).sum / middle.map(_._2).sum.toDouble
+      val array = new Array[Long](3)
+      middle.foreach(f => f._3.zipWithIndex.foreach(t => array(t._2) += t._1))
 
       NEModel.logTime(s"epoch=$epoch " +
         f"loss=$loss%2.4f " +
-        s"calcuIndexTime=${array(0)} " +
-        s"pullTime=${array(1)} " +
-        s"cbowTime=${array(2)} " +
-        s"pushTime=${array(3)} " +
-        s"total=${middle._2} " +
-        s"lossSum=${middle._1}")
+        s"dotTime=${array(0)} " +
+        s"gradientTime=${array(1)} " +
+        s"adjustTime=${array(2)} " +
+        s"total=${middle.map(_._2).sum.toDouble} " +
+        s"lossSum=${middle.map(_._1).sum}")
     }
   }
 
   def getMatrixContext(matName: String): MatrixContext = {
     require(numNodesPerRow < maxNodesPerRow, s"size exceed, $numNodesPerRow * $maxNodesPerRow")
 
-    val rowCapacity = if (numNodesPerRow > 0) numNodesPerRow else Int.MaxValue / dimension
-    val numCol = rowCapacity * dimension * 2
-    val numRow = numNode / rowCapacity + 1
-    val rowsInBlock = numRow / numPart + 1
-    val colsInBlock = numCol
+    val rowCapacity = if (numNodesPerRow > 0) numNodesPerRow else Int.MaxValue / sizeOccupiedPerNode
+    val numRow = (numNode - 1) / rowCapacity + 1
+    val numNodesEachRow = if (numNodesPerRow > 0) numNodesPerRow else (numNode - 1) / numRow + 1
+    val numCol = numPart.toLong * numNodesEachRow * sizeOccupiedPerNode
+    val rowsInBlock = numRow
+    val colsInBlock = numNodesEachRow * sizeOccupiedPerNode
     val validIndexNum = -1
 
     NEModel.logTime(s"matrix meta:\n" +
@@ -142,11 +129,17 @@ class Word2vecPSModel(embeddingMatName: String,
     new MatrixContext(matName, numRow, numCol, validIndexNum, rowsInBlock, colsInBlock, RowType.T_FLOAT_DENSE)
   }
 
-  override def randomInitialize(seed: Int): Unit = {
-    psfUpdate(new W2VRandom(new W2VRandomParam(psMatrix.id, dimension)))
+  override def getMatrixContext: MatrixContext = getMatrixContext(embeddingMatName)
+
+  override def getDotFunc(data: NEDataSet, batchSeed: Int, ns: Int, partitionId: Int): GetFunc = {
+    val param = new DotParam(matrixId, seed, partitionId, modelId, data.asInstanceOf[W2VDataSet].sentences)
+    new Dot(param)
   }
 
-  override def getMatrixContext: MatrixContext = ???
+  override def getAdjustFunc(data: NEDataSet, batchSeed: Int, ns: Int, grad: Array[Float], partitionId: Int): UpdateFunc = {
+    val param = new AdjustParam(matrixId, seed, partitionId, modelId, grad, data.asInstanceOf[W2VDataSet].sentences)
+    new Adjust(param)
+  }
 }
 
 object Word2vecPSModel {

@@ -3,10 +3,6 @@ package org.apache.spark.angel.graph.utils
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import scala.util.Random
-import org.apache.hadoop.fs.Path
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
 import com.tencent.angel.conf.AngelConf
 import com.tencent.angel.ml.matrix.MatrixContext
 import com.tencent.angel.ml.matrix.psf.get.base.{GetFunc, GetResult}
@@ -14,9 +10,14 @@ import com.tencent.angel.ml.matrix.psf.update.base.{UpdateFunc, VoidResult}
 import com.tencent.angel.ps.storage.matrix.PartitionSourceArray
 import com.tencent.angel.ps.storage.partitioner.Partitioner
 import com.tencent.angel.sona.models.PSMatrix
+import org.apache.hadoop.fs.Path
 import org.apache.spark.angel.graph.utils.NEModel.NEDataSet
 import org.apache.spark.angel.psf.embedding.NESlice.SliceResult
 import org.apache.spark.angel.psf.embedding.{Init, InitParam, NEModelRandomize, NESlice}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SparkSession
+
+import scala.util.Random
 
 abstract class NEModel(numNode: Int,
                        dimension: Int,
@@ -25,10 +26,11 @@ abstract class NEModel(numNode: Int,
                        order: Int = 2,
                        useNegativeTable: Boolean = true,
                        var seed: Int = Random.nextInt()) extends Serializable {
-
+  require(dimension % numPart == 0, "dimension must be times of numPart, (dimension % numPart == 0)")
+  protected val maxNodesPerRow: Int = 100000
   // partDim is the dimensions for one node in each server partition
   protected val partDim: Int = dimension / numPart
-  require(dimension % numPart == 0, "dimension must be times of numPart, (dimension % numPart == 0)")
+  protected val sizeOccupiedPerNode: Int = partDim * order
   protected val rand = new Random(seed)
 
   // Create one ps matrix to hold the input vectors and the output vectors for all node
@@ -48,20 +50,6 @@ abstract class NEModel(numNode: Int,
   }
 
   def getMatrixContext: MatrixContext
-
-  protected def randomInitialize(seed: Int): Unit = {
-    val beforeRandomize = System.currentTimeMillis()
-    psfUpdate(new NEModelRandomize(matrixId, dimension / numPart, dimension, order, seed))
-    NEModel.logTime(s"Model successfully Randomized, cost ${(System.currentTimeMillis() - beforeRandomize) / 1000.0}s")
-  }
-
-  protected def psfUpdate(func: UpdateFunc): VoidResult = {
-    psMatrix.psfUpdate(func).get()
-  }
-
-  protected def psfGet(func: GetFunc): GetResult = {
-    psMatrix.psfGet(func)
-  }
 
   def createPSMatrix: PSMatrix = {
     // create ps matrix
@@ -102,6 +90,20 @@ abstract class NEModel(numNode: Int,
     psMatrix.destroy()
   }
 
+  protected def randomInitialize(seed: Int): Unit = {
+    val beforeRandomize = System.currentTimeMillis()
+    psfUpdate(new NEModelRandomize(matrixId, dimension / numPart, dimension, order, seed))
+    NEModel.logTime(s"Model successfully Randomized, cost ${(System.currentTimeMillis() - beforeRandomize) / 1000.0}s")
+  }
+
+  protected def psfUpdate(func: UpdateFunc): VoidResult = {
+    psMatrix.psfUpdate(func).get()
+  }
+
+  protected def psfGet(func: GetFunc): GetResult = {
+    psMatrix.psfGet(func)
+  }
+
 }
 
 object NEModel {
@@ -112,11 +114,6 @@ object NEModel {
     if (fs.exists(path)) {
       fs.delete(path, true)
     }
-  }
-
-  def logTime(msg: String): Unit = {
-    val time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date)
-    println(s"[$time] $msg")
   }
 
   def getEmbeddingRDD(psMatrix: PSMatrix, numNode: Int, partDim: Int, order: Int): RDD[String] = {
@@ -133,6 +130,11 @@ object NEModel {
     NEModel.logTime(s"saving finished, cost ${(System.currentTimeMillis() - startTime) / 1000.0}s")
 
     rdd
+  }
+
+  def logTime(msg: String): Unit = {
+    val time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date)
+    println(s"[$time] $msg")
   }
 
   private def slicedSavingRDDBuilder(ss: SparkSession, numNode: Int, partDim: Int): RDD[(Int, Int)] = {
