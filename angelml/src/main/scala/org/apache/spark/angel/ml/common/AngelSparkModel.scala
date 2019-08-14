@@ -3,7 +3,7 @@ package org.apache.spark.angel.ml.common
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.mlcore.conf.SharedConf
 import com.tencent.angel.sona.core.{DriverContext, ExecutorContext, SparkEnvContext}
-import com.tencent.angel.sona.ml.AngeGraphModel
+import com.tencent.angel.sona.ml.AngelGraphModel
 import org.apache.spark.angel.ml.evaluation.TrainingStat
 import org.apache.spark.angel.ml.param.{AngelGraphParams, Params}
 import org.apache.spark.broadcast.Broadcast
@@ -26,9 +26,9 @@ trait AngelSparkModel extends Params with AngelGraphParams {
 
   @transient implicit lazy val dim: Long = getNumFeature
 
-  @transient lazy val angelModel: AngeGraphModel = {
+  @transient lazy val angelModel: AngelGraphModel = {
     require(numTask == -1 || numTask > 0, "Please set numTask before use angelModel")
-    new AngeGraphModel(sharedConf, numTask)
+    new AngelGraphModel(sharedConf, numTask)
   }
 
   @transient private var trainingSummary: Option[TrainingStat] = None
