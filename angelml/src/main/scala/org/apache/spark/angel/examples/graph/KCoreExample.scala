@@ -15,7 +15,7 @@ object KCoreExample {
     val mode = params.getOrElse("mode", "yarn-cluster")
     val sc = start(mode)
 
-    val input = params.getOrElse("input", "./data/angel/bc/edge")
+    val input = params.getOrElse("input", null)
     val partitionNum = params.getOrElse("partitionNum", "100").toInt
     val storageLevel = StorageLevel.fromString(params.getOrElse("storageLevel", "MEMORY_ONLY"))
     val batchSize = params.getOrElse("batchSize", "10000").toInt
