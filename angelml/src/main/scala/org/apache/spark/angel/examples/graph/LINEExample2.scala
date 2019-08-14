@@ -15,14 +15,13 @@
  *
  */
 
-
 package org.apache.spark.angel.examples.graph
 
 import com.tencent.angel.conf.AngelConf
 import com.tencent.angel.ps.storage.matrix.PartitionSourceArray
 import com.tencent.angel.sona.context.PSContext
 import org.apache.spark.angel.graph.embedding.Param
-import org.apache.spark.angel.graph.embedding.line.LINEModel
+import org.apache.spark.angel.graph.embedding.line2.LINEModel
 import org.apache.spark.angel.graph.utils.{Features, SparkUtils, SubSampling}
 import org.apache.spark.angel.ml.util.ArgsUtil
 import org.apache.spark.rdd.RDD
@@ -31,21 +30,35 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.util.Random
 
-object LINEExample {
-
+object LINEExample2 {
   def main(args: Array[String]): Unit = {
     val params = ArgsUtil.parse(args)
-
     val conf = new SparkConf().setMaster("yarn-cluster").setAppName("LINE")
+
+    val oldModelInput = params.getOrElse("oldmodelpath", null)
+    if(oldModelInput != null) {
+      conf.set(s"spark.hadoop.${AngelConf.ANGEL_LOAD_MODEL_PATH}", oldModelInput)
+    }
+
     val sc = new SparkContext(conf)
 
     conf.set(AngelConf.ANGEL_PS_PARTITION_SOURCE_CLASS, classOf[PartitionSourceArray].getName)
     conf.set(AngelConf.ANGEL_PS_BACKUP_MATRICES, "")
+    conf.set(AngelConf.ANGEL_PS_BACKUP_INTERVAL_MS, "100000000")
+    conf.set("io.file.buffer.size", "16000000");
+    conf.set("spark.hadoop.io.file.buffer.size", "16000000");
+
+    val executorJvmOptions = " -verbose:gc -XX:-PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:<LOG_DIR>/gc.log " +
+      "-XX:+UseG1GC -XX:MaxGCPauseMillis=1000 -XX:G1HeapRegionSize=32M " +
+      "-XX:InitiatingHeapOccupancyPercent=50 -XX:ConcGCThreads=4 -XX:ParallelGCThreads=4 "
+    println(s"executorJvmOptions = ${executorJvmOptions}")
+    conf.set("spark.executor.extraJavaOptions", executorJvmOptions)
 
     PSContext.getOrCreate(sc)
 
     val input = params.getOrElse("input", null)
     val output = params.getOrElse("output", "")
+
     val embeddingDim = params.getOrElse("embedding", "10").toInt
     val numNegSamples = params.getOrElse("negative", "5").toInt
     val numEpoch = params.getOrElse("epoch", "10").toInt
@@ -56,7 +69,8 @@ object LINEExample {
     val withSubSample = params.getOrElse("subSample", "true").toBoolean
     val withRemapping = params.getOrElse("remapping", "true").toBoolean
     val order = params.get("order").fold(2)(_.toInt)
-    val checkpointInterval = params.getOrElse("interval", "10").toInt
+    val saveModelInterval = params.getOrElse("saveModelInterval", "10").toInt
+    val checkpointInterval = params.getOrElse("checkpointInterval", "2").toInt
 
 
     val numCores = SparkUtils.getNumCores(conf)
@@ -111,10 +125,17 @@ object LINEExample {
       .setNumRowDataSet(numEdge)
       .setOrder(order)
       .setModelCPInterval(checkpointInterval)
+      .setModelSaveInterval(saveModelInterval)
 
     val model = new LINEModel(param)
-    model.train(edges, param, output + "/embedding")
-    model.save(output + "/embedding", numEpoch)
+    if(oldModelInput != null) {
+      println(s"load old model from path ${oldModelInput}")
+    } else {
+      model.randomInitialize(Random.nextInt())
+    }
+
+    model.train(edges, param, output)
+    model.save(output, numEpoch)
 
     PSContext.stop()
     sc.stop()

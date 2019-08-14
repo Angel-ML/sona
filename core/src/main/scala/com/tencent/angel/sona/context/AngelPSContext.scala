@@ -16,7 +16,7 @@
  */
 
 
-package com.tencent.angel.sona.context
+package com.tencent.angel.spark.context
 
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -30,7 +30,6 @@ import com.tencent.angel.ml.math2.utils.RowType
 import com.tencent.angel.ml.matrix.{MatrixContext, MatrixMeta}
 import com.tencent.angel.model.{ModelLoadContext, ModelSaveContext}
 import com.tencent.angel.ps.ParameterServer
-import com.tencent.angel.ps.storage.partitioner.Partitioner
 import com.tencent.angel.psagent.PSAgent
 import com.tencent.angel.psagent.matrix.{MatrixClient, MatrixClientFactory}
 import com.tencent.angel.sona.models.{PSMatrix, PSVector}
@@ -43,6 +42,8 @@ import org.apache.spark.{SparkConf, SparkEnv, TaskContext}
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.{Map, mutable}
+import com.tencent.angel.ps.storage.partitioner.Partitioner
+import com.tencent.angel.sona.context.{PSContext, PSVectorPool}
 
 /**
   * AngelPSContext for driver and executor, it is an implement of `PSContext`
@@ -80,16 +81,16 @@ class AngelPSContext(contextId: Int, angelCtx: AngelContext) extends PSContext {
                    t: RowType = RowType.T_DOUBLE_DENSE,
                    poolCapacity: Int = PSVectorPool.DEFAULT_POOL_CAPACITY,
                    range: Long,
-                   additionalConfiguration: Map[String, String] = Map()): PSVector = {
+                   additionalConfiguration:Map[String, String] = Map()): PSVector = {
     assertCallByDriver("The operation of creating a vector can only be called on the driver side.")
     createVectorPool(dimension, poolCapacity, t, range, additionalConfiguration).allocate()
   }
 
-  def createVectorPool(dimension: Long,
-                       capacity: Int,
-                       t: RowType,
-                       range: Long,
-                       additionalConfiguration: Map[String, String]): PSVectorPool = {
+  private[spark] def createVectorPool(dimension: Long,
+                                      capacity: Int,
+                                      t: RowType,
+                                      range: Long,
+                                      additionalConfiguration:Map[String, String]): PSVectorPool = {
     val thisCapacity = if (capacity > 0) capacity else PSVectorPool.DEFAULT_POOL_CAPACITY
     val matrixMeta = if (t.isDense)
       PSMatrix.dense(thisCapacity, dimension, -1, -1, t, additionalConfiguration)
@@ -259,8 +260,11 @@ class AngelPSContext(contextId: Int, angelCtx: AngelContext) extends PSContext {
 
   override def save(ctx: ModelSaveContext): Unit = AngelPSContext.save(ctx)
 
+  override def checkpoint(checkpointId:Int, ctx: ModelSaveContext): Unit = AngelPSContext.checkpoint(checkpointId, ctx)
+
   override def load(ctx: ModelLoadContext): Unit = AngelPSContext.load(ctx)
 
+  override def recover(checkpointId:Int, ctx: ModelLoadContext): Unit = AngelPSContext.recover(checkpointId, ctx)
 }
 
 object AngelPSContext {
@@ -298,9 +302,18 @@ object AngelPSContext {
     angelClient.save(context)
   }
 
+  def checkpoint(checkpointId:Int, context: ModelSaveContext): Unit = {
+    angelClient.checkpoint(checkpointId, context)
+  }
+
   def load(context: ModelLoadContext): Unit = {
     angelClient.load(context)
   }
+
+  def recover(checkpointId:Int, context: ModelLoadContext): Unit = {
+    angelClient.recover(checkpointId, context)
+  }
+
 
   //Start Angel
   private def launchAngel(conf: SparkConf): AngelContext = {
@@ -327,8 +340,7 @@ object AngelPSContext {
     val deployMode = if (isLocal) "LOCAL" else conf.get("spark.ps.mode", DEFAULT_ANGEL_DEPLOY_MODE)
 
     val masterMem = conf.getSizeAsGb("spark.angel.master.memory", "2g").toInt
-
-    val psNum = conf.getInt("spark.ps.", 1)
+    val psNum = conf.getInt("spark.ps.instances", 1)
     val psCores = conf.getInt("spark.ps.cores", 1)
     val psMem = conf.getSizeAsGb("spark.ps.memory", "4g").toInt
     val psOpts = conf.getOption("spark.ps.extraJavaOptions")

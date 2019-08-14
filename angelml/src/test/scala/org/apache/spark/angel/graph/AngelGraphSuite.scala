@@ -1,23 +1,29 @@
+/*
+ * Tencent is pleased to support the open source community by making Angel available.
+ *
+ * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/Apache-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ */
 
 package org.apache.spark.angel.graph
 
 
-import org.apache.spark.angel.graph.line.LINE
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
-
-import com.tencent.angel.sona.core.DriverContext
-import javassist.bytecode.SignatureAttribute.ArrayType
 import org.apache.spark.angel.graph.kcore.KCore
-import org.apache.spark.angel.graph.line.LINE
 import org.apache.spark.angel.graph.louvain.Louvain
 import org.apache.spark.angel.graph.utils.GraphIO
-import org.apache.spark.angel.graph.word2vec.{Word2Vec, Word2VecModel}
-import org.apache.spark.angel.ml.feature.LabeledPoint
-import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.types.{DataType, IntegerType, StructField, StructType}
-import org.apache.spark.sql.{DataFrame, DataFrameReader, Row, SparkSession}
+import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext, SparkFunSuite}
@@ -79,42 +85,8 @@ class AngelGraphSuite extends SparkFunSuite {
     data.show(10)
   }
 
-  test("line: default params ") {
-    val line = new LINE()
-    assert(line.getNumEpoch === 10)
-    assert(line.getStepSize === 0.00001)
-    assert(line.getSrcNodeIdCol === "src")
-    assert(line.getDstNodeIdCol === "dst")
-  }
-
-  test("line1") {
-    val input = "../data/angel/bc/edge"
-    val data = readData(input)
-    data.printSchema()
-    data.show(10)
-
-    val line = new LINE()
-      .setStepSize(0.025)
-      .setEmbeddingDim(32)
-      .setBatchSize(1024)
-      .setNumPSPart(2)
-      .setNumEpoch(2)
-      .setNegSample(5)
-      .setOrder(2)
-      .setMaxIndex(maxNodeId.toInt)
-      .setSrcNodeIdCol("src")
-      .setDstNodeIdCol("dst")
-
-    val model = line.fit(data)
-
-    line.write.overwrite().save("trained_models/lineAlgo")
-
-    //todo???
-//    model.write.overwrite().save("trained_models/lineModels")
-  }
-
   test("kcore") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = GraphIO.load(input, isWeighted = false, 0, 1, sep = " ")
     data.printSchema()
     data.show(10)
@@ -129,28 +101,10 @@ class AngelGraphSuite extends SparkFunSuite {
     val mapping = kCore.transform(data)
     GraphIO.save(mapping, "trained_models/kCoreAlgo")
   }
-  
-  
-  test("kcore1") {
-    val input = "./data/angel/bc/edge"
-    val output = "trained_models/kcore1/edge"
-    val partitionNum = 3
-    val storageLevel = StorageLevel.MEMORY_ONLY
-    val psPartitionNum = 2
 
-    val df = GraphIO.load(input, isWeighted = false)
-
-    val kcore = new KCore()
-      .setPartitionNum(partitionNum)
-      .setStorageLevel(storageLevel)
-      .setPSPartitionNum(psPartitionNum)
-
-    val mapping = kcore.transform(df)
-    GraphIO.save(mapping, output)
-  }
 
   test("louvain") {
-    val input = "./data/angel/bc/edge"
+    val input = "../data/angel/bc/edge"
     val data = GraphIO.load(input, isWeighted = false, 0, 1, sep = " ")
     data.printSchema()
     data.show(10)
