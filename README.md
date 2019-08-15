@@ -33,7 +33,7 @@ and graph embedding, while algorithms on Spark tend to be more general-purpose.
 
 As a result, SONA can serve as a supplement of Spark
 
-| ![sparkonangel](docs/imgs/sparkonangel "gif") |
+| ![sparkonangel](docs/imgs/sparkonangel.gif) |
 |  :----:    |
 | *Figure 4: Programming Example of SONA*   |
 
