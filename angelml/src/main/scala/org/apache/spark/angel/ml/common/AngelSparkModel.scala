@@ -2,7 +2,7 @@ package org.apache.spark.angel.ml.common
 
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.mlcore.conf.SharedConf
-import com.tencent.angel.sona.core.{DriverContext, ExecutorContext, SparkEnvContext}
+import com.tencent.angel.sona.core.{DriverContext, ExecutorContext, SparkMasterContext}
 import com.tencent.angel.sona.ml.AngeGraphModel
 import org.apache.spark.angel.ml.evaluation.TrainingStat
 import org.apache.spark.angel.ml.param.{AngelGraphParams, Params}
@@ -20,8 +20,8 @@ trait AngelSparkModel extends Params with AngelGraphParams {
     DriverContext.get().getAngelClient
   }
 
-  @transient lazy val sparkEnvContext: SparkEnvContext = synchronized {
-    DriverContext.get().sparkEnvContext
+  @transient lazy val sparkEnvContext: SparkMasterContext = synchronized {
+    DriverContext.get().sparkMasterContext
   }
 
   @transient implicit lazy val dim: Long = getNumFeature

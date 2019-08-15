@@ -11,7 +11,8 @@ import com.tencent.angel.mlcore.variable.{VarState, VariableManager}
 import com.tencent.angel.ml.core.variable.PSVariable
 import com.tencent.angel.ml.math2.vector
 import com.tencent.angel.model.{MatrixLoadContext, MatrixSaveContext, ModelLoadContext, ModelSaveContext}
-import com.tencent.angel.sona.core.SparkEnvContext
+import com.tencent.angel.psagent.PSAgent
+import com.tencent.angel.sona.core.{SparkMasterContext, SparkWorkerContext}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 
@@ -19,7 +20,7 @@ class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: Shared
   extends VariableManager(isSparseFormat, sharedConf) {
   override def createALL[T](envCtx: EnvContext[T]): Unit = {
     envCtx match {
-      case SparkEnvContext(client: AngelPSClient) if client != null =>
+      case SparkMasterContext(client: AngelPSClient) if client != null =>
         val matrixCtx = new util.ArrayList[MatrixContext]()
         getALLVariables.foreach {
           case variable: PSVariable =>
@@ -49,7 +50,7 @@ class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: Shared
 
   override def loadALL[T](envCtx: EnvContext[T], path: String, conf: Configuration): Unit = {
     envCtx match {
-      case SparkEnvContext(client: AngelPSClient) if client != null =>
+      case SparkMasterContext(client: AngelPSClient) if client != null =>
         val loadContext = new ModelLoadContext(path)
         getALLVariables.foreach { variable =>
           loadContext.addMatrix(new MatrixLoadContext(variable.name, path))
@@ -57,7 +58,7 @@ class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: Shared
         client.load(loadContext)
         getALLVariables.foreach { variable =>
           val varPath = new Path(path, variable.name).toString
-          variable.load(SparkEnvContext(null), varPath, conf)
+          variable.load(SparkMasterContext(null), varPath, conf)
           variable.setState(VarState.Initialized)
         }
       case _ =>
@@ -67,7 +68,7 @@ class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: Shared
 
   override def saveALL[T](envCtx: EnvContext[T], path: String): Unit = {
     envCtx match {
-      case SparkEnvContext(client: AngelPSClient) if client != null =>
+      case SparkMasterContext(client: AngelPSClient) if client != null =>
         val saveContext = new ModelSaveContext
         getALLVariables.foreach { variable =>
           assert(variable.getState == VarState.Initialized || variable.getState == VarState.Ready)
@@ -80,6 +81,20 @@ class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: Shared
         client.save(saveContext, deleteExistsFile)
       case _ =>
         getALLVariables.foreach { variable => variable.save(envCtx, path) }
+    }
+  }
+
+  override def releaseALL[T](envCtx: EnvContext[T]): Unit = {
+    envCtx match {
+      case ctx @ SparkWorkerContext(client: PSAgent) if client != null =>
+        getALLVariables.foreach {
+          case variable: PSVariable => variable.release(ctx)
+          case _ =>
+        }
+
+        variables.clear()
+        slots.clear()
+      case _ => throw new Exception("envCtx error!")
     }
   }
 }
