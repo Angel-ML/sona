@@ -174,10 +174,10 @@ class LINEModel(numNode: Int,
     psMatrix.psfUpdate(new LINEAdjust(new LINEAdjustParam(matrixId, inputUpdates, outputUpdates, order)))
     val pushTime = System.currentTimeMillis() - start
 
-    if(batchId % 10 == 0) {
-    logTime(s"loss=$loss sampleTime=${sampleTime} getEmbeddingTime=${getEmbeddingTime} " +
-      s"dotTime=${dotTime} gradientTime=${gradientTime} calUpdateTime=${calUpdateTime} " +
-      s"pushTime=${pushTime}")
+    if(batchId % 100 == 0) {
+      logTime(s"batchId=${batchId} loss=$loss sampleTime=${sampleTime} getEmbeddingTime=${getEmbeddingTime} " +
+        s"dotTime=${dotTime} gradientTime=${gradientTime} calUpdateTime=${calUpdateTime} " +
+        s"pushTime=${pushTime}")
     }
 
     (loss, dots.length.toLong, Array(sampleTime, getEmbeddingTime, dotTime, gradientTime, calUpdateTime, pushTime))
