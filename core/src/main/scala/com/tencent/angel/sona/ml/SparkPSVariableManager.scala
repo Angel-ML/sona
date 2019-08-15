@@ -10,30 +10,42 @@ import com.tencent.angel.mlcore.network.EnvContext
 import com.tencent.angel.mlcore.variable.{VarState, VariableManager}
 import com.tencent.angel.ml.core.variable.PSVariable
 import com.tencent.angel.ml.math2.vector
+import com.tencent.angel.ml.matrix.psf.update.zero.Zero
 import com.tencent.angel.model.{MatrixLoadContext, MatrixSaveContext, ModelLoadContext, ModelSaveContext}
-import com.tencent.angel.psagent.PSAgent
+import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
 import com.tencent.angel.sona.core.{SparkMasterContext, SparkWorkerContext}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 
 class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: SharedConf)
   extends VariableManager(isSparseFormat, sharedConf) {
+
+  var isPSMatrixCreated: Boolean = false
+
   override def createALL[T](envCtx: EnvContext[T]): Unit = {
     envCtx match {
       case SparkMasterContext(client: AngelPSClient) if client != null =>
         val matrixCtx = new util.ArrayList[MatrixContext]()
         getALLVariables.foreach {
           case variable: PSVariable =>
-            val mCtx = variable.getMatrixCtx
-            matrixCtx.add(mCtx)
-            client.addMatrix(mCtx)
+            if (!isPSMatrixCreated) {
+              val mCtx = variable.getMatrixCtx
+              matrixCtx.add(mCtx)
+              client.addMatrix(mCtx)
+            } else {
+              val matrixId = PSAgentContext.get().getMatrixMetaManager.getMatrixId(variable.name)
+              val zeroFunc = new Zero(new Zero.ZeroParam(matrixId, false))
+              PSAgentContext.get().getPsAgent.getUserRequestAdapter.update(zeroFunc)
+            }
           case _ =>
         }
         client.createMatrices(matrixCtx)
         getALLVariables.foreach { variable => variable.setState(VarState.Created) }
+        isPSMatrixCreated = true
       case _ =>
         getALLVariables.foreach { variable => variable.create(envCtx) }
     }
+
   }
 
   override def pullALL(epoch: Int, indices: vector.Vector): Unit = {
