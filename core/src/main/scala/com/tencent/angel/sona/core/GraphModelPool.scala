@@ -7,7 +7,7 @@ import org.apache.spark.TaskContext
 
 import scala.collection.mutable
 
-class GraphModelPool(sparkEnvContext: SparkEnvContext, numTask: Int) {
+class GraphModelPool(sparkEnvContext: SparkWorkerContext, numTask: Int) {
   @transient private lazy val modelQueue = new mutable.Queue[AngeGraphModel]()
   @transient private lazy val usedMap = new mutable.HashMap[Long, AngeGraphModel]()
 
