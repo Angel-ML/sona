@@ -20,7 +20,6 @@ package org.apache.spark.angel.graph
 import org.apache.spark.angel.graph.kcore.KCore
 import org.apache.spark.angel.graph.louvain.Louvain
 import org.apache.spark.angel.graph.utils.{Features, GraphIO}
-import org.apache.spark.angel.graph.word2vec.Word2Vec
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{ArrayType, IntegerType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
