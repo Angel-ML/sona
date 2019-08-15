@@ -123,6 +123,7 @@ model.write.overwrite().save("trained_models/daw")
         - [Linear Regression](docs/LReg.md)
         - [Robust Regression](docs/RR.md)
         - [Gradient Boosting Decision Tree](docs/GBDT.md)
+        - [Hyper-Parameter Tuning](docs/AutoML.md)
     + Deep Learning Methods
         - [Deep Neural Network(DNN)](docs/DNN.md)
         - [Mix Logistic Regression(MLR)](docs/MLR.md)

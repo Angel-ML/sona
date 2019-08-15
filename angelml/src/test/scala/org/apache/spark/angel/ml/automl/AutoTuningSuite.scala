@@ -57,7 +57,7 @@ class AutoTuningSuite extends SparkFunSuite {
 
   test("fm_train") {
 
-    val trainData = dummy.load("../data/angel/census/census_148d_train.dummy")
+    val trainData = dummy.load("./data/angel/census/census_148d_train.dummy")
 
     val tuneIter = 20
     val minimize = false
@@ -71,7 +71,7 @@ class AutoTuningSuite extends SparkFunSuite {
     TunerParam.setBatchSize(1)
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("../angelml/src/test/jsons/deepfm.json")
+      .setModelJsonFile("./angelml/src/test/jsons/deepfm.json")
 
     // iterate tuning
     (0 until tuneIter).foreach { iter =>
@@ -107,7 +107,7 @@ class AutoTuningSuite extends SparkFunSuite {
           || (!minimize && metric > solver.optimal._2)) {
           println(s"find a better configuration = ${config.getVector.toArray.mkString("|")}, " +
             s"metric = $metric")
-          model.write.overwrite().save("../trained_models/fm")
+          model.write.overwrite().save("./trained_models/fm")
         }
         solver.feed(config, metric)
       }

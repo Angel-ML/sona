@@ -1,6 +1,6 @@
 package org.apache.spark.angel.examples
 
-import com.tencent.angel.ml.core.conf.AngelMLConf
+
 import com.tencent.angel.sona.core.DriverContext
 import com.tencent.angel.spark.automl.tuner.TunerParam
 import com.tencent.angel.spark.automl.tuner.config.{Configuration, ConfigurationSpace}
@@ -64,7 +64,15 @@ object AutoJsonRunnerExample {
     val jsonFile = params.getOrElse("jsonFile", defaultJsonFile)
     val input = params("data")
     val modelPath = params("modelPath")
+    val numClasses = params.getOrElse("numClasses", "2").toInt
     val numField = params.getOrElse("numField", "13").toInt
+
+    var numBatch = params.getOrElse("numBatch", "10").toInt
+    var maxIter = params.getOrElse("maxIter", "10").toInt
+    var lr = params.getOrElse("lr", "0.1").toDouble
+    var decayAlpha = params.getOrElse("decayAlpha", "0.001").toDouble
+    var decayBeta = params.getOrElse("decayBeta", "0.001").toDouble
+    var decayIntervals = params.getOrElse("decayIntervals", "100").toInt
 
     val tuneIter = params.getOrElse("ml.auto.tuner.iter", "10").toInt
     val minimize = false
@@ -113,14 +121,14 @@ object AutoJsonRunnerExample {
         for (paramType <- solver.getParamTypes) {
           paramMap += (paramType._1 -> config.get(paramType._1))
         }
-        val numBatch = paramMap.getOrElse("numBatch", 10.toDouble).toInt
-        val maxIter = paramMap.getOrElse("maxIter", 5.toDouble).toInt
-        val lr = paramMap.getOrElse("learningRate", 0.1)
-        val decayAlpha = paramMap.getOrElse("decayAlpha", 0.001)
-        val decayBeta = paramMap.getOrElse("decayBeta", 0.001)
-        val decayIntervals = paramMap.getOrElse("decayIntervals", 100.0).toInt
+        numBatch = paramMap.getOrElse("numBatch", 10.toDouble).toInt
+        maxIter = paramMap.getOrElse("maxIter", 5.toDouble).toInt
+        lr = paramMap.getOrElse("learningRate", 0.1)
+        decayAlpha = paramMap.getOrElse("decayAlpha", 0.001)
+        decayBeta = paramMap.getOrElse("decayBeta", 0.001)
+        decayIntervals = paramMap.getOrElse("decayIntervals", 100.0).toInt
 
-        classifier.setNumClass(2)
+        classifier.setNumClass(numClasses)
           .setNumField(numField)
           .setNumBatch(numBatch)
           .setMaxIter(maxIter)
