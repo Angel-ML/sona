@@ -2,11 +2,12 @@ package org.apache.spark.angel.ml.classification
 
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.ml.core.PSOptimizerProvider
+import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
 import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.mlcore.variable.VarState
-import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
 import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
 import com.tencent.angel.sona.core.{DriverContext, _}
+import com.tencent.angel.sona.ml.AngeGraphModel
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.spark.angel.ml.common.{AngelSaverLoader, AngelSparkModel, ManifoldBuilder, Predictor, Trainer}
 import org.apache.spark.angel.ml.evaluation.{ClassificationSummary, TrainingStat}
@@ -36,10 +37,11 @@ class AngelClassifier(override val uid: String)
   private val driverCtx = DriverContext.get()
   private implicit val psClient: AngelPSClient = driverCtx.getAngelClient
   private implicit val psAgent: PSAgent = driverCtx.getPSAgent
-  private val sparkEnvCtx: SparkEnvContext = driverCtx.sparkEnvContext
+  private val sparkMasterCtx: SparkMasterContext = driverCtx.sparkMasterContext
   override val sharedConf: SharedConf = driverCtx.sharedConf
   implicit var bcExeCtx: Broadcast[ExecutorContext] = _
   implicit var bcConf: Broadcast[SharedConf] = _
+  private var angelModel: AngeGraphModel = _
 
   def this() = {
     this(Identifiable.randomUID("AngelClassification_"))
@@ -191,12 +193,12 @@ class AngelClassifier(override val uid: String)
 
     sparkModel.setBCValue(bcExeCtx)
 
-    val angelModel = sparkModel.angelModel
+    angelModel = sparkModel.angelModel
 
     angelModel.buildNetwork()
 
     val startCreate = System.currentTimeMillis()
-    angelModel.createMatrices(sparkEnvCtx)
+    angelModel.createMatrices(sparkMasterCtx)
     PSAgentContext.get().getPsAgent.refreshMatrixInfo()
     val finishedCreate = System.currentTimeMillis()
     globalRunStat.setCreateTime(finishedCreate - startCreate)
@@ -206,12 +208,12 @@ class AngelClassifier(override val uid: String)
       require(path.nonEmpty, "InitModelPath is null or empty")
 
       val startLoad = System.currentTimeMillis()
-      angelModel.loadModel(sparkEnvCtx, MLUtils.getHDFSPath(path), null)
+      angelModel.loadModel(sparkMasterCtx, MLUtils.getHDFSPath(path), null)
       val finishedLoad = System.currentTimeMillis()
       globalRunStat.setLoadTime(finishedLoad - startLoad)
     } else {
       val startInit = System.currentTimeMillis()
-      angelModel.init(SparkEnvContext(null))
+      angelModel.init(SparkMasterContext(null))
       val finishedInit = System.currentTimeMillis()
       globalRunStat.setInitTime(finishedInit - startInit)
     }
@@ -251,6 +253,15 @@ class AngelClassifier(override val uid: String)
   }
 
   override def copy(extra: ParamMap): AngelClassifier = defaultCopy(extra)
+
+  def releaseAngelModel(): this.type = {
+    if (angelModel != null) {
+      angelModel.releaseMode(driverCtx.sparkWorkerContext)
+    }
+
+    angelModel = null
+    this
+  }
 }
 
 

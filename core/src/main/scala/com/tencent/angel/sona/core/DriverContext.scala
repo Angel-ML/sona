@@ -25,12 +25,20 @@ class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configur
   private val bcVariables = new mutable.HashSet[Broadcast[_]]()
   private val cachedRDDs = new mutable.HashSet[RDD[_]]()
 
-  @transient override lazy val sparkEnvContext: SparkEnvContext = {
+  @transient lazy val sparkMasterContext: SparkMasterContext = {
     if (angelClient == null) {
       throw new Exception("Pls. startAngel first!")
     }
 
-    SparkEnvContext(angelClient)
+    SparkMasterContext(angelClient)
+  }
+
+  @transient lazy override val sparkWorkerContext: SparkWorkerContext = {
+    if (psAgent == null) {
+      throw new Exception("Pls. startAngel first!")
+    }
+
+    SparkWorkerContext(psAgent)
   }
 
   private lazy val driverId: String = java.util.UUID.randomUUID.toString

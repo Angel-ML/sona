@@ -58,6 +58,8 @@ class AngelClassificationSuite extends SparkFunSuite {
     val model = classifier.fit(trainData)
 
     model.write.overwrite().save("trained_models/daw")
+
+    classifier.releaseAngelModel()
   }
 
   test("daw_predict") {
