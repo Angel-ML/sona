@@ -134,7 +134,7 @@ model.write.overwrite().save("trained_models/daw")
         - [Deep Cross Network(DCN)](docs/DCN.md)
 - graph algorithms:
     + [Word2Vec](docs/Word2Vec.md)
-    + [LINE](docs/LINE.md)
+    + [LINE](docs/line_en.md)
     + [KCore](docs/KCore.md)
     + [Louvain](docs/Word2Vec.md)
 
