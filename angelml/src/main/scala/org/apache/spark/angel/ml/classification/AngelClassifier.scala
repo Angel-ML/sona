@@ -7,7 +7,7 @@ import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.mlcore.variable.VarState
 import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
 import com.tencent.angel.sona.core.{DriverContext, _}
-import com.tencent.angel.sona.ml.AngeGraphModel
+import com.tencent.angel.sona.ml.AngelGraphModel
 import com.tencent.angel.sona.util.ConfUtils
 import org.apache.spark.angel.ml.common.{AngelSaverLoader, AngelSparkModel, ManifoldBuilder, Predictor, Trainer}
 import org.apache.spark.angel.ml.evaluation.{ClassificationSummary, TrainingStat}
@@ -41,7 +41,7 @@ class AngelClassifier(override val uid: String)
   override val sharedConf: SharedConf = driverCtx.sharedConf
   implicit var bcExeCtx: Broadcast[ExecutorContext] = _
   implicit var bcConf: Broadcast[SharedConf] = _
-  private var angelModel: AngeGraphModel = _
+  private var angelModel: AngelGraphModel = _
 
   def this() = {
     this(Identifiable.randomUID("AngelClassification_"))
