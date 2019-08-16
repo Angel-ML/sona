@@ -29,7 +29,7 @@ Then, it finds the best split result via merging local gradient histograms throu
 
 ![Data parallelism of GBDT](imgs/gbdt-dp.png)
 
-### 特征并行
+### Feature parallelism
 
 Since the size of gradient histogram is affected by four factors: the number of features, the number of splits, the number of classes, and the number of tree nodes.
 For high-dimensional features, large classes and deep trees, the size of gradient histogram can be very large,
