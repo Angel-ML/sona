@@ -53,29 +53,29 @@ SONA supports three types of runtime models: YARN, K8s and Local. The local mode
 ## Algorithms
 - machine learning algorithms:
     + Traditional Machine Learning Methods
-        - [Logistic Regression(LR)](https://github.com/Angel-ML/angel/blob/master/docs/algo/angel_or_spark_on_angel.md)
-        - [Support Vector Machine(SVM)](docs/SVM.md)
-        - [Factorization Machine(FM)](docs/FM.md)
-        - [Linear Regression](docs/LReg.md)
-        - [Robust Regression](docs/RR.md)
+        - [Logistic Regression(LR)](docs/algo/lr_sona_en.md)
+        - [Support Vector Machine(SVM)](docs/algo/svm_sona_en.md)
+        - [Factorization Machine(FM)](docs/algo/fm_sona_en.md)
+        - [Linear Regression](docs/algo/linreg_sona_en.md)
+        - [Robust Regression](docs/algo/robust_sona_en.md)
         - [Gradient Boosting Decision Tree](docs/GBDT.md)
         - [Hyper-Parameter Tuning](docs/AutoML.md)
         - [FTRL](docs/algo/ftrl_lr_sona_en.md)
         - [FTRL-FM](docs/algo/ftrl_fm_sona_en.md)
     + Deep Learning Methods
-        - [Deep Neural Network(DNN)](docs/DNN.md)
-        - [Mix Logistic Regression(MLR)](docs/MLR.md)
-        - [Deep And Wide(DAW)](docs/DAW.md)
-        - [Deep Factorization Machine(DeepFM)](docs/DeepFM.md)
-        - [Neural Factorization Machine(NFM)](docs/NFM.md)
-        - [Product Neural Network(PNN)](docs/PNN.md)
-        - [Attention Factorization Machine(AFM)](docs/AFM.md)
-        - [Deep Cross Network(DCN)](docs/DCN.md)
+        - [Deep Neural Network(DNN)](docs/algo/dnn_sona_en.md)
+        - [Mix Logistic Regression(MLR)](docs/algo/mlr_sona_en.md)
+        - [Deep And Wide(DAW)](docs/algo/daw_sona_en.md)
+        - [Deep Factorization Machine(DeepFM)](docs/algo/deepfm_sona_en.md)
+        - [Neural Factorization Machine(NFM)](docs/algo/nfm_sona_en.md)
+        - [Product Neural Network(PNN)](docs/algo/pnn_sona_en.md)
+        - [Attention Factorization Machine(AFM)](docs/algo/afm_sona_en.md)
+        - [Deep Cross Network(DCN)](docs/algo/dcn_sona_en.md)
 - graph algorithms:
-    + [Word2Vec](docs/Word2Vec.md)
-    + [LINE](docs/line_en.md)
-    + [KCore](docs/KCore.md)
-    + [Louvain](docs/Word2Vec.md)
+    + [Word2Vec](docs/algo/word2vec_sona_en.md)
+    + [LINE](docs/algo/line_sona_en.md)
+    + [KCore](docs/algo/kcore_sona_en.md)
+    + [Louvain](docs/algo/louvain_sona_en.md)
 
 ## Deployment
 

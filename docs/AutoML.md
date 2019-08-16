@@ -38,7 +38,7 @@ $SPARK_HOME/bin/spark-submit \
     --executor-cores 2 \
     --executor-memory 4g \
     --class org.apache.spark.angel.examples.AutoJsonRunnerExample \
-    ./lib/angelml-${ANGEL_VERSION}.jar
+    ./lib/angelml-${SONA_VERSION}.jar
     actionType:train data:path/to/data dataFormat:libsvm jsonFile:./fm.json modelPath:/path/to/model \
     numClasses:2 numField:13 numBatch:10 maxIter:10 learningRate:0.1 decayAlpha:0.001 decayBeta:0.001 decayIntervals:10 \
     ml.auto.tuner.iter:10 ml.auto.tuner.model:GaussianProcess ml.auto.tuner.params:"learningRate|C|double|0.1:1:100#maxIter|D|float|1:5:1"
