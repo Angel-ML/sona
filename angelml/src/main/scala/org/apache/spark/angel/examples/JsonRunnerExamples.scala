@@ -2,6 +2,7 @@ package org.apache.spark.angel.examples
 
 import com.tencent.angel.sona.core.DriverContext
 import org.apache.spark.angel.ml.classification.{AngelClassifier, AngelClassifierModel}
+import org.apache.spark.angel.ml.regression.{AngelRegressor, AngelRegressorModel}
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 import scala.collection.mutable
@@ -41,6 +42,7 @@ object JsonRunnerExamples {
     val maxIter = params.getOrElse("maxIter", "2").toInt
     val lr = params.getOrElse("lr", "0.1").toFloat
     val numField = params.getOrElse("numField", "13").toInt
+    val task = params.getOrElse("task", "classification")
 
     val spark = SparkSession.builder()
       .master("yarn-cluster")
@@ -65,21 +67,42 @@ object JsonRunnerExamples {
     }
 
     if (actionType.equalsIgnoreCase("train")) {
-      val classifier = new AngelClassifier()
-        .setModelJsonFile(jsonFile)
-        .setNumClass(2)
-        .setNumBatch(numBatch)
-        .setMaxIter(maxIter)
-        .setLearningRate(lr)
-        .setNumField(numField)
+      val classifier = {
+        if (task.equalsIgnoreCase("classification"))
+          new AngelClassifier()
+            .setModelJsonFile(jsonFile)
+            .setNumClass(2)
+            .setNumBatch(numBatch)
+            .setMaxIter(maxIter)
+            .setLearningRate(lr)
+            .setNumField(numField)
+        else if (task.equalsIgnoreCase("regression"))
+          new AngelRegressor()
+            .setModelJsonFile(jsonFile)
+            .setNumBatch(numBatch)
+            .setMaxIter(maxIter)
+            .setLearningRate(lr)
+            .setNumField(numField)
+        else {
+          throw new Exception(s"task ${task} is not supported!")
+        }
+
+      }
 
       val model = classifier.fit(trainData)
 
       model.write.overwrite().save(modelPath)
     } else if (actionType.equalsIgnoreCase("predict")) {
-      val predictor = AngelClassifierModel.read.load(modelPath)
+      val predictor = {
+        if (task.equalsIgnoreCase("classification"))
+          AngelClassifierModel.read.load(modelPath)
+        else if (task.equalsIgnoreCase("regression"))
+          AngelRegressorModel.read.load(modelPath)
+        else {
+          throw new Exception(s"task ${task} is not supported!")
+        }
+      }
       val res = predictor.transform(trainData)
-      res.show()
       res.write.mode("overwrite").save(predict)
     }
 
