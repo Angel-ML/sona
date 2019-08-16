@@ -48,71 +48,7 @@ Figure 4 provides an example of running distributed machine learning algorithms 
 
 ## Quick Start
 SONA supports three types of runtime models: YARN, K8s and Local. The local mode enable it easy to debug. 
-
-The SONA job is essentially a Spark Application with an associated Angel-PS application. 
-After the job is successfully submitted, there will be two separate Applications on the cluster, 
-one is the Spark Application and the other is the Angel-PS Application. The two Applications are not coupled. 
-If the SONA job is deleted, users are required to kill both the Spark and Angel-PS Applications manually.
-
-```bash
-#! /bin/bash
-- cd angel-<version>-bin/bin; 
-- ./SONA-example
-```
-
-The context of the submit scripts is as following:
-```bash
-#! /bin/bash
-source ./spark-on-angel-env.sh
-$SPARK_HOME/bin/spark-submit \
-    --master yarn-cluster \
-    --conf spark.ps.jars=$SONA_ANGEL_JARS \
-    --conf spark.ps.instances=10 \
-    --conf spark.ps.cores=2 \
-    --conf spark.ps.memory=6g \
-    --queue g_teg_angel-offline \
-    --jars $SONA_SPARK_JARS \
-    --name "BreezeSGD-spark-on-angel" \
-    --driver-memory 10g \
-    --num-executors 10 \
-    --executor-cores 2 \
-    --executor-memory 4g \
-    --class com.tencent.angel.spark.examples.ml.BreezeSGD \
-    ./../lib/spark-on-angel-examples-${ANGEL_VERSION}.jar
-```
-
-Users are encouraged to program instead of just using bash script. here is an example: 
-```scala
-import com.tencent.angel.sona.core.DriverContext
-import org.apache.spark.angel.ml.classification.AngelClassifier
-import org.apache.spark.angel.ml.feature.LabeledPoint
-import org.apache.spark.angel.ml.linalg.Vectors
-import org.apache.spark.SparkConf
-import org.apache.spark.sql.{DataFrameReader, SparkSession}
-
-val spark = SparkSession.builder()
-  .master("local[2]")
-  .appName("AngelClassification")
-  .getOrCreate()
-
-val libsvm = spark.read.format("libsvmex")
-val dummy = spark.read.format("dummy")
-
-val trainData = libsvm.load("./data/angel/census/census_148d_train.libsvm")
-
-val classifier = new AngelClassifier()
-  .setModelJsonFile("./angelml/src/test/jsons/daw.json")
-  .setNumClass(2)
-  .setNumBatch(10)
-  .setMaxIter(2)
-  .setLearningRate(0.1)
-  .setNumField(13)
-
-val model = classifier.fit(trainData)
-
-model.write.overwrite().save("trained_models/daw")
-```
-
+[sona quick start](./docs/tutorials/sona_quick_start.md)
  
 ## Algorithms
 - machine learning algorithms:
@@ -124,6 +60,8 @@ model.write.overwrite().save("trained_models/daw")
         - [Robust Regression](docs/RR.md)
         - [Gradient Boosting Decision Tree](docs/GBDT.md)
         - [Hyper-Parameter Tuning](docs/AutoML.md)
+        - [FTRL](docs/algo/ftrl_lr_sona_en.md)
+        - [FTRL-FM](docs/algo/ftrl_fm_sona_en.md)
     + Deep Learning Methods
         - [Deep Neural Network(DNN)](docs/DNN.md)
         - [Mix Logistic Regression(MLR)](docs/MLR.md)
@@ -147,4 +85,3 @@ model.write.overwrite().save("trained_models/daw")
 ## References
 
 ## Other Resources
-
