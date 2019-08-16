@@ -23,6 +23,7 @@ import com.tencent.angel.ml.matrix.psf.update.base.UpdateFunc;
 import com.tencent.angel.ml.matrix.psf.update.base.UpdateParam;
 
 import com.tencent.angel.ps.storage.partition.RowBasedPartition;
+import com.tencent.angel.ps.storage.vector.ServerIntDoubleRow;
 import com.tencent.angel.ps.storage.vector.ServerIntFloatRow;
 import com.tencent.angel.ps.storage.vector.ServerRowUtils;
 import java.util.Random;
