@@ -17,14 +17,12 @@
 
 package org.apache.spark.angel.graph
 
-
 import org.apache.spark.angel.graph.kcore.KCore
 import org.apache.spark.angel.graph.louvain.Louvain
-import org.apache.spark.angel.graph.utils.GraphIO
+import org.apache.spark.angel.graph.utils.{Features, GraphIO}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
+import org.apache.spark.sql.types.{ArrayType, IntegerType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
-
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext, SparkFunSuite}
 
@@ -128,42 +126,6 @@ class AngelGraphSuite extends SparkFunSuite {
     GraphIO.save(mapping, "trained_models/louvainAlgo")
   }
 
-//  test("word2vec") {
-//    val input = "./data/angel/text8/text8.split.head"
-//    val data = sc.textFile(input)
-//    data.cache()
-//
-//    val (corpus) = corpusStringToIntWithoutRemapping(sc.textFile(input))
-//    val docs = corpus.repartition(1)
-////    val schema = StructType(Array(StructField("src", ArrayType[Int])))
-////    val df = spark.createDataFrame(docs.map{case arr:Array[Int] => Row(arr)}, schema)
-//
-//    docs.cache()
-//    docs.count()
-//    data.unpersist()
-//
-//    val numDocs = docs.count()
-//    val maxWordId = docs.map(_.max).max() + 1
-//    val numTokens = docs.map(_.length).sum()
-//    val maxLength = docs.map(_.length).max()
-//
-//    println(s"numDocs=$numDocs maxWordId=$maxWordId numTokens=$numTokens")
-//
-//    val word2vec = new Word2Vec()
-//      .setEmbeddingDim(10)
-//      .setBatchSize(100)
-//      .setModel("cbow")
-//      .setNegSample(5)
-//      .setMaxIndex(maxWordId)
-//      .setMaxLength(maxLength)
-//      .setCheckpointInterval(1000)
-//      .setNumEpoch(5)
-//      .setNumPSPart(1)
-//      .setPartitionNum(5)
-//      .setStepSize(1.0)
-//      .setWindowSize(5)
-////    val model = word2vec.fit(df)
-//  }
 
   def corpusStringToIntWithoutRemapping(data: RDD[String]): RDD[Array[Int]] = {
     data.filter(f => f != null && f.length > 0)

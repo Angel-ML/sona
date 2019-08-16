@@ -1,3 +1,19 @@
+/*
+ * Tencent is pleased to support the open source community by making Angel available.
+ *
+ * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/Apache-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ */
 package org.apache.spark.angel.ml.classification
 
 import com.tencent.angel.sona.core.DriverContext
@@ -120,44 +136,6 @@ class AngelClassificationSuite extends SparkFunSuite {
 //    driverCtx.stopAngelAndPSAgent()
   }
 
-  test("robustreg_train") {//todo???
-//    val driverCtx = DriverContext.get(sparkConf)
-//    driverCtx.startAngelAndPSAgent()
-    val trainData = libsvm.load("./data/angel/abalone/abalone_8d_train.libsvm")
-
-    val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/robustreg.json")
-      .setNumBatch(10)
-      .setMaxIter(2)
-      .setLearningRate(0.1)
-      .setNumField(14)
-
-    val model = classifier.fit(trainData)
-
-    model.write.overwrite().save("trained_models/robustreg")
-
-//    driverCtx.stopAngelAndPSAgent()
-  }
-
-  test("kmeans_train") {//todo???
-  //    val driverCtx = DriverContext.get(sparkConf)
-  //    driverCtx.startAngelAndPSAgent()
-  val trainData = libsvm.load("./data/angel/usps/usps_256d_train.libsvm")
-
-    val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/kmeans.json")
-      .setNumClass(10)//todo???
-      .setNumBatch(10)
-      .setMaxIter(2)
-      .setLearningRate(0.1)
-
-    val model = classifier.fit(trainData)
-
-    model.write.overwrite().save("trained_models/kmeans")
-
-    //    driverCtx.stopAngelAndPSAgent()
-  }
-
   test("mixedlr_train") {
 //    val driverCtx = DriverContext.get(sparkConf)
 //    driverCtx.startAngelAndPSAgent()
@@ -184,7 +162,7 @@ class AngelClassificationSuite extends SparkFunSuite {
     val trainData = libsvm.load("data/angel/a9a/a9a_123d_train.libsvm")
 
     val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/linreg.json")
+      .setModelJsonFile("./angelml/src/test/jsons/logreg.json")
       .setNumClass(2)
       .setNumBatch(10)
       .setMaxIter(2)
@@ -194,26 +172,6 @@ class AngelClassificationSuite extends SparkFunSuite {
     val model = classifier.fit(trainData)
 
     model.write.overwrite().save("trained_models/logreg")
-
-//    driverCtx.stopAngelAndPSAgent()
-  }
-
-  test("linreg_train") {//todo???
-//    val driverCtx = DriverContext.get(sparkConf)
-//    driverCtx.startAngelAndPSAgent()
-    val trainData = libsvm.load("./data/angel/abalone/abalone_8d_train.libsvm")
-
-    val classifier = new AngelClassifier()
-      .setModelJsonFile("./angelml/src/test/jsons/linreg.json")
-      .setNumClass(2)
-      .setNumBatch(10)
-      .setMaxIter(2)
-      .setLearningRate(0.1)
-      .setNumField(14)
-
-    val model = classifier.fit(trainData)
-
-    model.write.overwrite().save("trained_models/linreg")
 
 //    driverCtx.stopAngelAndPSAgent()
   }

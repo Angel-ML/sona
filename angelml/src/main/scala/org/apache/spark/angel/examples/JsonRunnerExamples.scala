@@ -1,3 +1,19 @@
+/*
+ * Tencent is pleased to support the open source community by making Angel available.
+ *
+ * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/Apache-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ */
 package org.apache.spark.angel.examples
 
 import com.tencent.angel.sona.core.DriverContext
@@ -30,16 +46,11 @@ object JsonRunnerExamples {
 
   def main(args: Array[String]): Unit = {
 
-    val defaultInput = "hdfs://tl-nn-tdw.tencent-distribute.com:54310/user/tdw_rachelsun/joyjxu/angel-test/daw_data/census_148d_train.libsvm"
-    val defaultOutput = "hdfs://tl-nn-tdw.tencent-distribute.com:54310/user/tdw_rachelsun/joyjxu/trained_models"
-    val defaultJsonFile = "No json file parsed..."
-    val defaultDataFormat = "org.apache.spark.ml.source.libsvm.LibSVMFileFormat"
-
     val params = parse(args)
 
     val dataFormat = params.getOrElse("dataFormat", "libsvm")//libsvm,dummy
     val actionType = params.getOrElse("actionType", "train")
-    val jsonFile = params.getOrElse("jsonFile", defaultJsonFile)
+    val jsonFile = params.getOrElse("jsonFile", "")
     val input = params.get("data").get
     val modelPath = params.get("modelPath").get
     val predict = params.get("predictPath").get
