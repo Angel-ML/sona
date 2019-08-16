@@ -10,12 +10,12 @@ trait ParamsHelper extends Params {
   val sharedConf: SharedConf
 
   def setInternal[T](param: Param[T], value: T): this.type = {
-    if (!finalized) {
-      set(param, value)
-    } else {
-      throw new Exception("the estimator is finalized, cannot set!")
-    }
-
+//    if (!finalized) {
+//      set(param, value)
+//    } else {
+//      throw new Exception("the estimator is finalized, cannot set!")
+//    }
+    set(param, value)
     this
   }
 

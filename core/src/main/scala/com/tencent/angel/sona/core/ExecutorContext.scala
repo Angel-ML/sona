@@ -11,7 +11,13 @@ import scala.language.implicitConversions
 case class ExecutorContext(conf: SharedConf, numTask: Int)
   extends PSAgentContext(conf) with Serializable with CompatibleLogging {
 
-  @transient override lazy val sparkEnvContext: SparkEnvContext = SparkEnvContext(null)
+  @transient override lazy val sparkWorkerContext: SparkWorkerContext = {
+    if (psAgent == null) {
+      throw new Exception("Pls. startAngel first!")
+    }
+
+    SparkWorkerContext(psAgent)
+  }
 }
 
 object ExecutorContext {
@@ -40,7 +46,7 @@ object ExecutorContext {
     getPSAgent(exeCtx)
 
     if (graphModelPool == null) {
-      graphModelPool = new GraphModelPool(exeCtx.sparkEnvContext, exeCtx.numTask)
+      graphModelPool = new GraphModelPool(exeCtx.sparkWorkerContext, exeCtx.numTask)
     }
   }
 

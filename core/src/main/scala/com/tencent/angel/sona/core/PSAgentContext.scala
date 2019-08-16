@@ -13,7 +13,7 @@ abstract class PSAgentContext(conf: SharedConf) extends CompatibleLogging{
   @transient protected var psAgent: PSAgent = _
   @transient protected var stopAgentHookTask: Runnable = _
 
-  val sparkEnvContext: SparkEnvContext
+  val sparkWorkerContext: SparkWorkerContext
 
   private def getLocalConf(taskContext: TaskContext): Configuration = {
     val taskConf = new Configuration()

@@ -36,7 +36,7 @@ class AngelRegressor(override val uid: String)
   private val driverCtx = DriverContext.get()
   private implicit val psClient: AngelPSClient = driverCtx.getAngelClient
   private implicit var psAgent: PSAgent = driverCtx.getPSAgent
-  private val sparkEnvCtx: SparkEnvContext = driverCtx.sparkEnvContext
+  private val sparkEnvCtx: SparkMasterContext = driverCtx.sparkMasterContext
   override val sharedConf: SharedConf = driverCtx.sharedConf
   implicit var bcExeCtx: Broadcast[ExecutorContext] = _
   implicit var bcConf: Broadcast[SharedConf] = _
@@ -208,7 +208,7 @@ class AngelRegressor(override val uid: String)
       globalRunStat.setLoadTime(finishedLoad - startLoad)
     } else {
       val startInit = System.currentTimeMillis()
-      val sec = SparkEnvContext(null)
+      val sec = SparkMasterContext(null)
       angelModel.init(sec)
       val finishedInit = System.currentTimeMillis()
       globalRunStat.setInitTime(finishedInit - startInit)
