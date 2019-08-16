@@ -6,7 +6,7 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.angel.ml.common.MathImplicits._
 import com.tencent.angel.sona.core.ExecutorContext
 import com.tencent.angel.sona.data.LocalMemoryDataBlock
-import com.tencent.angel.sona.ml.AngeGraphModel
+import com.tencent.angel.sona.ml.AngelGraphModel
 import org.apache.spark.angel.ml.linalg
 import org.apache.spark.angel.ml.linalg.Vectors
 import org.apache.spark.sql.types.{DoubleType, StructField, StructType}
@@ -62,7 +62,7 @@ class Predictor(bcValue: Broadcast[ExecutorContext],
     result.toIterator
   }
 
-  private def predictInternal(model: AngeGraphModel,
+  private def predictInternal(model: AngelGraphModel,
                               storage: DataBlock[LabeledData],
                               cachedRows: Array[Row],
                               result: ListBuffer[Row]): Unit = {

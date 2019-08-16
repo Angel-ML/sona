@@ -68,7 +68,7 @@ trait HasNodesNumPerRow extends Params {
 
   final def getNodesNumPerRow: Int = $(nodesNumPerRow)
 
-  setDefault(nodesNumPerRow, -1)
+  setDefault(nodesNumPerRow, 1)
 
   final def setNodesNumPerRow(num: Int): this.type = set(nodesNumPerRow, num)
 

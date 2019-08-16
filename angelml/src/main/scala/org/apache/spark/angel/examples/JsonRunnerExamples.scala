@@ -29,16 +29,11 @@ object JsonRunnerExamples {
 
   def main(args: Array[String]): Unit = {
 
-    val defaultInput = "hdfs://tl-nn-tdw.tencent-distribute.com:54310/user/tdw_rachelsun/joyjxu/angel-test/daw_data/census_148d_train.libsvm"
-    val defaultOutput = "hdfs://tl-nn-tdw.tencent-distribute.com:54310/user/tdw_rachelsun/joyjxu/trained_models"
-    val defaultJsonFile = "No json file parsed..."
-    val defaultDataFormat = "org.apache.spark.ml.source.libsvm.LibSVMFileFormat"
-
     val params = parse(args)
 
     val dataFormat = params.getOrElse("dataFormat", "libsvm")//libsvm,dummy
     val actionType = params.getOrElse("actionType", "train")
-    val jsonFile = params.getOrElse("jsonFile", defaultJsonFile)
+    val jsonFile = params.getOrElse("jsonFile", "")
     val input = params.get("data").get
     val modelPath = params.get("modelPath").get
     val predict = params.get("predictPath").get

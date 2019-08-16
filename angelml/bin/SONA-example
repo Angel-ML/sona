@@ -15,28 +15,24 @@
 # the License.
 
 
-export PATH=$JAVA_HOME/bin:$PATH
+source ./spark-on-angel-env.sh
 
-bin=`which $0`
-bin=`dirname ${bin}`
-bin=`cd "$bin"; pwd`
-
-lib="$bin"/../lib
-
-export ANGEL_HOME="$bin/../"
-export ANGEL_VERSION=3.0.0-SNAPSHOT
-
-
-for f in "$lib"/*.jar; do
-    if [ "$CLASSPATH" ]; then
-        export CLASSPATH=$CLASSPATH:$f
-    else
-        export CLASSPATH=$f
-    fi
-done
-
-export CLASS="com.tencent.angel.utils.AngelRunJar"
-
-export CLASSPATH=$CLASSPATH
-export PYTHONHASHSEED=0
-java $CLASS "$@"
+$SPARK_HOME/bin/spark-submit \
+    --master yarn-cluster \
+	--conf spark.ps.jars=$SONA_ANGEL_JARS \
+	--conf spark.ps.instances=10 \
+	--conf spark.ps.cores=2 \
+	--conf spark.ps.memory=6g \
+	--jars $SONA_SPARK_JARS\
+	--name "LR-spark-on-angel" \
+	--files <lr.json_file_path> \
+	--driver-memory 10g \
+	--num-executors 10 \
+	--executor-cores 2 \
+	--executor-memory 4g \
+	--class org.apache.spark.angel.examples.JsonRunnerExamples \
+	./../lib/angelml-${SONA_VERSION}.jar \
+	data:<input_path> \
+	modelPath:<output_path> \
+	jsonFile:./lr.json
+	lr:0.1
