@@ -51,9 +51,9 @@ object JsonRunnerExamples {
     val dataFormat = params.getOrElse("dataFormat", "libsvm")//libsvm,dummy
     val actionType = params.getOrElse("actionType", "train")
     val jsonFile = params.getOrElse("jsonFile", "")
-    val input = params.get("data").get
-    val modelPath = params.get("modelPath").get
-    val predict = params.get("predictPath").get
+    val input = params.getOrElse("data", "")
+    val modelPath = params.getOrElse("modelPath", "")
+    val predict = params.getOrElse("predictPath", "")
     val numBatch = params.getOrElse("numBatch", "10").toInt
     val maxIter = params.getOrElse("maxIter", "2").toInt
     val lr = params.getOrElse("lr", "0.1").toFloat
