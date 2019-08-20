@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.apache.spark.angel</groupId>
     <artifactId>sona</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
   </parent>
 
   <artifactId>sona-dist</artifactId>

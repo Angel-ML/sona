@@ -12,9 +12,9 @@ export HADOOP_HOME=
 export SPARK_HOME=
 export SONA_HOME=
 export SONA_HDFS_HOME=
-export SONA_VERSION=0.1.0-SNAPSHOT
-export ANGEL_VERSION=3.0.0-SNAPSHOT
-export ANGEL_UTILS_VERSION=0.1.0-SNAPSHOT
+export SONA_VERSION=0.1.0
+export ANGEL_VERSION=3.0.0
+export ANGEL_UTILS_VERSION=0.1.0
 
 
 scala_jar=scala-library-2.11.8.jar
