@@ -100,11 +100,12 @@ object ConfUtils extends CompatibleLogging {
     val appName = conf.get("spark.app.name") + "-ps"
     val queue = conf.get("spark.yarn.queue", "root.default")
 
-    /** mode: YARN or LOCAL */
+    /** mode: YARN , KUBERNETES or LOCAL */
     val master = conf.getOption("spark.master")
     val isLocal = if (master.isEmpty || master.get.toLowerCase.startsWith("local")) true else false
     val deployMode = if (isLocal) "LOCAL" else conf.get("spark.ps.mode", DEFAULT_ANGEL_DEPLOY_MODE)
 
+    val masterMem = conf.getSizeAsGb("spark.angel.master.memory", "2g").toInt
     val psNum = conf.getInt("spark.ps.instances", 1)
     val psCores = conf.getInt("spark.ps.cores", 1)
     val psMem = conf.getSizeAsGb("spark.ps.memory", "4g").toInt
@@ -147,7 +148,13 @@ object ConfUtils extends CompatibleLogging {
     hadoopConf.set(ANGEL_ACTION_TYPE, "train")
     hadoopConf.set(ANGEL_SAVE_MODEL_PATH, tempPath)
 
+    if (deployMode == "KUBERNETES") {
+      hadoopConf.set(ANGEL_KUBERNETES_MASTER, master.get.substring("k8s://".length))
+    }
+
     // Setting resource
+    hadoopConf.setInt(ANGEL_AM_MEMORY_GB, masterMem)
+
     hadoopConf.setInt(ANGEL_PS_NUMBER, psNum)
     hadoopConf.setInt(ANGEL_PS_CPU_VCORES, psCores)
     hadoopConf.setInt(ANGEL_PS_MEMORY_GB, psMem)
@@ -165,9 +172,15 @@ object ConfUtils extends CompatibleLogging {
     hadoopConf.setInt(ANGEL_PSAGENT_CACHE_SYNC_TIMEINTERVAL_MS, 100000000)
     hadoopConf.set(ANGEL_LOG_PATH, tempPath)
 
-    // add user resource files
-    addUserResourceFiles(conf, hadoopConf)
+    if (deployMode != "KUBERNETES") {
+      // add user resource files
+      addUserResourceFiles(conf, hadoopConf)
+    }
 
+    // Some other settings
+    conf.getAllWithPrefix("spark.angel").foreach {
+      case (key, value) => hadoopConf.set(s"angel$key", value)
+    }
     hadoopConf
   }
 
