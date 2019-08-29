@@ -58,7 +58,7 @@ class KCoreGraphPartition(index: Int,
   }
 
   def process(model: KCorePSModel, numMsgs: Long, isFirstIteration: Boolean): KCoreGraphPartition = {
-    //    println(s"keys: ${keys.mkString(",")} neighbours: ${neighbors.distinct.mkString(",")}")
+    //    println(s"keys: ${keys.mkString(",")} neighbors: ${neighbors.distinct.mkString(",")}")
     if (numMsgs > indices.length || isFirstIteration) {
       val inMsgs = model.readMsgs(indices)
 
@@ -155,26 +155,26 @@ object KCoreGraphPartition {
   def apply(index: Int, iterator: Iterator[(Long, Iterable[Long])]): KCoreGraphPartition = {
     val indptr = new IntArrayList()
     val keys = new LongArrayList()
-    val neighbours = new LongArrayList()
+    val neighbors = new LongArrayList()
 
     indptr.add(0)
     var maxDegree: Int = 0
     while (iterator.hasNext) {
       val entry = iterator.next()
       val (node, ns) = (entry._1, entry._2.toArray.distinct)
-      ns.foreach(n => neighbours.add(n))
-      indptr.add(neighbours.size())
+      ns.foreach(n => neighbors.add(n))
+      indptr.add(neighbors.size())
       keys.add(node)
       maxDegree = math.max(ns.size, maxDegree)
     }
 
     val keysArray = keys.toLongArray()
-    val neighboursArray = neighbours.toLongArray()
+    val neighborsArray = neighbors.toLongArray()
 
     new KCoreGraphPartition(index, keysArray, indptr.toIntArray(),
-      neighboursArray, new Array[Int](keysArray.length),
-      new Array[Int](neighboursArray.length),
-      keysArray.union(neighboursArray).distinct,
+      neighborsArray, new Array[Int](keysArray.length),
+      new Array[Int](neighborsArray.length),
+      keysArray.union(neighborsArray).distinct,
       new Array[Int](maxDegree))
   }
 
