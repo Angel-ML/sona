@@ -117,9 +117,9 @@ ParamSharedFC layer is a fully connected layer with shared parameters, as explai
 Several steps must be done before editing the submitting script and running.
 
 1. confirm Hadoop and Spark have ready in your environment
-2. unzip angel-<version>-bin.zip to local directory (ANGEL_HOME)
-3. upload angel-<version>-bin directory to HDFS (ANGEL_HDFS_HOME)
-4. Edit $ANGEL_HOME/bin/spark-on-angel-env.sh, set SPARK_HOME, ANGEL_HOME, ANGEL_HDFS_HOME and ANGEL_VERSION
+2. unzip sona-<version>-bin.zip to local directory (SONA_HOME)
+3. upload sona-<version>-bin directory to HDFS (SONA_HDFS_HOME)
+4. Edit $SONA_HOME/bin/spark-on-angel-env.sh, set SPARK_HOME, SONA_HOME, SONA_HDFS_HOME and ANGEL_VERSION
 
 Here's an example of submitting scripts, remember to adjust the parameters and fill in the paths according to your own task.
 
