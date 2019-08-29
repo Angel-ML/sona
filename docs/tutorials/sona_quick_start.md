@@ -9,7 +9,7 @@ If the SONA job is deleted, users are required to kill both the Spark and Angel-
 
 1. **Install Spark**
 2. **Install SONA**
-	1. unzip sona-\<version\>-bin.zip
+	1. unzip sona-\<version\>-bin.zip, the path of extracted folder `sona-\<version\>-bin` is the `SONA_HOME`
 	2. set these environmental variables: `SPARK_HOME`, `SONA_HOME`, `SONA_HDFS_HOME` in sona-\<version\>-bin/bin/spark-on-angl-env.sh
 	3. put the extracted folder `sona-\<version\>-bin` into `SONA_HDFS_HOME`
 
@@ -108,7 +108,7 @@ $SPARK_HOME/bin/spark-submit \
 
 ```
 
-Users are encouraged to program instead of just using bash script. here is an example: 
+Users also can program ```JsonRunnerExamples``` by yourself, here is a sample example only included some important codes, for more detail information please see [JsonRunnerExamples](https://github.com/Angel-ML/sona/blob/master/angelml/src/main/scala/org/apache/spark/angel/examples/JsonRunnerExamples.scala): 
 
 ```scala
 import com.tencent.angel.sona.core.DriverContext
