@@ -119,9 +119,14 @@ import org.apache.spark.SparkConf
 import org.apache.spark.sql.{DataFrameReader, SparkSession}
 
 val spark = SparkSession.builder()
-  .master("local[2]")
+  .master("yarn-cluster")
   .appName("AngelClassification")
   .getOrCreate()
+
+val sparkConf = spark.sparkContext.getConf
+val driverCtx = DriverContext.get(sparkConf)
+
+driverCtx.startAngelAndPSAgent()
 
 val libsvm = spark.read.format("libsvmex")
 val dummy = spark.read.format("dummy")
