@@ -40,7 +40,7 @@ class KCore(override val uid: String) extends Transformer
     edges.persist(StorageLevel.DISK_ONLY)
 
     val maxId = edges.Map(e => math.max(e._1, e._2)).max() + 1
-    val minId = edges.Map(e => math.max(e._1, e._2)).min()
+    val minId = edges.Map(e => math.min(e._1, e._2)).min()
     val nodes = edges.flatMap(e => Iterator(e._1, e._2))
     val numEdges = edges.count()
 
