@@ -83,7 +83,7 @@ $SPARK_HOME/bin/spark-submit \
     "lr": 0.5
   },
   "model": {
-    "modeltype": "T_DENSE_SPARSE"
+    "modeltype": "T_DOUBLE_SPARSE"
   },
   "default_optimizer": {
     "type": "momentum",
