@@ -100,7 +100,6 @@ object AutoJsonRunnerExample {
     TunerParam.setBatchSize(1)
 
     val spark = SparkSession.builder()
-      .master("yarn-cluster")
       .appName("Hyper-parameter tuning of AngelClassification")
       .getOrCreate()
 
