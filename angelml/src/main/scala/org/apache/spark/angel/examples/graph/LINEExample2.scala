@@ -33,7 +33,7 @@ import scala.util.Random
 object LINEExample2 {
   def main(args: Array[String]): Unit = {
     val params = ArgsUtil.parse(args)
-    val conf = new SparkConf().setMaster("yarn-cluster").setAppName("LINE")
+    val conf = new SparkConf().setAppName("LINE")
 
     val oldModelInput = params.getOrElse("oldmodelpath", null)
     if(oldModelInput != null) {

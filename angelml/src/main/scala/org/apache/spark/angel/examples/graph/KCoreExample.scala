@@ -28,8 +28,7 @@ object KCoreExample {
   def main(args: Array[String]): Unit = {
 
     val params = ArgsUtil.parse(args)
-    val mode = params.getOrElse("mode", "yarn-cluster")
-    val sc = start(mode)
+    val sc = start()
 
     val input = params.getOrElse("input", null)
     val partitionNum = params.getOrElse("partitionNum", "100").toInt
@@ -66,9 +65,8 @@ object KCoreExample {
     stop()
   }
 
-  def start(mode: String): SparkContext = {
+  def start(): SparkContext = {
     val conf = new SparkConf()
-    conf.setMaster(mode)
     conf.setAppName("K-Core")
     val sc = new SparkContext(conf)
     PSContext.getOrCreate(sc)
