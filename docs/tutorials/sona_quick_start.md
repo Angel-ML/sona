@@ -69,6 +69,7 @@ $SPARK_HOME/bin/spark-submit \
 
 - [detail json](https://github.com/Angel-ML/angel/blob/master/docs/basic/json_conf_en.md)
 - [data](https://github.com/Angel-ML/angel/tree/master/data/a9a/a9a_123d_train.libsvm)
+- copy the following code and save as xx.json
 
 ```json
 {
