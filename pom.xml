@@ -19,9 +19,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.spark.angel</groupId>
+    <groupId>com.tencent.angel</groupId>
     <artifactId>sona</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.1</version>
     <packaging>pom</packaging>
     <name>Spark On Angel Project Parent POM</name>
     <url>http://spark.apache.org/</url>
@@ -36,7 +36,7 @@
         <scala.binary.version>2.11</scala.binary.version>
         <scala.version>2.11.8</scala.version>
         <spark.version>2.3.0</spark.version>
-        <angel.version>3.0.0-SNAPSHOT</angel.version>
+        <angel.version>3.0.0</angel.version>
         <breeze.version>0.13</breeze.version>
         <!-- Modules that copy jars to the build directory should do so under this location. -->
         <jars.target.dir>${project.build.directory}/scala-${scala.binary.version}/jars</jars.target.dir>

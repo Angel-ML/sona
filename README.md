@@ -84,9 +84,9 @@ $SPARK_HOME/bin/spark-submit \
 Users are encouraged to program instead of just using bash script. here is an example: 
 ```scala
 import com.tencent.angel.sona.core.DriverContext
-import org.apache.spark.angel.ml.classification.AngelClassifier
-import org.apache.spark.angel.ml.feature.LabeledPoint
-import org.apache.spark.angel.ml.linalg.Vectors
+import com.tencent.angel.sona.ml.classification.AngelClassifier
+import com.tencent.angel.sona.ml.feature.LabeledPoint
+import org.apache.spark.linalg.Vectors
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.{DataFrameReader, SparkSession}
 
