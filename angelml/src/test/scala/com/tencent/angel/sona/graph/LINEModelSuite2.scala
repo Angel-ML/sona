@@ -36,7 +36,7 @@ class LINEModelSuite2 extends SparkFunSuite {
   private var sparkConf: SparkConf = _
   private var sc: SparkContext = _
   val input = "./data/angel/bc/edge"
-  val oldOutput = null//"file:///E:\\temp\\application_1565577700269_-1030306181_2e9fbfff-8f3c-41f4-b015-59490ef6daf5\\snapshot\\2"
+  val oldOutput = null
   val output = LOCAL_FS + TMP_PATH + "/linemodel_v2"
   val numPartition = 1
   val lr = 0.025f
