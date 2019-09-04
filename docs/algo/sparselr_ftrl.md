@@ -10,7 +10,7 @@ FTRL的理论基础请参考， [FTRL理论篇](../ftrl_lr_spark.md)
 
 论文[1]中给出了FTRL-Proximal实现的伪代码：
 
-![](../../img/ftrl_lr_project.png)
+![](../imgs/ftrl_lr_project.png)
 
 ## 2. Async mini-batch FTRL
 原始的FTRL是针对于online learning的算法优化，属于Stochastic gradient descent(SGD)，
@@ -62,7 +62,7 @@ Async mini-batch FTRL的优点
     - 200个Spark Executors (30G RAM, 2 core)
     - 50个Angel PS (20G RAM, 8 core)
   * 收敛性
-  ![](../../img/ftrl_eval.png)
+  ![](../imgs/ftrl_eval.png)
   `model nnz`是指训练得到模型向量的非零值数目（nnz = number of non-zero），作为评估模型的稀疏度的一个重要指标，
   modelNnz(epoch=1) = 22 million, modelNnz(epoch=2) = 69 million。  
   综合上述所有模型指标，模型训练一个epoch时，模型就达到一个可用的状态。

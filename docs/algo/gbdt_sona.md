@@ -39,7 +39,7 @@ GBDT的伪代码如下所示：
   }
   ```
 
-![](../../img/sona_gbdt.png)
+![](../imgs/sona_gbdt.png)
 
 ## 2 算法参数
 
