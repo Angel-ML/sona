@@ -15,6 +15,8 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import java.util
 
+import com.tencent.angel.ml.core.conf.AngelMLConf
+
 
 class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: SharedConf)
   extends VariableManager(isSparseFormat, sharedConf) {
@@ -81,9 +83,16 @@ class SparkPSVariableManager private(isSparseFormat: Boolean, sharedConf: Shared
     envCtx match {
       case SparkMasterContext(client: AngelPSClient) if client != null =>
         val saveContext = new ModelSaveContext
-        getALLVariables.foreach { variable =>
+        val withSlot: Boolean = conf.getBoolean(AngelMLConf.ML_VERABLE_SAVE_WITHSLOT,
+          AngelMLConf.DEFAULT_ML_VERABLE_SAVE_WITHSLOT)
+
+        getALLVariables.foreach {
+          case variable: PSVariable =>
           assert(variable.getState == VarState.Initialized || variable.getState == VarState.Ready)
-          saveContext.addMatrix(new MatrixSaveContext(variable.name, variable.formatClassName))
+          saveContext.addMatrix(variable.getMatrixSaveContext(withSlot))
+          case variable =>
+            assert(variable.getState == VarState.Initialized || variable.getState == VarState.Ready)
+            saveContext.addMatrix(new MatrixSaveContext(variable.name, variable.formatClassName))
         }
         //saveContext.setSavePath(sharedConf.get(AngelConf.ANGEL_JOB_OUTPUT_PATH))
         saveContext.setSavePath(path)
