@@ -15,7 +15,7 @@
 
 由于图表示学习使用的Word2Vec算法需要能够处理超大的词库（可以轻易达到10亿），纯粹基于Spark的实现的模块无法支撑这种规模的数据。这里依靠Spark On Angel的PS能力，能够处理高达10亿 * 1000维的超大模型。 Word2Vec的理论网上有大量的资料可以参考，这里实现了基于负采样优化的SkipGram模型。 超大规模的分布式实现参考了Yahoo的论文[[1]](https://arxiv.org/abs/1606.08495)。
 
-![line_structure](../../img/line_structure.png)
+![line_structure](../imgs/line_structure.png)
 
 ## 运行
 

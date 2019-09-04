@@ -17,7 +17,7 @@ where ![](http://latex.codecogs.com/png.latex?\dpi{100}\displaystyle(y_{i},x_{i}
 ## 2. Distributed Implementation on Angel
 ### 1. Model Storage
 Robust regression algorithm can be abstracted as a 1×N PSModel, denoted by w, where ![](http://latex.codecogs.com/png.latex?\dpi{100}w=(\alpha,\beta)), as shown in the following figure:
-![](../img/lr_model.png)
+![](../imgs/lr_model.png)
 
 ### 2. Algorithm Logic
 Angel MLLib provides Robust regression algorithm trained with the mini-batch gradient descent method. 

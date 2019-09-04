@@ -6,7 +6,7 @@
     "validateratio": 0.1
   },
   "model": {
-    "modeltype": "T_FLOAT_DENSE",
+    "modeltype": "T_DOUBLE_DENSE",
     "modelsize": 148
   },
   "train": {
