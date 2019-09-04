@@ -1,13 +1,28 @@
-package com.tencent.angel.sona.ml.classification
+/*
+ * Tencent is pleased to support the open source community by making Angel available.
+ *
+ * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/Apache-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ */
 
+package com.tencent.angel.sona.ml.classification
 import com.tencent.angel.client.AngelPSClient
 import com.tencent.angel.ml.core.PSOptimizerProvider
 import com.tencent.angel.ml.math2.utils.{LabeledData, RowType}
 import com.tencent.angel.mlcore.conf.{MLCoreConf, SharedConf}
 import com.tencent.angel.mlcore.variable.VarState
 import com.tencent.angel.psagent.{PSAgent, PSAgentContext}
-import com.tencent.angel.sona.core.{DriverContext, _}
-import com.tencent.angel.sona.ml.AngeGraphModel
+import com.tencent.angel.sona.core.{DriverContext, ExecutorContext, SparkMasterContext}
 import com.tencent.angel.sona.util.ConfUtils
 import com.tencent.angel.sona.ml.common.{AngelSaverLoader, AngelSparkModel, ManifoldBuilder, Predictor, Trainer}
 import com.tencent.angel.sona.ml.evaluation.{ClassificationSummary, TrainingStat}
@@ -27,6 +42,8 @@ import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.linalg
 import org.apache.spark.linalg._
+import com.tencent.angel.sona.core.AngelGraphModel
+
 import scala.collection.JavaConverters._
 
 class AngelClassifier(override val uid: String)
@@ -41,7 +58,7 @@ class AngelClassifier(override val uid: String)
   override val sharedConf: SharedConf = driverCtx.sharedConf
   implicit var bcExeCtx: Broadcast[ExecutorContext] = _
   implicit var bcConf: Broadcast[SharedConf] = _
-  private var angelModel: AngeGraphModel = _
+  private var angelModel: AngelGraphModel = _
 
   def this() = {
     this(Identifiable.randomUID("AngelClassification_"))

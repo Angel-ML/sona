@@ -1,5 +1,21 @@
-package com.tencent.angel.sona.examples
+/*
+ * Tencent is pleased to support the open source community by making Angel available.
+ *
+ * Copyright (C) 2017-2018 THL A29 Limited, a Tencent company. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ * https://opensource.org/licenses/Apache-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ */
 
+package com.tencent.angel.sona.examples
 import com.tencent.angel.sona.core.DriverContext
 import com.tencent.angel.sona.ml.automl.TunedParams
 import com.tencent.angel.sona.ml.classification.AngelClassifier
@@ -12,7 +28,7 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import scala.collection.mutable
 import scala.util.Random
 
-object AutoJsonRunnerExamples {
+object AutoJsonRunnerExample {
 
   def parse(args: Array[String]): Map[String, String] = {
     val cmdArgs = new mutable.HashMap[String, String]()
@@ -50,8 +66,6 @@ object AutoJsonRunnerExamples {
 
   def main(args: Array[String]): Unit = {
 
-    val defaultInput = "hdfs://tl-nn-tdw.tencent-distribute.com:54310/user/tdw_rachelsun/joyjxu/angel-test/daw_data/census_148d_train.libsvm"
-    val defaultOutput = "hdfs://tl-nn-tdw.tencent-distribute.com:54310/user/tdw_rachelsun/joyjxu/trained_models"
     val defaultJsonFile = "No json file parsed..."
     val defaultDataFormat = "org.apache.spark.ml.source.libsvm.LibSVMFileFormat"
 
@@ -61,18 +75,22 @@ object AutoJsonRunnerExamples {
     val actionType = params.getOrElse("actionType", "train")
     assert(actionType.equalsIgnoreCase("train"), "actionType should be train in hyper-parameter tuning")
     val jsonFile = params.getOrElse("jsonFile", defaultJsonFile)
-    val input = params.get("data").get
-    val modelPath = params.get("modelPath").get
-    val predict = params.get("predictPath").get
-    var numBatch = params.getOrElse("numBatch", "10").toInt
-    var maxIter = params.getOrElse("maxIter", "2").toInt
-    var lr = params.getOrElse("lr", "0.1").toDouble
+    val input = params("data")
+    val modelPath = params("modelPath")
+    val numClasses = params.getOrElse("numClasses", "2").toInt
     val numField = params.getOrElse("numField", "13").toInt
+
+    var numBatch = params.getOrElse("numBatch", "10").toInt
+    var maxIter = params.getOrElse("maxIter", "10").toInt
+    var lr = params.getOrElse("lr", "0.1").toDouble
+    var decayAlpha = params.getOrElse("decayAlpha", "0.001").toDouble
+    var decayBeta = params.getOrElse("decayBeta", "0.001").toDouble
+    var decayIntervals = params.getOrElse("decayIntervals", "100").toInt
 
     val tuneIter = params.getOrElse("ml.auto.tuner.iter", "10").toInt
     val minimize = false
     val surrogate = params.getOrElse("ml.auto.tuner.model", "GaussianProcess")
-    val config = params.get("ml.auto.tuner.params").get
+    val config = params("ml.auto.tuner.params")
 
     // init solver
     val cs: ConfigurationSpace = new ConfigurationSpace("cs")
@@ -105,6 +123,9 @@ object AutoJsonRunnerExamples {
     val trainData = splitData(0)
     val testData = splitData(1)
 
+    val classifier = new AngelClassifier()
+      .setModelJsonFile(jsonFile)
+
     (0 until tuneIter).foreach { iter =>
       println(s"==========Tuner Iteration[$iter]==========")
       val configs: Array[Configuration] = solver.suggest
@@ -113,16 +134,14 @@ object AutoJsonRunnerExamples {
         for (paramType <- solver.getParamTypes) {
           paramMap += (paramType._1 -> config.get(paramType._1))
         }
-        numBatch = paramMap.getOrElse("numBatch", numBatch.toDouble).toInt
-        maxIter = paramMap.getOrElse("maxIter", maxIter.toDouble).toInt
-        lr = paramMap.getOrElse("learningRate", lr).toFloat
-        val decayAlpha = paramMap.getOrElse("decayAlpha", 0.001)
-        val decayBeta = paramMap.getOrElse("decayBeta", 0.001)
-        val decayIntervals = paramMap.getOrElse("decayIntervals", 100.toDouble).toInt
+        numBatch = paramMap.getOrElse("numBatch", 10.toDouble).toInt
+        maxIter = paramMap.getOrElse("maxIter", 5.toDouble).toInt
+        lr = paramMap.getOrElse("learningRate", 0.1)
+        decayAlpha = paramMap.getOrElse("decayAlpha", 0.001)
+        decayBeta = paramMap.getOrElse("decayBeta", 0.001)
+        decayIntervals = paramMap.getOrElse("decayIntervals", 100.0).toInt
 
-        val classifier = new AngelClassifier()
-          .setModelJsonFile(jsonFile)
-          .setNumClass(2)
+        classifier.setNumClass(numClasses)
           .setNumField(numField)
           .setNumBatch(numBatch)
           .setMaxIter(maxIter)
@@ -134,21 +153,21 @@ object AutoJsonRunnerExamples {
         val model = classifier.fit(trainData)
 
         val metric = model.evaluate(testData).accuracy
-        solver.feed(config, metric)
+        println(s"metric at iteration $iter = $metric, best ever = ${solver.optimal._2}")
 
-        if ((minimize && metric < solver.optimal()._2)
-          || (!minimize && metric > solver.optimal()._2)) {
-          println(s"find a better configuration = ${config.getVector.toArray.mkString("@")}, " +
+        if ( (minimize && metric < solver.optimal._2)
+          || (!minimize && metric > solver.optimal._2)) {
+          println(s"find a better configuration = ${config.getVector.toArray.mkString("|")}, " +
+
             s"metric = $metric")
           model.write.overwrite().save(modelPath)
         }
+        solver.feed(config, metric)
       }
     }
 
-
     driverCtx.stopAngelAndPSAgent()
     spark.close()
-
   }
 }
 

@@ -17,12 +17,11 @@
 
 package com.tencent.angel.sona.graph
 
-
 import com.tencent.angel.sona.graph.kcore.KCore
 import com.tencent.angel.sona.graph.louvain.Louvain
 import com.tencent.angel.sona.graph.utils.GraphIO
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.types.{IntegerType, StructField, StructType}
+import org.apache.spark.sql.types.{ArrayType, IntegerType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext, SparkFunSuite}

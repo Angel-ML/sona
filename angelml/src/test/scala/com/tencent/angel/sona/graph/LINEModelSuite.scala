@@ -17,6 +17,7 @@
 
 package com.tencent.angel.sona.graph
 
+import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.{SparkConf, SparkContext, SparkFunSuite}
 import com.tencent.angel.sona.graph.embedding.Param
 import com.tencent.angel.sona.graph.embedding.line.LINEModel
@@ -28,11 +29,15 @@ import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 class LINEModelSuite extends SparkFunSuite {
+  private val LOCAL_FS = FileSystem.DEFAULT_FS
+  private val TMP_PATH = System.getProperty("java.io.tmpdir", "/tmp")
+
   private var spark: SparkSession = _
   private var sparkConf: SparkConf = _
   private var sc: SparkContext = _
   val input = "./data/angel/bc/edge"
-  val output = "file:///E://model/"
+  val output = LOCAL_FS + TMP_PATH + "/linemodel_v1"
+
   val numPartition = 1
   val lr = 0.025f
   val dim = 32

@@ -40,7 +40,7 @@
       <version>7.1.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.spark.angel</groupId>
+      <groupId>com.tencent.angel</groupId>
       <artifactId>core</artifactId>
       <version>${project.parent.version}</version>
       <exclusions>
