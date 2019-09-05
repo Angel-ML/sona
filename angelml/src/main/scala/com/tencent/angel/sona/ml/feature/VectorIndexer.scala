@@ -37,7 +37,7 @@ import org.apache.spark.sql.types.{StructField, StructType}
 import org.apache.spark.util.DatasetUtil
 import org.apache.spark.util.collection.OpenHashSet
 import org.apache.spark.linalg
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 
 /** Private trait for params for VectorIndexer and VectorIndexerModel */
 private[sona] trait VectorIndexerParams extends Params with HasInputCol with HasOutputCol
@@ -159,8 +159,8 @@ class VectorIndexer(override val uid: String)
     val dataType = new VectorUDT
     require(isDefined(inputCol), s"VectorIndexer requires input column parameter: $inputCol")
     require(isDefined(outputCol), s"VectorIndexer requires output column parameter: $outputCol")
-    SchemaUtils.checkColumnType(schema, $(inputCol), dataType)
-    SchemaUtils.appendColumn(schema, $(outputCol), dataType)
+    SONASchemaUtils.checkColumnType(schema, $(inputCol), dataType)
+    SONASchemaUtils.appendColumn(schema, $(outputCol), dataType)
   }
 
   override def copy(extra: ParamMap): VectorIndexer = defaultCopy(extra)
@@ -437,7 +437,7 @@ class VectorIndexerModel private[sona](
       s"VectorIndexerModel requires input column parameter: $inputCol")
     require(isDefined(outputCol),
       s"VectorIndexerModel requires output column parameter: $outputCol")
-    SchemaUtils.checkColumnType(schema, $(inputCol), dataType)
+    SONASchemaUtils.checkColumnType(schema, $(inputCol), dataType)
 
     // If the input metadata specifies numFeatures, compare with expected numFeatures.
     val origAttrGroup = AttributeGroup.fromStructField(schema($(inputCol)))

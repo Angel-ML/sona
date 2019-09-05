@@ -25,7 +25,7 @@ import com.tencent.angel.sona.ml.util._
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 
 
 /**
@@ -185,7 +185,7 @@ final class QuantileDiscretizer(override val uid: String)
     val existingFields = schema.fields
     var outputFields = existingFields
     inputColNames.zip(outputColNames).foreach { case (inputColName, outputColName) =>
-      SchemaUtils.checkNumericType(schema, inputColName)
+      SONASchemaUtils.checkNumericType(schema, inputColName)
       require(existingFields.forall(_.name != outputColName),
         s"Output column $outputColName already exists.")
       val attr = NominalAttribute.defaultAttr.withName(outputColName)

@@ -17,16 +17,16 @@
 
 package com.tencent.angel.sona.ml.source.dummy
 
-import org.apache.spark.sql.util.CaseInsensitiveMap
+import org.apache.spark.sql.util.SONACaseInsensitiveMap
 
 /**
  * Options for the Dummy data source.
  */
-private[dummy] class DummyOptions(@transient private val parameters: CaseInsensitiveMap[String])
+private[dummy] class DummyOptions(@transient private val parameters: SONACaseInsensitiveMap[String])
   extends Serializable {
   import DummyOptions._
 
-  def this(parameters: Map[String, String]) = this(CaseInsensitiveMap(parameters))
+  def this(parameters: Map[String, String]) = this(SONACaseInsensitiveMap(parameters))
 
   /**
    * Number of features. If unspecified or nonpositive, the number of features will be determined

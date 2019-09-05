@@ -23,7 +23,7 @@ package org.apache.spark.sql.util
   * nested case-insensitive map creation, otherwise the keys in the original map will become
   * case-insensitive in this scenario.
   */
-class CaseInsensitiveMap[T] private (val originalMap: Map[String, T]) extends Map[String, T]
+class SONACaseInsensitiveMap[T] private(val originalMap: Map[String, T]) extends Map[String, T]
   with Serializable {
 
   val keyLowerCasedMap = originalMap.map(kv => kv.copy(_1 = kv._1.toLowerCase))
@@ -33,19 +33,19 @@ class CaseInsensitiveMap[T] private (val originalMap: Map[String, T]) extends Ma
   override def contains(k: String): Boolean = keyLowerCasedMap.contains(k.toLowerCase)
 
   override def +[B1 >: T](kv: (String, B1)): Map[String, B1] = {
-    new CaseInsensitiveMap(originalMap + kv)
+    new SONACaseInsensitiveMap(originalMap + kv)
   }
 
   override def iterator: Iterator[(String, T)] = keyLowerCasedMap.iterator
 
   override def -(key: String): Map[String, T] = {
-    new CaseInsensitiveMap(originalMap.filterKeys(!_.equalsIgnoreCase(key)))
+    new SONACaseInsensitiveMap(originalMap.filterKeys(!_.equalsIgnoreCase(key)))
   }
 }
 
-object CaseInsensitiveMap {
-  def apply[T](params: Map[String, T]): CaseInsensitiveMap[T] = params match {
-    case caseSensitiveMap: CaseInsensitiveMap[T] => caseSensitiveMap
-    case _ => new CaseInsensitiveMap(params)
+object SONACaseInsensitiveMap {
+  def apply[T](params: Map[String, T]): SONACaseInsensitiveMap[T] = params match {
+    case caseSensitiveMap: SONACaseInsensitiveMap[T] => caseSensitiveMap
+    case _ => new SONACaseInsensitiveMap(params)
   }
 }

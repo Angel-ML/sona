@@ -28,7 +28,7 @@ import com.tencent.angel.sona.ml.param.shared.{HasFeaturesCol, HasLabelCol, HasO
 import com.tencent.angel.sona.ml.stat.Statistics
 import com.tencent.angel.sona.ml.stat.test.ChiSqTestResult
 import com.tencent.angel.sona.ml.util._
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
@@ -262,9 +262,9 @@ final class ChiSqSelector(override val uid: String)
         logWarning(s"Param $paramName will take no effect when selector type = ${$(selectorType)}.")
       }
     }
-    SchemaUtils.checkColumnType(schema, $(featuresCol), new VectorUDT)
-    SchemaUtils.checkNumericType(schema, $(labelCol))
-    SchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
+    SONASchemaUtils.checkColumnType(schema, $(featuresCol), new VectorUDT)
+    SONASchemaUtils.checkNumericType(schema, $(labelCol))
+    SONASchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
   }
 
 
@@ -328,7 +328,7 @@ final class ChiSqSelectorModel private[angel](
 
 
   override def transformSchema(schema: StructType): StructType = {
-    SchemaUtils.checkColumnType(schema, $(featuresCol), new VectorUDT)
+    SONASchemaUtils.checkColumnType(schema, $(featuresCol), new VectorUDT)
     val newField = prepOutputField(schema)
     val outputFields = schema.fields :+ newField
     StructType(outputFields)

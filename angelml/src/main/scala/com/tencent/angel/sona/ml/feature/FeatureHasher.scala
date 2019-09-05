@@ -24,7 +24,7 @@ import org.apache.spark.linalg.Vectors
 import com.tencent.angel.sona.ml.param.{BooleanParam, ParamMap, StringArrayParam}
 import com.tencent.angel.sona.ml.param.shared.{HasInputCols, HasNumFeatures, HasOutputCol}
 import com.tencent.angel.sona.ml.util._
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Dataset, Row}
@@ -252,7 +252,7 @@ class FeatureHasher(override val uid: String) extends Transformer
           s"Column $fieldName was ${dataType.catalogString}")
     }
     val attrGroup = new AttributeGroup($(outputCol), $(numFeature))
-    SchemaUtils.appendColumn(schema, attrGroup.toStructField)
+    SONASchemaUtils.appendColumn(schema, attrGroup.toStructField)
   }
 }
 

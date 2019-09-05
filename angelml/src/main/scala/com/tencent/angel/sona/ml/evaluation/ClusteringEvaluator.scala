@@ -28,7 +28,7 @@ import com.tencent.angel.sona.ml.util._
 import org.apache.spark.sql.{Column, DataFrame, Dataset}
 import org.apache.spark.sql.functions.{avg, col, udf}
 import org.apache.spark.sql.types.DoubleType
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.util.DatasetUtil
 
 
@@ -108,8 +108,8 @@ class ClusteringEvaluator(override val uid: String)
 
 
   override def evaluate(dataset: Dataset[_]): Double = {
-    SchemaUtils.validateVectorCompatibleColumn(dataset.schema, $(featuresCol))
-    SchemaUtils.checkNumericType(dataset.schema, $(predictionCol))
+    SONASchemaUtils.validateVectorCompatibleColumn(dataset.schema, $(featuresCol))
+    SONASchemaUtils.checkNumericType(dataset.schema, $(predictionCol))
 
     val vectorCol = DatasetUtil.columnToVector(dataset, $(featuresCol))
     val df = dataset.select(col($(predictionCol)),

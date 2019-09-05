@@ -27,7 +27,7 @@ import org.apache.spark.sql.Row
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.linalg
 import org.apache.spark.linalg.{BLAS, Matrices, Matrix, VectorUDT, Vectors}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 
 /**
   * :: Experimental ::
@@ -169,7 +169,7 @@ class BucketedRandomProjectionLSH(override val uid: String)
 
 
   override def transformSchema(schema: StructType): StructType = {
-    SchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
+    SONASchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
     validateAndTransformSchema(schema)
   }
 

@@ -29,7 +29,7 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DoubleType, StructField, StructType}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.util.DatasetUtil
 
 /**
@@ -204,14 +204,14 @@ final class Bucketizer(override val uid: String)
 
       var transformedSchema = schema
       $(inputCols).zip($(outputCols)).zipWithIndex.foreach { case ((inputCol, outputCol), idx) =>
-        SchemaUtils.checkNumericType(transformedSchema, inputCol)
-        transformedSchema = SchemaUtils.appendColumn(transformedSchema,
+        SONASchemaUtils.checkNumericType(transformedSchema, inputCol)
+        transformedSchema = SONASchemaUtils.appendColumn(transformedSchema,
           prepOutputField($(splitsArray)(idx), outputCol))
       }
       transformedSchema
     } else {
-      SchemaUtils.checkNumericType(schema, $(inputCol))
-      SchemaUtils.appendColumn(schema, prepOutputField($(splits), $(outputCol)))
+      SONASchemaUtils.checkNumericType(schema, $(inputCol))
+      SONASchemaUtils.appendColumn(schema, prepOutputField($(splits), $(outputCol)))
     }
   }
 

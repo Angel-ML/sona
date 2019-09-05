@@ -21,7 +21,7 @@ import com.tencent.angel.sona.ml.feature.LabeledPoint
 import org.apache.spark.linalg.VectorUDT
 import com.tencent.angel.sona.ml.{PredictionModel, Predictor, PredictorParams, feature}
 import com.tencent.angel.sona.ml.param.shared.HasRawPredictionCol
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DataType, StructType}
@@ -40,7 +40,7 @@ private[sona] trait ClassifierParams
                                                      fitting: Boolean,
                                                      featuresDataType: DataType): StructType = {
     val parentSchema = super.validateAndTransformSchema(schema, fitting, featuresDataType)
-    SchemaUtils.appendColumn(parentSchema, $(rawPredictionCol), new VectorUDT)
+    SONASchemaUtils.appendColumn(parentSchema, $(rawPredictionCol), new VectorUDT)
   }
 }
 

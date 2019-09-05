@@ -23,7 +23,7 @@ import com.tencent.angel.sona.ml.param.shared.{HasLabelCol, HasPredictionCol}
 import com.tencent.angel.sona.ml.util._
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.types.{DoubleType, FloatType}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 
 
 /**
@@ -65,8 +65,8 @@ final class RegressionEvaluator(override val uid: String)
 
   override def evaluate(dataset: Dataset[_]): Double = {
     val schema = dataset.schema
-    SchemaUtils.checkColumnTypes(schema, $(predictionCol), Seq(DoubleType, FloatType))
-    SchemaUtils.checkNumericType(schema, $(labelCol))
+    SONASchemaUtils.checkColumnTypes(schema, $(predictionCol), Seq(DoubleType, FloatType))
+    SONASchemaUtils.checkNumericType(schema, $(labelCol))
 
     val summary = new RegressionSummaryImpl(dataset.toDF(), $(predictionCol), $(labelCol))
     val metrics = summary.regMetrics

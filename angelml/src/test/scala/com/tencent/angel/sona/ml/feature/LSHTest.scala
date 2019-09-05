@@ -23,7 +23,7 @@ import org.apache.spark.linalg.VectorUDT
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.DataTypes
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.util.DataTypeUtil
 
 private[angel] object LSHTest {
@@ -68,7 +68,7 @@ private[angel] object LSHTest {
     MLTestingUtils.checkCopyAndUids(lsh, model)
 
     // Check output column type
-    SchemaUtils.checkColumnType(
+    SONASchemaUtils.checkColumnType(
       transformedData.schema, model.getOutputCol, DataTypes.createArrayType(new VectorUDT))
 
     // Check output column dimensions
@@ -160,7 +160,7 @@ private[angel] object LSHTest {
     // Compute actual
     val actual = model.approxSimilarityJoin(datasetA, datasetB, threshold)
 
-    SchemaUtils.checkColumnType(actual.schema, "distCol", DataTypes.DoubleType)
+    SONASchemaUtils.checkColumnType(actual.schema, "distCol", DataTypes.DoubleType)
     assert(
       DataTypeUtil.sameType(actual.schema.apply("datasetA").dataType,
         model.transformSchema(datasetA.schema)))

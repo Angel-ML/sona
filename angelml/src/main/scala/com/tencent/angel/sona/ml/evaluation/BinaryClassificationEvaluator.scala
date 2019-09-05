@@ -22,7 +22,7 @@ import org.apache.spark.linalg.VectorUDT
 import com.tencent.angel.sona.ml.param.{Param, ParamMap, ParamValidators}
 import com.tencent.angel.sona.ml.param.shared.{HasLabelCol, HasRawPredictionCol}
 import com.tencent.angel.sona.ml.util.{DefaultParamsReadable, DefaultParamsWritable, Identifiable}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.types.DoubleType
 
@@ -72,8 +72,8 @@ class BinaryClassificationEvaluator(override val uid: String)
 
   override def evaluate(dataset: Dataset[_]): Double = {
     val schema = dataset.schema
-    SchemaUtils.checkColumnTypes(schema, $(rawPredictionCol), Seq(DoubleType, new VectorUDT))
-    SchemaUtils.checkNumericType(schema, $(labelCol))
+    SONASchemaUtils.checkColumnTypes(schema, $(rawPredictionCol), Seq(DoubleType, new VectorUDT))
+    SONASchemaUtils.checkNumericType(schema, $(labelCol))
 
     val summary = new BinaryClassificationSummaryImpl(dataset.toDF(), $(rawPredictionCol), $(labelCol))
     val metrics = summary.binaryMetrics

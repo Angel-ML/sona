@@ -25,7 +25,7 @@ import com.tencent.angel.sona.ml.param.ParamMap
 import com.tencent.angel.sona.ml.param.shared.HasSeed
 import com.tencent.angel.sona.ml.util._
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 
 
 /**
@@ -161,7 +161,7 @@ class MinHashLSH(override val uid: String) extends LSH[MinHashLSHModel] with Has
 
 
   override def transformSchema(schema: StructType): StructType = {
-    SchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
+    SONASchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
     validateAndTransformSchema(schema)
   }
 

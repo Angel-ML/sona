@@ -22,7 +22,7 @@ import com.tencent.angel.sona.ml.param.{IntParam, ParamValidators}
 import com.tencent.angel.sona.ml.{Estimator, Model}
 import com.tencent.angel.sona.ml.param.shared.{HasInputCol, HasOutputCol}
 import com.tencent.angel.sona.ml.util._
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 
 import scala.util.Random
 import org.apache.spark.sql._
@@ -59,7 +59,7 @@ private[sona] trait LSHParams extends HasInputCol with HasOutputCol {
     * @return A derived schema with [[outputCol]] added.
     */
   protected[this] final def validateAndTransformSchema(schema: StructType): StructType = {
-    SchemaUtils.appendColumn(schema, $(outputCol), DataTypes.createArrayType(new VectorUDT))
+    SONASchemaUtils.appendColumn(schema, $(outputCol), DataTypes.createArrayType(new VectorUDT))
   }
 }
 

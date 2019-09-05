@@ -23,7 +23,7 @@ import com.tencent.angel.sona.ml.{Estimator, Model}
 import com.tencent.angel.sona.ml.param.{DoubleParam, Param, ParamMap, ParamValidators, Params}
 import com.tencent.angel.sona.ml.param.shared.{HasInputCols, HasOutputCols}
 import com.tencent.angel.sona.ml.util._
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.sql.{DataFrame, Dataset, Row}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
@@ -72,7 +72,7 @@ private[sona] trait ImputerParams extends Params with HasInputCols with HasOutpu
       s" and outputCols(${$(outputCols).length}) should have the same length")
     val outputFields = $(inputCols).zip($(outputCols)).map { case (inputCol, outputCol) =>
       val inputField = schema(inputCol)
-      SchemaUtils.checkColumnTypes(schema, inputCol, Seq(DoubleType, FloatType))
+      SONASchemaUtils.checkColumnTypes(schema, inputCol, Seq(DoubleType, FloatType))
       StructField(outputCol, inputField.dataType, inputField.nullable)
     }
     StructType(schema ++ outputFields)

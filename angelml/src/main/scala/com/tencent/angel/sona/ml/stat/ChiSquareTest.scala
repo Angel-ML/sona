@@ -20,7 +20,7 @@ package com.tencent.angel.sona.ml.stat
 import com.tencent.angel.sona.ml.feature.LabeledPoint
 import org.apache.spark.linalg
 import org.apache.spark.linalg.{VectorUDT, Vectors}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
 
@@ -64,8 +64,8 @@ object ChiSquareTest {
     val spark = dataset.sparkSession
     import spark.implicits._
 
-    SchemaUtils.checkColumnType(dataset.schema, featuresCol, new VectorUDT)
-    SchemaUtils.checkNumericType(dataset.schema, labelCol)
+    SONASchemaUtils.checkColumnType(dataset.schema, featuresCol, new VectorUDT)
+    SONASchemaUtils.checkNumericType(dataset.schema, labelCol)
     val rdd = dataset.select(col(labelCol).cast("double"), col(featuresCol)).as[(Double, linalg.Vector)]
       .rdd.map { case (label, features) => LabeledPoint(label, features) }
     val testResults = Statistics.chiSqTest(rdd)

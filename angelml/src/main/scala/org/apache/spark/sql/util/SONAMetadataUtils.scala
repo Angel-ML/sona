@@ -27,7 +27,7 @@ import scala.collection.immutable.HashMap
 /**
  * Helper utilities for algorithms using ML metadata
  */
-object MetadataUtils {
+object SONAMetadataUtils {
 
   /**
    * Examine a schema to identify the number of classes in a label column.

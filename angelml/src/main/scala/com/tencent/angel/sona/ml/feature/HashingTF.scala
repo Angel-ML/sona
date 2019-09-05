@@ -26,7 +26,7 @@ import org.apache.spark.SparkException
 import org.apache.spark.linalg.Vectors
 import org.apache.spark.sql.functions.{col, udf}
 import org.apache.spark.sql.types.{ArrayType, StructType}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.sql.{Compatible, DataFrame, Dataset}
 import org.apache.spark.unsafe.hash.Murmur3_x86_32._
 import org.apache.spark.unsafe.types.UTF8String
@@ -148,7 +148,7 @@ class HashingTF(override val uid: String)
     require(inputType.isInstanceOf[ArrayType],
       s"The input column must be ${Compatible.arrayTypeSimpleString}, but got ${inputType.catalogString}.")
     val attrGroup = new AttributeGroup($(outputCol), $(numFeatures))
-    SchemaUtils.appendColumn(schema, attrGroup.toStructField)
+    SONASchemaUtils.appendColumn(schema, attrGroup.toStructField)
   }
 
 
