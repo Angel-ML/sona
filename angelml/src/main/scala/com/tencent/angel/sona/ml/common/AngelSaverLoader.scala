@@ -44,12 +44,12 @@ object AngelSaverLoader {
       DefaultParamsWriter.saveMetadata(instance, path, sc)
 
       // 2. save angel model to s"angel_${instance.modelName}"
-      val angelModelPath = new Path(path, "angel").toString
+      val angelModelPath = new Path(path, "angel")
       instance.angelModel.saveModel(DriverContext.get().sparkMasterContext,
-        MLUtils.getHDFSPath(angelModelPath))
+        MLUtils.getHDFSPath(angelModelPath.toString))
 
       try {
-        val fs = FileSystem.newInstance(DriverContext.get().getAngelClient.getConf)
+        val fs = angelModelPath.getFileSystem(DriverContext.get().getAngelClient.getConf)
         val gjson = fs.create(new Path(angelModelPath, "graph.json"), true)
         val jsonStr = JsonUtils.toJsonConfStr(instance.sharedConf, instance.angelModel.graph)
         gjson.writeBytes(jsonStr)
