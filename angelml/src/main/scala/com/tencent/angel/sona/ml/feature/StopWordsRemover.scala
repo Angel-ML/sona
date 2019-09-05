@@ -26,7 +26,7 @@ import com.tencent.angel.sona.ml.util._
 import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.functions.{col, udf}
 import org.apache.spark.sql.types.{ArrayType, StringType, StructType}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.util.DataTypeUtil
 
 /**
@@ -121,7 +121,7 @@ class StopWordsRemover(override val uid: String)
     val inputType = schema($(inputCol)).dataType
     require(DataTypeUtil.sameType(inputType, ArrayType(StringType)), "Input type must be " +
       s"${ArrayType(StringType).catalogString} but got ${inputType.catalogString}.")
-    SchemaUtils.appendColumn(schema, $(outputCol), inputType, schema($(inputCol)).nullable)
+    SONASchemaUtils.appendColumn(schema, $(outputCol), inputType, schema($(inputCol)).nullable)
   }
 
   override def copy(extra: ParamMap): StopWordsRemover = defaultCopy(extra)

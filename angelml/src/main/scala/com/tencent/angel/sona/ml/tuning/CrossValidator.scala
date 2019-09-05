@@ -158,7 +158,7 @@ class CrossValidator(override val uid: String)
       }
 
       // Wait for metrics to be calculated
-      val foldMetrics = foldMetricFutures.map(ThreadUtils.awaitResult(_, Duration.Inf))
+      val foldMetrics = foldMetricFutures.map(ThreadUtil.awaitResult(_, Duration.Inf))
 
       // Unpersist training & validation set once all metrics have been produced
       trainingDataset.unpersist()

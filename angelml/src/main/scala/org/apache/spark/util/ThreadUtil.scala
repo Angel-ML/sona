@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.{MoreExecutors, ThreadFactoryBuilder}
 
 import org.apache.spark.SparkException
 
-object ThreadUtils {
+object ThreadUtil {
 
   private val sameThreadExecutionContext =
     ExecutionContext.fromExecutorService(MoreExecutors.sameThreadExecutor())
@@ -132,7 +132,7 @@ object ThreadUtils {
         // Combine the two stack traces, with a place holder just specifying that there
         // was a helper method used, without any further details of the helper
         val placeHolderStackElem = new StackTraceElement(
-          s"... run in separate thread using ${ThreadUtils.getClass.getName.stripSuffix("$")} ..",
+          s"... run in separate thread using ${ThreadUtil.getClass.getName.stripSuffix("$")} ..",
           " ", "", -1)
         val finalStackTrace = extraStackTrace ++ Seq(placeHolderStackElem) ++ baseStackTrace
 

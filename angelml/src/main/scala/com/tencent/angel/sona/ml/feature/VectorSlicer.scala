@@ -26,7 +26,7 @@ import com.tencent.angel.sona.ml.util._
 import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.util.{MetadataUtils, SchemaUtils}
+import org.apache.spark.sql.util.{SONAMetadataUtils, SONASchemaUtils}
 import org.apache.spark.util.DatasetUtil
 
 /**
@@ -135,7 +135,7 @@ final class VectorSlicer(override val uid: String)
 
   /** Get the feature indices in order: indices, names */
   private def getSelectedFeatureIndices(schema: StructType): Array[Long] = {
-    val nameFeatures = MetadataUtils.getFeatureIndicesFromNames(schema($(inputCol)), $(names))
+    val nameFeatures = SONAMetadataUtils.getFeatureIndicesFromNames(schema($(inputCol)), $(names))
     val indFeatures = $(indices)
     val numDistinctFeatures = (nameFeatures ++ indFeatures).distinct.length
     lazy val errMsg = "VectorSlicer requires indices and names to be disjoint" +
@@ -150,7 +150,7 @@ final class VectorSlicer(override val uid: String)
   override def transformSchema(schema: StructType): StructType = {
     require($(indices).length > 0 || $(names).length > 0,
       s"VectorSlicer requires that at least one feature be selected.")
-    SchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
+    SONASchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
 
     if (schema.fieldNames.contains($(outputCol))) {
       throw new IllegalArgumentException(s"Output column ${$(outputCol)} already exists.")

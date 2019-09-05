@@ -16,17 +16,17 @@
  */
 package com.tencent.angel.sona.ml.source.libffm
 
-import org.apache.spark.sql.util.CaseInsensitiveMap
+import org.apache.spark.sql.util.SONACaseInsensitiveMap
 
 /**
   * Options for the LibFFM data source.
   */
-private[libffm] class LibFFMOptions(@transient private val parameters: CaseInsensitiveMap[String])
+private[libffm] class LibFFMOptions(@transient private val parameters: SONACaseInsensitiveMap[String])
   extends Serializable {
 
   import LibFFMOptions._
 
-  def this(parameters: Map[String, String]) = this(CaseInsensitiveMap(parameters))
+  def this(parameters: Map[String, String]) = this(SONACaseInsensitiveMap(parameters))
 
   /**
     * Number of features. If unspecified or nonpositive, the number of features will be determined

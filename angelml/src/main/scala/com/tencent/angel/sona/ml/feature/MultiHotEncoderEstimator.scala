@@ -29,7 +29,7 @@ import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.expressions.UserDefinedFunction
 import org.apache.spark.sql.functions.{col, lit, udf}
 import org.apache.spark.sql.types.{DoubleType, StructField, StructType}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 
 
 /** Private trait for params and common methods for MultiHotEncoderEstimator and MultiHotEncoderModel */
@@ -82,7 +82,7 @@ private[angel] trait MultiHotEncoderBase extends Params with HasHandleInvalid
         s"output columns ${outputColNames.length}.")
 
     // Input columns must be NumericType.
-    inputColNames.foreach(SchemaUtils.checkNumericType(schema, _))
+    inputColNames.foreach(SONASchemaUtils.checkNumericType(schema, _))
 
     // Prepares output columns with proper attributes by examining input columns.
     val inputFields = $(inputCols).map(schema(_))
@@ -92,7 +92,7 @@ private[angel] trait MultiHotEncoderBase extends Params with HasHandleInvalid
         inputField, outputColName, dropLast, keepInvalid)
     }
     outputFields.foldLeft(schema) { case (newSchema, outputField) =>
-      SchemaUtils.appendColumn(newSchema, outputField)
+      SONASchemaUtils.appendColumn(newSchema, outputField)
     }
   }
 }

@@ -158,7 +158,7 @@ class TrainValidationSplit(override val uid: String)
     }
 
     // Wait for all metrics to be calculated
-    val metrics = metricFutures.map(ThreadUtils.awaitResult(_, Duration.Inf))
+    val metrics = metricFutures.map(ThreadUtil.awaitResult(_, Duration.Inf))
 
     // Unpersist training & validation set once all metrics have been produced
     trainingDataset.unpersist()

@@ -40,7 +40,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.storage.StorageLevel
 import org.apache.spark.util._
 import org.apache.spark.linalg
-import org.apache.spark.sql.util.MetadataUtils
+import org.apache.spark.sql.util.SONAMetadataUtils
 
 private[angel] trait ClassifierTypeTrait {
   // scalastyle:off structural.type
@@ -382,7 +382,7 @@ final class OneVsRest(
       // classes are assumed to be numbered from 0,...,maxLabelIndex
       maxLabelIndex.toInt + 1
     }
-    val numClasses = MetadataUtils.getNumClasses(labelSchema).fold(computeNumClasses())(identity)
+    val numClasses = SONAMetadataUtils.getNumClasses(labelSchema).fold(computeNumClasses())(identity)
     instr.logNumClasses(numClasses)
 
     val weightColIsUsed = isDefined(weightCol) && $(weightCol).nonEmpty && {
@@ -431,7 +431,7 @@ final class OneVsRest(
       }(executionContext)
     }
     val models = modelFutures
-      .map(ThreadUtils.awaitResult(_, Duration.Inf)).toArray[ClassificationModel[_, _]]
+      .map(ThreadUtil.awaitResult(_, Duration.Inf)).toArray[ClassificationModel[_, _]]
     instr.logNumFeatures(models.head.numFeatures)
 
     if (handlePersistence) {

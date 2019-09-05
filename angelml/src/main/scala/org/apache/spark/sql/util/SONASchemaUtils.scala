@@ -5,7 +5,7 @@ import org.apache.spark.sql.{AnalysisException, Compatible}
 import org.apache.spark.sql.catalyst.analysis._
 import org.apache.spark.sql.types.{ArrayType, DataType, DoubleType, FloatType, NumericType, StructField, StructType}
 
-object SchemaUtils {
+object SONASchemaUtils {
 
   /**
    * Checks if an input schema has duplicate column names. This throws an exception if the

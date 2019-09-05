@@ -22,7 +22,7 @@ import com.tencent.angel.sona.ml.attribute.{Attribute, AttributeGroup, NumericAt
 import com.tencent.angel.sona.ml.param.{BooleanParam, DoubleParam, IntParam, ParamMap, ParamValidators, Params}
 import com.tencent.angel.sona.ml.param.shared.{HasInputCol, HasOutputCol}
 import com.tencent.angel.sona.ml.util._
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.sql.{DataFrame, Dataset}
 import org.apache.spark.sql.functions._
@@ -95,8 +95,8 @@ private[sona] trait CountVectorizerParams extends Params with HasInputCol with H
   /** Validates and transforms the input schema. */
   protected def validateAndTransformSchema(schema: StructType): StructType = {
     val typeCandidates = List(new ArrayType(StringType, true), new ArrayType(StringType, false))
-    SchemaUtils.checkColumnTypes(schema, $(inputCol), typeCandidates)
-    SchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
+    SONASchemaUtils.checkColumnTypes(schema, $(inputCol), typeCandidates)
+    SONASchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
   }
 
   /**

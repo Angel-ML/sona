@@ -25,7 +25,7 @@ import org.apache.spark.linalg.{Vector, VectorUDT}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{DataType, DoubleType, StructType}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.sql.{DataFrame, Dataset, Row}
 import org.apache.spark.util.DatasetUtil
 
@@ -49,19 +49,19 @@ private[angel] trait PredictorParams extends Params
                                             fitting: Boolean,
                                             featuresDataType: DataType): StructType = {
     // TODO: Support casting Array[Double] and Array[Float] to Vector when FeaturesType = Vector
-    SchemaUtils.checkColumnType(schema, $(featuresCol), featuresDataType)
+    SONASchemaUtils.checkColumnType(schema, $(featuresCol), featuresDataType)
     if (fitting) {
-      SchemaUtils.checkNumericType(schema, $(labelCol))
+      SONASchemaUtils.checkNumericType(schema, $(labelCol))
 
       this match {
         case p: HasWeightCol =>
           if (isDefined(p.weightCol) && $(p.weightCol).nonEmpty) {
-            SchemaUtils.checkNumericType(schema, $(p.weightCol))
+            SONASchemaUtils.checkNumericType(schema, $(p.weightCol))
           }
         case _ =>
       }
     }
-    SchemaUtils.appendColumn(schema, $(predictionCol), DoubleType)
+    SONASchemaUtils.appendColumn(schema, $(predictionCol), DoubleType)
   }
 }
 

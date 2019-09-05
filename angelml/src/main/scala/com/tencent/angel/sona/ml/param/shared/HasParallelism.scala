@@ -20,7 +20,7 @@ package com.tencent.angel.sona.ml.param.shared
 import com.tencent.angel.sona.ml.param.{IntParam, ParamValidators, Params}
 
 import scala.concurrent.ExecutionContext
-import org.apache.spark.util.ThreadUtils
+import org.apache.spark.util.ThreadUtil
 
 /**
  * Trait to define a level of parallelism for algorithms that are able to use
@@ -50,9 +50,9 @@ import org.apache.spark.util.ThreadUtils
   private[angel] def getExecutionContext: ExecutionContext = {
     getParallelism match {
       case 1 =>
-        ThreadUtils.sameThread
+        ThreadUtil.sameThread
       case n =>
-        ExecutionContext.fromExecutorService(ThreadUtils
+        ExecutionContext.fromExecutorService(ThreadUtil
           .newDaemonCachedThreadPool(s"${this.getClass.getSimpleName}-thread-pool", n))
     }
   }

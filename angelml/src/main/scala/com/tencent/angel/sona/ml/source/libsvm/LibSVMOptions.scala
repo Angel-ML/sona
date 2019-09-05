@@ -17,17 +17,17 @@
 
 package com.tencent.angel.sona.ml.source.libsvm
 
-import org.apache.spark.sql.util.CaseInsensitiveMap
+import org.apache.spark.sql.util.SONACaseInsensitiveMap
 
 /**
  * Options for the LibSVM data source.
  */
-private[libsvm] class LibSVMOptions(@transient private val parameters: CaseInsensitiveMap[String])
+private[libsvm] class LibSVMOptions(@transient private val parameters: SONACaseInsensitiveMap[String])
   extends Serializable {
 
   import LibSVMOptions._
 
-  def this(parameters: Map[String, String]) = this(CaseInsensitiveMap(parameters))
+  def this(parameters: Map[String, String]) = this(SONACaseInsensitiveMap(parameters))
 
   /**
    * Number of features. If unspecified or nonpositive, the number of features will be determined

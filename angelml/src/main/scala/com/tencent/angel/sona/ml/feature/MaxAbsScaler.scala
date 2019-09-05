@@ -29,7 +29,7 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{StructField, StructType}
 import org.apache.spark.linalg
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 
 /**
   * Params for [[MaxAbsScaler]] and [[MaxAbsScalerModel]].
@@ -38,7 +38,7 @@ private[sona] trait MaxAbsScalerParams extends Params with HasInputCol with HasO
 
   /** Validates and transforms the input schema. */
   protected def validateAndTransformSchema(schema: StructType): StructType = {
-    SchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
+    SONASchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
     require(!schema.fieldNames.contains($(outputCol)),
       s"Output column ${$(outputCol)} already exists.")
     val outputFields = schema.fields :+ StructField($(outputCol), new VectorUDT, false)

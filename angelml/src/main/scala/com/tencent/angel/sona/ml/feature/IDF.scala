@@ -24,7 +24,7 @@ import org.apache.spark.linalg.{DenseVector, IntSparseVector, LongSparseVector, 
 import com.tencent.angel.sona.ml.param.{IntParam, ParamMap, ParamValidators, Params}
 import com.tencent.angel.sona.ml.param.shared.{HasInputCol, HasOutputCol}
 import com.tencent.angel.sona.ml.util._
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
@@ -55,8 +55,8 @@ private[sona] trait IDFBase extends Params with HasInputCol with HasOutputCol {
     * Validate and transform the input schema.
     */
   protected def validateAndTransformSchema(schema: StructType): StructType = {
-    SchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
-    SchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
+    SONASchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
+    SONASchemaUtils.appendColumn(schema, $(outputCol), new VectorUDT)
   }
 }
 

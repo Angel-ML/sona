@@ -21,7 +21,7 @@ import com.tencent.angel.sona.ml.evaluation.evaluating.MultiClassificationSummar
 import com.tencent.angel.sona.ml.param.{Param, ParamMap, ParamValidators}
 import com.tencent.angel.sona.ml.param.shared.{HasLabelCol, HasPredictionCol}
 import com.tencent.angel.sona.ml.util.{DefaultParamsReadable, DefaultParamsWritable, Identifiable}
-import org.apache.spark.sql.util.SchemaUtils
+import org.apache.spark.sql.util.SONASchemaUtils
 import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.types.DoubleType
 
@@ -71,8 +71,8 @@ class MulticlassClassificationEvaluator(override val uid: String)
 
   override def evaluate(dataset: Dataset[_]): Double = {
     val schema = dataset.schema
-    SchemaUtils.checkColumnType(schema, $(predictionCol), DoubleType)
-    SchemaUtils.checkNumericType(schema, $(labelCol))
+    SONASchemaUtils.checkColumnType(schema, $(predictionCol), DoubleType)
+    SONASchemaUtils.checkNumericType(schema, $(labelCol))
 
     val summary = new MultiClassificationSummaryImpl(dataset.toDF(), $(predictionCol), $(labelCol))
 
