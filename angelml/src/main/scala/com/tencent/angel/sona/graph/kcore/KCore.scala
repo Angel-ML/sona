@@ -34,13 +34,13 @@ class KCore(override val uid: String) extends Transformer
   override def transform(dataset: Dataset[_]): DataFrame = {
     val edges = dataset.select($(srcNodeIdCol), $(dstNodeIdCol)).rdd
       .map(row => (row.getLong(0), row.getLong(1)))
-      .filter(f => f._1 != f._2)
+      .filter(e => e._1 != e._2)
 
     edges.persist(StorageLevel.DISK_ONLY)
 
-    val maxId = edges.flatMap(f => Iterator(f._1, f._2)).max() + 1
-    val minId = edges.flatMap(f => Iterator(f._1, f._2)).min()
-    val index = edges.flatMap(f => Iterator(f._1, f._2))
+    val maxId = edges.map(e => math.max(e._1, e._2)).max() + 1
+    val minId = edges.map(e => math.min(e._1, e._2)).min()
+    val nodes = edges.flatMap(e => Iterator(e._1, e._2))
     val numEdges = edges.count()
 
     println(s"minId=$minId maxId=$maxId numEdges=$numEdges level=${$(storageLevel)}")
@@ -49,11 +49,11 @@ class KCore(override val uid: String) extends Transformer
     println("start to run ps")
     PSContext.getOrCreate(SparkContext.getOrCreate())
 
-    val model = KCorePSModel.fromMinMax(minId, maxId, index, $(psPartitionNum), $(useBalancePartition))
-    var graph = edges.flatMap(f => Iterator((f._1, f._2), (f._2, f._1)))
+    val model = KCorePSModel.fromMinMax(minId, maxId, nodes, $(psPartitionNum), $(useBalancePartition))
+    var graph = edges.flatMap(e => Iterator((e._1, e._2), (e._2, e._1)))
       .groupByKey($(partitionNum))
-      .mapPartitionsWithIndex((index, it) =>
-        Iterator(KCoreGraphPartition.apply(index, it)))
+      .mapPartitionsWithIndex((index, edgeIter) =>
+        Iterator(KCoreGraphPartition.apply(index, edgeIter)))
 
     graph.persist($(storageLevel))
     graph.foreachPartition(_ => Unit)
@@ -76,8 +76,8 @@ class KCore(override val uid: String) extends Transformer
       println(s"curIteration=$curIteration numMsgs=$numMsgs")
     } while (numMsgs > 0)
 
-    val retRDD = graph.map(_.save()).flatMap(f => f._1.zip(f._2))
-      .map(f => Row.fromSeq(Seq[Any](f._1, f._2)))
+    val retRDD = graph.map(_.save()).flatMap{case (nodes,cores) => nodes.zip(cores)}
+      .map(r => Row.fromSeq(Seq[Any](r._1, r._2)))
 
     dataset.sparkSession.createDataFrame(retRDD, transformSchema(dataset.schema))
   }
