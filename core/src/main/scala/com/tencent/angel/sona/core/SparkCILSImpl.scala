@@ -30,7 +30,7 @@ import com.tencent.angel.sona.core.{SparkMasterContext, SparkWorkerContext}
 
 
 // CILS: Create, Initial, Load, Save
-class SparkCILSImpl(val conf: SharedConf) extends CILSImpl{
+class SparkCILSImpl(val conf: SharedConf) extends CILSImpl {
 
   override def doCreate[T](mCtx: MatrixContext, envCtx: EnvContext[T]): Unit = {
     envCtx match {
