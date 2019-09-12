@@ -59,7 +59,6 @@ object JsonRunnerExamples {
     val lr = params.getOrElse("lr", "0.1").toFloat
     val numField = params.getOrElse("numField", "13").toInt
     val task = params.getOrElse("task", "classification")
-    // val master = params.getOrElse("master", "local")
 
     val spark = SparkSession.builder()
       .appName("AngelClassification")

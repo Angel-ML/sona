@@ -34,5 +34,5 @@ $SPARK_HOME/bin/spark-submit \
 	./../lib/angelml-${SONA_VERSION}.jar \
 	data:<input_path> \
 	modelPath:<output_path> \
-	jsonFile:./lr.json
+	jsonFile:./lr.json \
 	lr:0.1

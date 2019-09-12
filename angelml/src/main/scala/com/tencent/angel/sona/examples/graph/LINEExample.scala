@@ -36,7 +36,7 @@ object LINEExample {
   def main(args: Array[String]): Unit = {
     val params = SparkUtil.parse(args)
 
-    val conf = new SparkConf().setMaster("yarn-cluster").setAppName("LINE")
+    val conf = new SparkConf().setAppName("LINE")
     val sc = new SparkContext(conf)
 
     conf.set(AngelConf.ANGEL_PS_PARTITION_SOURCE_CLASS, classOf[PartitionSourceArray].getName)
