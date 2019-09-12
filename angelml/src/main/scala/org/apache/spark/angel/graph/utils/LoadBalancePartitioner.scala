@@ -64,7 +64,7 @@ abstract class AutoPartitioner(val bits: Int, numPartitions: Int) extends Serial
     println(limit)
     for (i <- 0 until size) {
       // keep each partition similar load and limit the range of each partition
-      if (current > per || ((sorted(i)._1 << bits - start > limit) && current > per / 2)) {
+      if (current > per || (((sorted(i)._1 << bits) - start > limit) && current > per / 2)) {
         val part = new PartContext(0, rowNum, start, sorted(i)._1 << bits, 0)
         println(s"part=${part} load=${current} range=${part.getEndCol - part.getStartCol}")
         ctx.addPart(part)
@@ -167,7 +167,7 @@ object LoadBalancePartitioner {
     println(limit)
     for (i <- 0 until size) {
       // keep each partition similar load and limit the range of each partition
-      if (current > per || ((sorted(i)._1 << bits - start > limit) && current > per / 2)) {
+      if (current > per || (((sorted(i)._1 << bits) - start > limit) && current > per / 2)) {
         val part = new PartContext(0, rowNum, start, sorted(i)._1 << bits, 0)
         println(s"part=${part} load=${current} range=${part.getEndCol - part.getStartCol}")
         ctx.addPart(part)
