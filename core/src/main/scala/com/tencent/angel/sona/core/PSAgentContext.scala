@@ -25,7 +25,7 @@ import org.apache.hadoop.util.ShutdownHookManager
 import org.apache.spark.TaskContext
 import org.apache.spark.internal.CompatibleLogging
 
-abstract class PSAgentContext(conf: SharedConf) extends CompatibleLogging{
+abstract class PSAgentContext(conf: SharedConf) extends CompatibleLogging with Serializable {
   @transient protected var psAgent: PSAgent = _
   @transient protected var stopAgentHookTask: Runnable = _
 

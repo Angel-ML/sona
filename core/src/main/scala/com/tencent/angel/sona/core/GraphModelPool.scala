@@ -18,12 +18,11 @@ package com.tencent.angel.sona.core
 
 import com.tencent.angel.mlcore.conf.SharedConf
 import com.tencent.angel.mlcore.variable.VarState
-import com.tencent.angel.sona.ml.AngelGraphModel
 import org.apache.spark.TaskContext
 
 import scala.collection.mutable
 
-class GraphModelPool(sparkEnvContext: SparkWorkerContext, numTask: Int) {
+class GraphModelPool(sparkEnvContext: SparkWorkerContext, numTask: Int) extends Serializable {
   @transient private lazy val modelQueue = new mutable.Queue[AngelGraphModel]()
   @transient private lazy val usedMap = new mutable.HashMap[Long, AngelGraphModel]()
 

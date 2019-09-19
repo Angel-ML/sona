@@ -14,4 +14,4 @@ Spark on Angel将频繁更新的聚类中心分布式地保存在Angel PS上，�
 
 下图是KMeans在Spark on Angel上的实现框架
 
-![](../../img/sona_kmeans.png)
+![](../imgs/sona_kmeans.png)

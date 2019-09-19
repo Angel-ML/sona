@@ -1,4 +1,3 @@
-org.apache.spark.angel.ml.source.libsvm.LibSVMFileFormat
-org.apache.spark.angel.ml.source.libffm.LibFFMFileFormat
-org.apache.spark.angel.ml.source.dummy.DummyFileFormat
-org.apache.spark.angel.ml.source.image.ImageFileFormat
+com.tencent.angel.sona.ml.source.libsvm.LibSVMFileFormat
+com.tencent.angel.sona.ml.source.libffm.LibFFMFileFormat
+com.tencent.angel.sona.ml.source.dummy.DummyFileFormat

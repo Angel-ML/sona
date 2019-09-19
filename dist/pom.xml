@@ -22,7 +22,7 @@
 
   <!-- parent coordinates -->
   <parent>
-    <groupId>org.apache.spark.angel</groupId>
+    <groupId>com.tencent.angel</groupId>
     <artifactId>sona</artifactId>
     <version>0.1.0</version>
   </parent>

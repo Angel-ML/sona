@@ -14,7 +14,7 @@ We only provide the implementation of the second phase  here.
 ## Distributed Implemention
 
 The  Word2Vec algorithm used for Network Embedding needs to handle network with billion nodes.  We implement  the SkipGram model with negative sampling optimization according to  Yahoo's paper[[1]](https://arxiv.org/abs/1606.08495)
-![line_structure](../../img/line_structure.png)
+![line_structure](../imgs/line_structure.png)
 
 ## Running
 ### Algorithm IO parameters

@@ -25,7 +25,7 @@ import org.apache.spark.sql.SPKSQLUtils
 import scala.language.implicitConversions
 
 case class ExecutorContext(conf: SharedConf, numTask: Int)
-  extends PSAgentContext(conf) with Serializable with CompatibleLogging {
+  extends PSAgentContext(conf) with CompatibleLogging with Serializable{
 
   @transient override lazy val sparkWorkerContext: SparkWorkerContext = {
     if (psAgent == null) {

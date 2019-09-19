@@ -129,7 +129,7 @@ To submit a training job:
     --num-executors 10 \  
     --executor-cores 1 \  
     --executor-memory 10g \   
-    --class org.apache.spark.angel.ml.tree.gbdt.predict.GBDTPredictor \  
+    --class com.tencent.angel.sona.tree.gbdt.predict.GBDTPredictor \  
     angelml-${SONA_VERSION}.jar \   
     ml.train.path:XXX ml.valid.path:XXX ml.model.path:XXX \  
     ml.gbdt.parallel.mode:fp \ 
@@ -156,7 +156,7 @@ To submit a prediction job:
       --num-executors 10 \  
       --executor-cores 1 \  
       --executor-memory 10g \   
-      --class org.apache.spark.angel.ml.tree.gbdt.predict.GBDTPredictor \  
+      --class com.tencent.angel.sona.tree.gbdt.predict.GBDTPredictor \  
       angelml-${SONA_VERSION}.jar \
       ml.model.path:XXX ml.predict.input.path:XXX ml.predict.output.path:XXX
 ```

@@ -13,7 +13,7 @@ export SPARK_HOME=
 export SONA_HOME=
 export SONA_HDFS_HOME=
 export SONA_VERSION=0.1.0
-export ANGEL_VERSION=3.0.0
+export ANGEL_VERSION=3.0.1
 export ANGEL_UTILS_VERSION=0.1.1
 
 
@@ -26,6 +26,9 @@ sona_external_jar=fastutil-7.1.0.jar,htrace-core-2.05.jar,sizeof-0.3.0.jar,kryo-
 
 dist_jar=${angel_ps_external_jar},${angel_ps_jar},${scala_jar},${sona_jar}
 local_jar=${sona_external_jar},${angel_ps_jar},${sona_jar}
+
+unset SONA_ANGEL_JARS
+unset SONA_SPARK_JARS
 
 for f in `echo $dist_jar | awk -F, '{for(i=1; i<=NF; i++){ print $i}}'`; do
 	jar=${SONA_HDFS_HOME}/lib/${f}

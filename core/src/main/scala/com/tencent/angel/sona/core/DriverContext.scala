@@ -33,7 +33,8 @@ import org.apache.spark.{SparkConf, SparkException}
 
 import scala.collection.mutable
 
-class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configuration) extends PSAgentContext(sharedConf) {
+class DriverContext private(val sharedConf: SharedConf, val hadoopConf: Configuration)
+  extends PSAgentContext(sharedConf) with Serializable {
   private var angelContext: AngelContext = _
   private var angelClient: AngelPSClient = _
   private var stopAngelHookTask: Runnable = _
