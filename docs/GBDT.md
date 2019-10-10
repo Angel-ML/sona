@@ -117,47 +117,55 @@ To submit a job, the format of passing parameters should be "key:value". For ins
 > **_Note:_**  Training with full hessian matrices requires to store the hessian matrices of all training instances, which will lead to high memory consumption and computation overhead. While training with diagoal hessian matrices can empirically achieve comparable or even higher accuracy. Therefore, unless the number of classes is small and strong inter-class relationship exists, please do NOT use full hessian matrices.
 
 ### Submitting Scripts
+after install sona(see: [sona quick start](./tutorials/sona_quick_start.md)), then ```cd sona-${SONA_VERSION}-bin```, create a script as follows to submit a job:
 
 To submit a training job:
 
 ```shell
-./spark-submit \
+source ./bin/spark-on-angel-env.sh
+
+$SPARK_HOME/bin/spark-submit \
     --master yarn --deploy-mode cluster \
     --name "GBDT on Spark-on-Angel" \
     --queue $queue \
-    --driver-memory 5g \  
-    --num-executors 10 \  
-    --executor-cores 1 \  
-    --executor-memory 10g \   
-    --class com.tencent.angel.sona.tree.gbdt.predict.GBDTPredictor \  
-    angelml-${SONA_VERSION}.jar \   
-    ml.train.path:XXX ml.valid.path:XXX ml.model.path:XXX \  
-    ml.gbdt.parallel.mode:fp \ 
+    --driver-memory 1g \
+    --num-executors 1 \
+    --executor-cores 1 \
+    --executor-memory 1g \
+    --class com.tencent.angel.sona.tree.gbdt.train.GBDTTrainer \
+    angelml-${SONA_VERSION}.jar \
+    ml.train.path:hdfs://.../agaricus/agaricus_127d_train.libsvm \
+    ml.valid.path:hdfs://.../agaricus/agaricus_127d_train.libsvm \
+    ml.model.path:XXX \
+    ml.gbdt.parallel.mode:fp \
     ml.gbdt.importance.type:total_gain \
     ml.gbdt.task.type:classification \
     ml.gbdt.loss.func:binary:logistic \
-    ml.gbdt.eval.metric:log-loss,error,auc \  
+    ml.gbdt.eval.metric:log-loss,error,auc \
     ml.num.class:2 \
-    ml.feature.index.range:100 \ 
-    ml.instance.sample.ratio:0.8 \ 
-    ml.feature.sample.ratio:0.8 \ 
-    ml.gbdt.round.num:100 \
-    ml.learn.rate:0.05    
+    ml.feature.index.range:128 \
+    ml.instance.sample.ratio:0.8 \
+    ml.feature.sample.ratio:0.8 \
+    ml.gbdt.round.num:10 \
+    ml.learn.rate:0.05
 ```
 
 To submit a prediction job:
 
 ```shell
-./spark-submit \
-      --master yarn --deploy-mode cluster \ 
+source ./bin/spark-on-angel-env.sh
+
+$SPARK_HOME/bin/spark-submit \
+      --master yarn --deploy-mode cluster \
       --name "GBDT on Spark-on-Angel" \
       --queue $queue \
-      --driver-memory 5g \  
-      --num-executors 10 \  
-      --executor-cores 1 \  
-      --executor-memory 10g \   
-      --class com.tencent.angel.sona.tree.gbdt.predict.GBDTPredictor \  
+      --driver-memory 1g \
+      --num-executors 1 \
+      --executor-cores 1 \
+      --executor-memory 1g \
+      --class com.tencent.angel.sona.tree.gbdt.predict.GBDTPredictor \
       angelml-${SONA_VERSION}.jar \
       ml.model.path:XXX ml.predict.input.path:XXX ml.predict.output.path:XXX
 ```
 
+**notice:** the resource such as: driver-memory, num-executors, executor-cores and executor-memory dependence on your data size, please adjust them when you change the dataset.
