@@ -66,7 +66,7 @@ object LocalGBDTExample {
       case s => throw new IllegalArgumentException(s"Unsupported task type: $s, " +
         s"please input 'classification' or 'regression'")
     }
-    val numClass = if (isRegression) 2 else params.getOrElse(ML_NUM_CLASS, DEFAULT_ML_NUM_CLASS.toString).toInt
+    val numClass = if (isRegression) 2 else params.getOrElse(ML_NUM_CLASS, "2").toInt
     val (fullHessian, multiTree) = if (!isRegression && numClass > 2) {
       val fh = params.getOrElse(ML_GBDT_FULL_HESSIAN, DEFAULT_ML_GBDT_FULL_HESSIAN.toString).toBoolean
       val mt = params.getOrElse(ML_GBDT_MULTI_TREE, DEFAULT_ML_GBDT_MULTI_TREE.toString).toBoolean
@@ -75,9 +75,9 @@ object LocalGBDTExample {
     } else {
       (false, false)
     }
-    val numFeature = params(ML_NUM_FEATURE).toInt
+    val numFeature = params.getOrElse(ML_NUM_FEATURE, "128").toInt
     val numRound = params.getOrElse(ML_GBDT_ROUND_NUM, DEFAULT_ML_GBDT_ROUND_NUM.toString).toInt
-    val initLearningRate = params.getOrElse(ML_INIT_LEARN_RATE, DEFAULT_ML_INIT_LEARN_RATE.toString).toFloat
+    val initLearningRate = params.getOrElse(ML_INIT_LEARN_RATE, "0.5").toFloat
     val maxDepth = params.getOrElse(ML_GBDT_MAX_DEPTH, DEFAULT_ML_GBDT_MAX_DEPTH.toString).toInt
     val treeNodeNum = MathUtil.maxNodeNum(maxDepth)
     val maxNodeNum = params.getOrElse(ML_GBDT_MAX_NODE_NUM, treeNodeNum.toString).toInt min treeNodeNum
@@ -89,19 +89,19 @@ object LocalGBDTExample {
     val regAlpha = params.getOrElse(ML_GBDT_REG_ALPHA, DEFAULT_ML_GBDT_REG_ALPHA.toString).toFloat
     val regLambda = params.getOrElse(ML_GBDT_REG_LAMBDA, DEFAULT_ML_GBDT_REG_LAMBDA.toString).toFloat max 1.0f
     val maxLeafWeight = params.getOrElse(ML_GBDT_MAX_LEAF_WEIGHT, DEFAULT_ML_GBDT_MAX_LEAF_WEIGHT.toString).toFloat
-    val insSampleRatio = params.getOrElse(ML_INSTANCE_SAMPLE_RATIO, DEFAULT_ML_INSTANCE_SAMPLE_RATIO.toString).toFloat
+    val insSampleRatio = params.getOrElse(ML_INSTANCE_SAMPLE_RATIO, "0.9").toFloat
     val featSampleRatio = params.getOrElse(ML_FEATURE_SAMPLE_RATIO, DEFAULT_ML_FEATURE_SAMPLE_RATIO.toString).toFloat
     val (lossFunc, evalMetrics) = if (isRegression) {
       // for regression task, use RMSE loss
       ("rmse", Array("rmse"))
     } else {
       // get loss function
-      val loss = params(ML_LOSS_FUNCTION)
+      val loss = params.getOrElse(ML_LOSS_FUNCTION, "binary:logistic")
       // ensure that the loss function fits #class & get default eval metric
       val defaultMetric = (if (numClass == 2) ObjectiveFactory.getBinaryLoss(loss)
       else ObjectiveFactory.getMultiLoss(loss)).defaultEvalMetric().toString
       // get eval metric
-      var metrics = params.getOrElse(ML_EVAL_METRIC, defaultMetric)
+      var metrics = params.getOrElse(ML_EVAL_METRIC, "error")
         .split(",").map(_.trim).filter(_.nonEmpty)
       // we may schedule learning rate w.r.t. to default metric
       metrics = defaultMetric +: metrics.filter(_ != defaultMetric)
@@ -150,9 +150,9 @@ object LocalGBDTExample {
         throw new IllegalArgumentException(s"Unrecognizable parallel mode: $mode")
     }
 
-    val trainInput = params(ML_TRAIN_DATA_PATH)
-    val validInput = params(ML_VALID_DATA_PATH)
-    val modelPath = params(ML_MODEL_PATH)
+    val trainInput = params.getOrElse(ML_TRAIN_DATA_PATH, "data/angel/agaricus/agaricus_127d_train.libsvm")
+    val validInput = params.getOrElse(ML_VALID_DATA_PATH, "data/angel/agaricus/agaricus_127d_test.libsvm")
+    val modelPath = params.getOrElse(ML_MODEL_PATH, "file:///file/model/gbdt")
     val importanceType = params.getOrElse(ML_GBDT_IMPORTANCE_TYPE, DEFAULT_ML_GBDT_IMPORTANCE_TYPE)
     FeatureImportance.ensureImportanceType(importanceType)
 
