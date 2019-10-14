@@ -189,6 +189,7 @@ class DPGBDTTrainer(param: GBDTParam) extends GBDTTrainer(param) {
         // in order to merge quantile sketches on workers,
         // change the sketches into (workerId, Array[sketch]) format
         val fidToGroupId = bcFidToGroupId.value
+        val groupSizes = bcGroupSizes.value
         val groups = Array.ofDim[Array[HeapQuantileSketch]](numWorker)
         val curIds = Array.ofDim[Int](numWorker)
         for (workerId <- 0 until numWorker) {
@@ -289,6 +290,110 @@ class DPGBDTTrainer(param: GBDTParam) extends GBDTTrainer(param) {
       s"${System.currentTimeMillis() - initWorkerStart} ms, " +
       s"$numTrain train data, $numValid valid data")
     trainSet.unpersist()
+
+    this.bcFidToGroupId = bcFidToGroupId
+    this.bcGroupIdToFid = bcGroupIdToFid
+    this.bcGroupSizes = bcGroupSizes
+    this.workers = workers
+    println(s"Initialization done, cost ${System.currentTimeMillis() - initStart} ms in total")
+  }
+
+  override protected def initializeTwoRound(trainInput: String, validInput: String,
+                                            numWorker: Int, numThread: Int)
+                                           (implicit sc: SparkContext): Unit = {
+    println("Start to initialize workers")
+    println("Loading training data in two rounds")
+    val initStart = System.currentTimeMillis()
+    val bcParam = sc.broadcast(param)
+    val numFeature = param.regTParam.numFeature
+    val numClass = param.numClass
+    val numSplit = param.regTParam.numSplit
+
+    // 1. Partition features into groups,
+    // get feature id to group id mapping and inverted indexing
+    val featGroupStart = System.currentTimeMillis()
+    val (fidToGroupId, groupIdToFid) = GBDTTrainer.hashFeatureGrouping(numFeature, numWorker)
+    val groupSizes = Array.ofDim[Int](numWorker)
+    for (fid <- 0 until numFeature) {
+      val groupId = fidToGroupId(fid)
+      groupSizes(groupId) += 1
+    }
+    val bcFidToGroupId = sc.broadcast(fidToGroupId)
+    val bcGroupIdToFid = sc.broadcast(groupIdToFid)
+    val bcGroupSizes = sc.broadcast(groupSizes)
+    println(s"Hash feature grouping cost ${System.currentTimeMillis() - featGroupStart} ms")
+
+    // 2. create feature info
+    val getSplitsStart = System.currentTimeMillis()
+    val isCategorical = Array.ofDim[Boolean](numFeature)
+    val splits = Array.ofDim[Array[Float]](numFeature)
+    val groupNNZ = Array.ofDim[Int](numWorker)
+    Dataset.getSplitsFromTextFile(trainInput, numFeature, numWorker, numSplit,
+      bcFidToGroupId, bcGroupSizes).foreach {
+      case (groupId, groupSplits) =>
+        // restore feature id based on column grouping info
+        // and set splits to corresponding feature
+        val newFidToFid = groupIdToFid(groupId)
+        groupSplits.view.zipWithIndex.foreach {
+          case ((fIsCategorical, fSplits, nnz), newFid) =>
+            val fid = newFidToFid(newFid)
+            isCategorical(fid) = fIsCategorical
+            splits(fid) = fSplits
+            groupNNZ(groupId) += nnz
+        }
+    }
+    val featureInfo = FeatureInfo(isCategorical, splits)
+    val bcFeatureInfo = sc.broadcast(featureInfo)
+    println(s"Create feature info cost ${System.currentTimeMillis() - getSplitsStart} ms")
+    println("Feature info: " + (groupSizes, groupNNZ, 0 until numWorker).zipped.map {
+      case (size, nnz, groupId) => s"(group[$groupId] #feature[$size] #nnz[$nnz])"
+    }.mkString(" "))
+
+    // 3. train data loading and binning, valid data loading, initialize workers
+    val initWorkerStart = System.currentTimeMillis()
+    val trainSet = Dataset.horizontalPartitionAndBinning(trainInput, numWorker, bcFeatureInfo)
+    val validSet = DataLoader.loadLibsvm(validInput, numFeature).repartition(numWorker)
+    val workers = trainSet.zipPartitions(validSet, preservesPartitioning = true)(
+      (trainIter, validIter) => {
+        // training dataset, turn feature values into histogram bin indexes
+        val train = trainIter.toArray
+        require(train.length == 1)
+        val workerId = train.head._2.id
+        val featureInfo = bcFeatureInfo.value
+        val trainData = train.head._2
+        val trainLabels = train.head._1
+        // validation dataset
+        val valid = validIter.toArray
+        val validData = valid.map(_._2)
+        val validLabels = valid.map(_._1.toFloat)
+        // ensure labels are 0-based indexes
+        if (!bcParam.value.isRegression) {
+          InstanceInfo.ensureLabel(trainLabels, numClass)
+          InstanceInfo.ensureLabel(validLabels, numClass)
+        }
+        // meta data
+        val insInfo = InstanceInfo(bcParam.value, trainData.size)
+        val featInfo = featureInfo
+        // init worker
+        val worker = new DPGBDTWorker(workerId, bcParam.value)
+        worker.initialize(trainLabels, trainData, validLabels, validData,
+          insInfo, featInfo)
+        GBDTWorker.putWorker(worker)
+        ConcurrentUtil.reset(numThread)
+        Iterator(workerId)
+      }
+    ).cache()
+    workers.foreach(workerId =>
+      println(s"Worker[$workerId] initialization done"))
+    val numTrain = workers.map(workerId =>
+      getWorker(workerId).numTrain
+    ).collect().sum
+    val numValid = workers.map(workerId =>
+      getWorker(workerId).numValid
+    ).collect().sum
+    println(s"Load data and initialize worker cost " +
+      s"${System.currentTimeMillis() - initWorkerStart} ms, " +
+      s"$numTrain train data, $numValid valid data")
 
     this.bcFidToGroupId = bcFidToGroupId
     this.bcGroupIdToFid = bcGroupIdToFid

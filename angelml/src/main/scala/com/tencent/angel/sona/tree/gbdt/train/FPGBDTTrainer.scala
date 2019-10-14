@@ -94,7 +94,7 @@ class FPGBDTTrainer(param: GBDTParam) extends GBDTTrainer(param) {
     // 2. load data from hdfs
     val loadStart = System.currentTimeMillis()
     val trainSet = Dataset.verticalPartition(
-      trainInput, fidToGroupId, fidToNewFid, numWorker
+      trainInput, numWorker, bcFidToGroupId, bcFidToNewFid
     ).cache()
     val numTrain = trainSet.map(_._1.length).collect().sum
     require(trainSet.map(_._2.size).collect().forall(_ == numTrain))
@@ -178,6 +178,144 @@ class FPGBDTTrainer(param: GBDTParam) extends GBDTTrainer(param) {
         worker.initialize(trainLabels, trainData, validLabels, validData,
           insInfo, featInfo)
         GBDTWorker.putWorker(worker)
+        ConcurrentUtil.reset(numThread)
+        Iterator(workerId)
+      }
+    ).cache()
+    workers.foreach(workerId =>
+      println(s"Worker[$workerId] initialization done"))
+    val numValid = workers.map(workerId => {
+      val worker = getWorker(workerId)
+      require(worker.numTrain == numTrain)
+      worker.numValid
+    }).collect().sum
+    println(s"Load valid data and initialize worker cost " +
+      s"${System.currentTimeMillis() - initWorkerStart} ms, " +
+      s"$numTrain train data, $numValid valid data")
+    trainSet.unpersist()
+
+    this.bcFidToGroupId = bcFidToGroupId
+    this.bcGroupIdToFid = bcGroupIdToFid
+    this.bcFidToNewFid = bcFidToNewFid
+    this.bcGroupSizes = bcGroupSizes
+    this.workers = workers
+    println(s"Initialization done, cost ${System.currentTimeMillis() - initStart} ms in total")
+  }
+
+  override protected def initializeTwoRound(trainInput: String, validInput: String,
+                                            numWorker: Int, numThread: Int)
+                                           (implicit sc: SparkContext): Unit = {
+    println("Start to initialize workers")
+    println("Loading training data in two rounds")
+    val initStart = System.currentTimeMillis()
+    val bcParam = sc.broadcast(param)
+    val numFeature = param.regTParam.numFeature
+    val numClass = param.numClass
+    val numSplit = param.regTParam.numSplit
+
+    // 1. Partition features into groups,
+    // get feature id to group id mapping and inverted indexing
+    val featGroupStart = System.currentTimeMillis()
+    val (fidToGroupId, groupIdToFid) = GBDTTrainer.hashFeatureGrouping(numFeature, numWorker)
+    val groupSizes = Array.ofDim[Int](numWorker)
+    val fidToNewFid = Array.ofDim[Int](numFeature)
+    for (fid <- 0 until numFeature) {
+      val groupId = fidToGroupId(fid)
+      val newFid = groupSizes(groupId)
+      groupSizes(groupId) += 1
+      fidToNewFid(fid) = newFid
+    }
+    val bcFidToGroupId = sc.broadcast(fidToGroupId)
+    val bcGroupIdToFid = sc.broadcast(groupIdToFid)
+    val bcFidToNewFid = sc.broadcast(fidToNewFid)
+    val bcGroupSizes = sc.broadcast(groupSizes)
+    println(s"Hash feature grouping cost ${System.currentTimeMillis() - featGroupStart} ms")
+
+    // 2. create feature info
+    val getSplitsStart = System.currentTimeMillis()
+    val isCategorical = Array.ofDim[Boolean](numFeature)
+    val splits = Array.ofDim[Array[Float]](numFeature)
+    val groupNNZ = Array.ofDim[Int](numWorker)
+    Dataset.getSplitsFromTextFile(trainInput, numFeature, numWorker, numSplit,
+      bcFidToGroupId, bcGroupSizes).foreach {
+      case (groupId, groupSplits) =>
+        // restore feature id based on column grouping info
+        // and set splits to corresponding feature
+        val newFidToFid = groupIdToFid(groupId)
+        groupSplits.view.zipWithIndex.foreach {
+          case ((fIsCategorical, fSplits, nnz), newFid) =>
+            val fid = newFidToFid(newFid)
+            isCategorical(fid) = fIsCategorical
+            splits(fid) = fSplits
+            groupNNZ(groupId) += nnz
+        }
+    }
+    val featureInfo = FeatureInfo(isCategorical, splits)
+    val bcFeatureInfo = sc.broadcast(featureInfo)
+    println(s"Create feature info cost ${System.currentTimeMillis() - getSplitsStart} ms")
+    println("Feature info: " + (groupSizes, groupNNZ, 0 until numWorker).zipped.map {
+      case (size, nnz, groupId) => s"(group[$groupId] #feature[$size] #nnz[$nnz])"
+    }.mkString(" "))
+
+    // 3. data loading and binning
+    val loadStart = System.currentTimeMillis()
+    val trainSet = Dataset.verticalPartitionAndBinning(trainInput, numWorker,
+      bcFidToGroupId, bcFidToNewFid, bcFeatureInfo).mapPartitions(iterator => {
+      // training dataset
+      val train = iterator.toArray
+      require(train.length == 1)
+      val trainData = train.head._2
+      val trainPartLabels = train.head._1
+      val workerId = trainData.id
+      val worker = new FPGBDTWorker(workerId, bcParam.value)
+      worker.trainData = trainData
+      GBDTWorker.putWorker(worker)
+      Iterator((workerId, trainPartLabels))
+    }).cache()
+    val numTrain = trainSet.map(_._2.length).collect().sum
+    //require(trainSet.map(_._2.size).collect().forall(_ == numTrain))
+    println(s"Load $numTrain training data cost " +
+      s"${System.currentTimeMillis() - loadStart} ms")
+
+    // 4. collect labels, ensure 0-based indexed and broadcast
+    val labelStart = System.currentTimeMillis()
+    val labels = new Array[Float](numTrain)
+    val partLabels = trainSet.collect()
+    require(partLabels.map(_._1).distinct.length == partLabels.length)
+    var offset = 0
+    partLabels.sortBy(_._1).map(_._2).foreach(partLabel => {
+      Array.copy(partLabel, 0, labels, offset, partLabel.length)
+      offset += partLabel.length
+    })
+    if (!bcParam.value.isRegression) InstanceInfo.ensureLabel(labels, numClass)
+    val bcLabels = sc.broadcast(labels)
+    println(s"Collect labels cost ${System.currentTimeMillis() - labelStart} ms")
+
+    // 5. initialize workers
+    val initWorkerStart = System.currentTimeMillis()
+    val validSet = DataLoader.loadLibsvm(validInput, numFeature)
+      .repartition(numWorker)
+    val workers = trainSet.zipPartitions(validSet, preservesPartitioning = true)(
+      (trainIter, validIter) => {
+        val train = trainIter.toArray
+        require(train.length == 1)
+        val workerId = train.head._1
+        val worker = getWorker(workerId)
+        val trainData = worker.trainData
+        val trainLabel = bcLabels.value
+        val featureInfo = featureInfoOfGroup(bcFeatureInfo.value,
+          workerId, bcGroupIdToFid.value(workerId))
+        // validation dataset, ensure labels are 0-based indexed
+        val valid = validIter.toArray
+        val validData = valid.map(_._2)
+        val validLabels = valid.map(_._1.toFloat)
+        if (!bcParam.value.isRegression) InstanceInfo.ensureLabel(validLabels, numClass)
+        // meta data
+        val insInfo = InstanceInfo(bcParam.value, trainData.size)
+        val featInfo = featureInfo
+        // init worker
+        worker.initialize(trainLabel, trainData, validLabels, validData,
+          insInfo, featInfo)
         ConcurrentUtil.reset(numThread)
         Iterator(workerId)
       }

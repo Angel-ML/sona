@@ -47,6 +47,7 @@ object GBDTConf {
   val DEFAULT_ML_TASK_TYPE = "classification"
   val ML_GBDT_IMPORTANCE_TYPE = "ml.gbdt.importance.type"
   val DEFAULT_ML_GBDT_IMPORTANCE_TYPE = FeatureImportance.DEFAULT_ML_GBDT_IMPORTANCE_TYPE
+  val ML_GBDT_INIT_TWO_ROUND = "ml.gbdt.init.two.round"
   // Objective Conf
   val ML_GBDT_ROUND_NUM = "ml.gbdt.round.num"
   val DEFAULT_ML_GBDT_ROUND_NUM = GBDTParam.DEFAULT_NUM_ROUND

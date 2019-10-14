@@ -163,7 +163,8 @@ object GBDTTrainer {
     val importanceType = params.getOrElse(ML_GBDT_IMPORTANCE_TYPE, DEFAULT_ML_GBDT_IMPORTANCE_TYPE)
     FeatureImportance.ensureImportanceType(importanceType)
 
-    val model = trainer.fit(trainInput, validInput, numExecutors, numCores)
+    val model = trainer.fit(trainInput, validInput, numExecutors, numCores,
+      params.getOrElse(ML_GBDT_INIT_TWO_ROUND, "false").toBoolean)
     save(model, modelPath, importanceType)
   }
 
@@ -228,12 +229,17 @@ object GBDTTrainer {
 
 abstract class GBDTTrainer(param: GBDTParam) {
 
-  def fit(trainInput: String, validInput: String, numWorker: Int, numThread: Int)
+  def fit(trainInput: String, validInput: String,
+          numWorker: Int, numThread: Int,
+          initTwoRound: Boolean = false)
          (implicit sc: SparkContext): GBDTModel = {
     println(s"Training data path: $trainInput")
     println(s"Validation data path: $validInput")
     println(s"#workers[$numWorker], #threads[$numThread]")
-    initialize(trainInput, validInput, numWorker, numThread)
+    if (initTwoRound)
+      initializeTwoRound(trainInput, validInput, numWorker, numThread)
+    else
+      initialize(trainInput, validInput, numWorker, numThread)
     val model = train()
     shutdown()
     model
@@ -242,6 +248,10 @@ abstract class GBDTTrainer(param: GBDTParam) {
   protected def initialize(trainInput: String, validInput: String,
                            numWorker: Int, numThread: Int)
                           (implicit sc: SparkContext): Unit = ???
+
+  protected def initializeTwoRound(trainInput: String, validInput: String,
+                                   numWorker: Int, numThread: Int)
+                                  (implicit sc: SparkContext): Unit = ???
 
   protected def shutdown(): Unit = ???
 

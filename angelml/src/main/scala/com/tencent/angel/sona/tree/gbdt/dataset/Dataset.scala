@@ -23,20 +23,25 @@ import scala.collection.mutable.{ArrayBuilder => AB}
 import java.{util => ju}
 
 import com.tencent.angel.sona.tree.gbdt.metadata.FeatureInfo
+import com.tencent.angel.sona.tree.gbdt.train.GBDTTrainer
 import com.tencent.angel.sona.tree.stats.quantile.HeapQuantileSketch
 import com.tencent.angel.sona.tree.util.MathUtil
+import org.apache.spark.broadcast.Broadcast
 
 object Dataset extends Serializable {
 
   private val SPACE: Char = ' '
   private val COLON: Char = ':'
 
-  def verticalPartition(path: String, fidToWorkerId: Array[Int],
-                        fidToNewFid: Array[Int], numWorker: Int)
+  def verticalPartition(path: String, numWorker: Int,
+                        bcFidToWorkerId: Broadcast[Array[Int]],
+                        bcFidToNewFid: Broadcast[Array[Int]])
                        (implicit sc: SparkContext)
   : RDD[(Array[Float], Dataset[Int, Float])] = {
     val partitions = sc.textFile(path).repartition(numWorker)
       .mapPartitions(iterator => {
+        val fidToWorkerId = bcFidToWorkerId.value
+        val fidToNewFid = bcFidToNewFid.value
         // initialize placeholder
         val indices = Array.ofDim[AB.ofInt](numWorker)
         val values = Array.ofDim[AB.ofFloat](numWorker)
@@ -216,6 +221,266 @@ object Dataset extends Serializable {
       res.appendPartition(indices, bins, indexEnds)
     }
     res
+  }
+
+  def getSplitsFromTextFile(path: String, maxDim: Int,
+                            numWorker: Int, numSplit: Int,
+                            bcFidToGroupId: Broadcast[Array[Int]],
+                            bcGroupSizes: Broadcast[Array[Int]])
+                           (implicit sc: SparkContext)
+  : Array[(Int, Array[(Boolean, Array[Float], Int)])] = {
+    val sketchRDD = createSketchesFromTextFile(path, maxDim, numWorker)
+    mergeSketchesAndGetSplits(sketchRDD, numWorker, numSplit, bcFidToGroupId, bcGroupSizes)
+  }
+
+  def createSketchesFromTextFile(path: String, maxDim: Int, numWorker: Int)
+                                (implicit sc: SparkContext)
+  : RDD[Array[HeapQuantileSketch]] = {
+    // TODO: subsample a portion of data to create the quantile sketches
+    sc.textFile(path).coalesce(numWorker)
+      .mapPartitions(iterator => {
+        val sketches = Array.ofDim[HeapQuantileSketch](maxDim)
+        for (fid <- 0 until maxDim)
+          sketches(fid) = new HeapQuantileSketch()
+        while (iterator.hasNext) {
+          val line = iterator.next().trim
+          if (!(line.isEmpty || line.startsWith("#"))) {
+            val str = line.toCharArray
+            var start = 0
+            var end = 0
+            // skip instance label
+            while (end < str.length && str(end) != SPACE) end += 1
+            // parse instance (feature, value) pairs
+            while (end < str.length) {
+              start = end + 1
+              while (str(end) != COLON) end += 1
+              val fid = new String(str, start, end - start).trim.toInt
+              start = end + 1
+              while (end < str.length && str(end) != SPACE) end += 1
+              val fvalue = new String(str, start, end - start).trim.toFloat
+              sketches(fid).update(fvalue)
+            }
+          }
+        }
+        Iterator(sketches)
+      })
+  }
+
+  def mergeSketchesAndGetSplits(sketchRDD: RDD[Array[HeapQuantileSketch]],
+                                numWorker: Int, numSplit: Int,
+                                bcFidToGroupId: Broadcast[Array[Int]],
+                                bcGroupSizes: Broadcast[Array[Int]])
+                               (implicit sc: SparkContext)
+  : Array[(Int, Array[(Boolean, Array[Float], Int)])] = {
+    sketchRDD.mapPartitions(iterator => {
+      val sketches = iterator.next()
+      // in order to merge quantile sketches on workers,
+      // change the sketches into (workerId, Array[sketch]) format
+      val fidToGroupId = bcFidToGroupId.value
+      val groupSizes = bcGroupSizes.value
+      val groups = Array.ofDim[Array[HeapQuantileSketch]](numWorker)
+      val curIds = Array.ofDim[Int](numWorker)
+      for (workerId <- 0 until numWorker) {
+        groups(workerId) = Array.ofDim[HeapQuantileSketch](groupSizes(workerId))
+      }
+      for (fid <- sketches.indices) {
+        val targetId = fidToGroupId(fid)
+        val sketch = if (sketches(fid).isEmpty) null else sketches(fid)
+        groups(targetId)(curIds(targetId)) = sketch
+        curIds(targetId) += 1
+      }
+      (0 until numWorker).map(workerId =>
+        (workerId, groups(workerId))
+      ).iterator
+    }).partitionBy(new IdenticalPartitioner(numWorker))
+      .mapPartitions(iterator => {
+        // now each worker gets a portion of features
+        // it needs to merge the quantile sketches
+        // and gets the candidate splits
+        // return (isCategorical, candidate splits, nnz)
+        val (workerIds, sketches) = iterator.toArray.unzip
+        val workerId = workerIds.head
+        require(workerIds.forall(_ == workerId))
+        val groupSize = bcGroupSizes.value(workerId)
+        require(sketches.forall(_.length == groupSize))
+        val groupSplits = (0 until groupSize).map(i => {
+          var merged = sketches(0)(i)
+          for (srcWorkerId <- 1 until numWorker) {
+            val cur = sketches(srcWorkerId)(i)
+            if (cur != null) {
+              if (merged == null) merged = cur
+              else merged.merge(cur)
+            }
+          }
+          GBDTTrainer.getSplits(merged, numSplit)
+        }).toArray
+        Iterator((workerId, groupSplits))
+      }).collect()
+  }
+
+  def verticalPartitionAndBinning(path: String, numWorker: Int,
+                                  bcFidToWorkerId: Broadcast[Array[Int]],
+                                  bcFidToNewFid: Broadcast[Array[Int]],
+                                  bcFeatureInfo: Broadcast[FeatureInfo])
+                                 (implicit sc: SparkContext)
+  : RDD[(Array[Float], Dataset[Int, Int])] = {
+    val partitions = sc.textFile(path).repartition(numWorker)
+      .mapPartitions(iterator => {
+        val fidToWorkerId = bcFidToWorkerId.value
+        val fidToNewFid = bcFidToNewFid.value
+        val featureInfo = bcFeatureInfo.value
+        // initialize placeholder
+        val indices = Array.ofDim[AB.ofInt](numWorker)
+        val bins = Array.ofDim[AB.ofInt](numWorker)
+        val indexEnds = Array.ofDim[AB.ofInt](numWorker)
+        val labels = new AB.ofFloat
+        for (workerId <- 0 until numWorker) {
+          indices(workerId) = new AB.ofInt
+          bins(workerId) = new AB.ofInt
+          indexEnds(workerId) = new AB.ofInt
+        }
+        val curIndexEnds = Array.ofDim[Int](numWorker)
+        // iterate instances
+        while (iterator.hasNext) {
+          val line = iterator.next().trim
+          if (!(line.isEmpty || line.startsWith("#"))) {
+            val str = line.toCharArray
+            var start = 0
+            var end = 0
+            // parse instance label
+            while (end < str.length && str(end) != SPACE) end += 1
+            val label = new String(str, start, end - start).trim.toFloat
+            labels += label
+            // parse instance (feature, value) pairs
+            while (end < str.length) {
+              start = end + 1
+              while (str(end) != COLON) end += 1
+              val fid = new String(str, start, end - start).trim.toInt
+              start = end + 1
+              while (end < str.length && str(end) != SPACE) end += 1
+              val fvalue = new String(str, start, end - start).trim.toFloat
+              val binId = MathUtil.indexOf(featureInfo.getSplits(fid), fvalue)
+              val workerId = fidToWorkerId(fid)
+              val newFid = fidToNewFid(fid)
+              indices(workerId) += newFid
+              bins(workerId) += binId
+              curIndexEnds(workerId) += 1
+            }
+            // set worker indexEnds
+            for (workerId <- 0 until numWorker)
+              indexEnds(workerId) += curIndexEnds(workerId)
+          }
+        }
+
+        val partLabels = labels.result()
+        val partId = TaskContext.getPartitionId()
+        (0 until numWorker).map(workerId => {
+          val partIndices = indices(workerId).result()
+          val partBins = bins(workerId).result()
+          val partIndexEnds = indexEnds(workerId).result()
+          val partition = new Partition[Int, Int](
+            partIndices, partBins, partIndexEnds)
+          // in case memory is limited
+          indices(workerId) = null
+          bins(workerId) = null
+          indexEnds(workerId) = null
+          // result: (target workerId, (original workerId, labels, partition))
+          if (workerId == partId)
+            (workerId, (partId, partLabels, partition))
+          else
+            (workerId, (partId, null, partition))
+        }).iterator
+      })
+
+    partitions.partitionBy(new IdenticalPartitioner(numWorker))
+      .mapPartitions(iterator => {
+        val (workerIds, workerParts) = iterator.toArray.unzip
+        val workerId = workerIds.head
+        require(workerIds.forall(_ == workerId))
+        val oriPartId = workerParts.map(_._1)
+        require(oriPartId.distinct.length == oriPartId.length)
+        val sorted = workerParts.sortBy(_._1)
+        val partLabels = sorted.map(_._2)
+        require(partLabels.count(_ != null) == 1)
+        Iterator((partLabels.find(_ != null).get, Dataset[Int, Int](
+          workerId, sorted.map(_._3)
+        )))
+      })
+  }
+
+  def horizontalPartitionAndBinning(path: String, numWorker: Int,
+                                    bcFeatureInfo: Broadcast[FeatureInfo],
+                                    numPartPerWorkerOpt: Option[Int] = None)
+                                   (implicit sc: SparkContext)
+  : RDD[(Array[Float], Dataset[Int, Int])] = {
+    val numPartPerWorker = numPartPerWorkerOpt.getOrElse(numWorker)
+    sc.textFile(path).repartition(numWorker)
+      .mapPartitions(iterator => {
+        val featureInfo = bcFeatureInfo.value
+        // initialize placeholder
+        val indices = Array.ofDim[AB.ofInt](numPartPerWorker)
+        val bins = Array.ofDim[AB.ofInt](numPartPerWorker)
+        val indexEnds = Array.ofDim[AB.ofInt](numPartPerWorker)
+        val labels = Array.ofDim[AB.ofFloat](numPartPerWorker)
+        for (partId <- 0 until numPartPerWorker) {
+          indices(partId) = new AB.ofInt
+          bins(partId) = new AB.ofInt
+          indexEnds(partId) = new AB.ofInt
+          labels(partId) = new AB.ofFloat
+        }
+        val curIndexEnds = Array.ofDim[Int](numPartPerWorker)
+        var numIns = 0
+        var curPartId = 0
+        // iterate instances
+        while (iterator.hasNext) {
+          val line = iterator.next().trim
+          if (!(line.isEmpty || line.startsWith("#"))) {
+            val str = line.toCharArray
+            var start = 0
+            var end = 0
+            // parse instance label
+            while (end < str.length && str(end) != SPACE) end += 1
+            val label = new String(str, start, end - start).trim.toFloat
+            labels(curPartId) += label
+            // parse instance (feature, value) pairs
+            while (end < str.length) {
+              start = end + 1
+              while (str(end) != COLON) end += 1
+              val fid = new String(str, start, end - start).trim.toInt
+              start = end + 1
+              while (end < str.length && str(end) != SPACE) end += 1
+              val fvalue = new String(str, start, end - start).trim.toFloat
+              val binId = MathUtil.indexOf(featureInfo.getSplits(fid), fvalue)
+              indices(curPartId) += fid
+              bins(curPartId) += binId
+              curIndexEnds(curPartId) += 1
+            }
+            // set part indexEnds
+            indexEnds(curPartId) += curIndexEnds(curPartId)
+            // put instance to partitions in round-robin manner
+            numIns += 1
+            curPartId += 1
+            if (curPartId == numPartPerWorker)
+              curPartId = 0
+          }
+        }
+
+        val workerLabels = Array.ofDim[Float](numIns)
+        val workerParts = Array.ofDim[Partition[Int, Int]](numPartPerWorker)
+        var offset = 0
+        for (i <- 0 until numPartPerWorker) {
+          val partLabels = labels(i).result(); labels(i) = null
+          Array.copy(partLabels, 0, workerLabels, offset, partLabels.length)
+          offset += partLabels.length
+          val partIndices = indices(i).result(); indices(i) = null
+          val partBins = bins(i).result(); bins(i) = null
+          val partIndexEnds = indexEnds(i).result(); indexEnds(i) = null
+          workerParts(i) = Partition[Int, Int](partIndices, partBins, partIndexEnds)
+        }
+
+        val workerId = TaskContext.getPartitionId()
+        Iterator((workerLabels, Dataset[Int, Int](workerId, workerParts)))
+      })
   }
 
   def apply[@specialized(Byte, Short, Int, Long, Float, Double) K,
