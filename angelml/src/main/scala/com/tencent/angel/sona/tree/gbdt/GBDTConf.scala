@@ -29,6 +29,7 @@ object GBDTConf {
   val ML_VALID_DATA_PATH = "ml.valid.path"
   val ML_PREDICT_INPUT_PATH = "ml.predict.input.path"
   val ML_PREDICT_OUTPUT_PATH = "ml.predict.output.path"
+  val ML_DELETE_IF_EXISTS = "ml.delete.if.exists"
 
   /** -------------------- ML Conf -------------------- */
   val ML_NUM_CLASS = "ml.num.class"

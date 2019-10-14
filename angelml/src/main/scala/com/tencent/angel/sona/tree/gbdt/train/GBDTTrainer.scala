@@ -16,6 +16,7 @@
  */
 package com.tencent.angel.sona.tree.gbdt.train
 
+import com.tencent.angel.exception.AngelException
 import com.tencent.angel.sona.tree.gbdt.GBDTConf._
 import org.apache.hadoop.fs.Path
 import com.tencent.angel.sona.tree.gbdt.GBDTModel
@@ -163,16 +164,33 @@ object GBDTTrainer {
     val importanceType = params.getOrElse(ML_GBDT_IMPORTANCE_TYPE, DEFAULT_ML_GBDT_IMPORTANCE_TYPE)
     FeatureImportance.ensureImportanceType(importanceType)
 
+    val path = new Path(modelPath)
+    val fs = path.getFileSystem(sc.hadoopConfiguration)
+    if (fs.exists(path) && !params.getOrElse(ML_DELETE_IF_EXISTS, "true").toBoolean) {
+      throw new AngelException(s"Output path $modelPath already exists, " +
+        s"please delete it or set '$ML_DELETE_IF_EXISTS' as true to overwrite")
+    }
+
     val model = trainer.fit(trainInput, validInput, numExecutors, numCores,
       params.getOrElse(ML_GBDT_INIT_TWO_ROUND, "false").toBoolean)
-    save(model, modelPath, importanceType)
+    save(model, modelPath, importanceType,
+      params.getOrElse(ML_DELETE_IF_EXISTS, "true").toBoolean)
   }
 
-  def save(model: GBDTModel, basePath: String, importanceType: String)
-                        (implicit sc: SparkContext): Unit = {
+  def save(model: GBDTModel, basePath: String,
+           importanceType: String, deleteIfExist: Boolean = true)
+          (implicit sc: SparkContext): Unit = {
     val path = new Path(basePath)
     val fs = path.getFileSystem(sc.hadoopConfiguration)
-    if (fs.exists(path)) fs.delete(path, true)
+    if (fs.exists(path)) {
+      if (deleteIfExist) {
+        println(s"Output path $basePath already exists, deleting...")
+        fs.delete(path, true)
+      } else {
+        throw new AngelException(s"Output path $basePath already exists, " +
+          s"please delete it or set '$ML_DELETE_IF_EXISTS' as true to overwrite")
+      }
+    }
 
     val modelPath = basePath + "/model"
     println(s"Saving model to $modelPath")
