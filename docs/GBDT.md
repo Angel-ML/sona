@@ -74,6 +74,7 @@ To submit a job, the format of passing parameters should be "key:value". For ins
   * **ml.predict.input.path** Input path of data for prediction
   * **ml.predict.output.path** Output path of prediction
   * **ml.model.path** The path to save a model after training, or to load a model before prediction
+  * **ml.delete.if.exists** Delete the model/prediction output path if it already exists (*default* true)
 
 * **Task Parameters**
   * **ml.gbdt.task.type** Type of the task - "classification" or "regression"
@@ -84,6 +85,7 @@ To submit a job, the format of passing parameters should be "key:value". For ins
     * weight: the number of times a feature is used to split tree nodes
     * gain: the average gain a feature is used to split tree nodes
     * total_gain:  the total gain a feature is used to split tree nodes
+  * **ml.gbdt.init.two.round** Load data in two rounds for less memory occupancy (*default* false). Setting  this param as true will not affect the training performance, but may lead to longer initialization time.
   * **ml.num.class** Number of classes in classification task
   * **ml.feature.index.range** Dataset dimensionality
   * **ml.instance.sample.ratio** Instance sampling ratio between 0 and 1 (*default* 1)
