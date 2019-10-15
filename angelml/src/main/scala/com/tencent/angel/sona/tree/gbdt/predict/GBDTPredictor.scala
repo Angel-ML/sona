@@ -16,9 +16,11 @@
  */
 package com.tencent.angel.sona.tree.gbdt.predict
 
+import com.tencent.angel.exception.AngelException
 import com.tencent.angel.sona.tree.gbdt.GBDTConf._
 import com.tencent.angel.sona.tree.gbdt.GBDTModel
 import com.tencent.angel.sona.tree.util.DataLoader
+import org.apache.hadoop.fs.Path
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.ml.linalg.Vector
 import org.apache.spark.rdd.RDD
@@ -36,6 +38,18 @@ object GBDTPredictor {
     val modelPath = params(ML_MODEL_PATH)
     val inputPath = params(ML_PREDICT_INPUT_PATH)
     val outputPath = params(ML_PREDICT_OUTPUT_PATH)
+
+    val path = new Path(outputPath)
+    val fs = path.getFileSystem(sc.hadoopConfiguration)
+    if (fs.exists(path)) {
+      if (params.getOrElse(ML_DELETE_IF_EXISTS, "true").toBoolean) {
+        println(s"Output path $outputPath already exists, deleting...")
+        fs.delete(path, true)
+      } else {
+        throw new AngelException(s"Output path $outputPath already exists, " +
+          s"please delete it or set '$ML_DELETE_IF_EXISTS' as true to overwrite")
+      }
+    }
 
     val model = loadModel(modelPath)
     predict(model, inputPath, outputPath)
